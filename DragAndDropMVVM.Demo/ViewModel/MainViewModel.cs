@@ -1,6 +1,8 @@
 using System;
+using System.Windows.Input;
 using DragAndDropMVVM.ViewModel;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 
 namespace DragAndDropMVVM.Demo.ViewModel
 {
@@ -54,13 +56,13 @@ namespace DragAndDropMVVM.Demo.ViewModel
             //throw new NotImplementedException();
         }
 
-        void IDropable.Drop(object data, int index)
-        {
-            //throw new NotImplementedException();
+        //void IDropable.Drop(object data, int index)
+        //{
+        //    //throw new NotImplementedException();
 
-            System.Diagnostics.Debug.WriteLine($"{nameof(IDropable.Drop)}.{nameof(IDropable.DataType)} : {(data ?? "null").ToString() }" );
+        //    System.Diagnostics.Debug.WriteLine($"{nameof(IDropable.Drop)}.{nameof(IDropable.DataType)} : {(data ?? "null").ToString() }" );
 
-        }
+        //}
 
 
         /// <summary>
@@ -128,5 +130,61 @@ namespace DragAndDropMVVM.Demo.ViewModel
             }
         }
 
+
+
+        private RelayCommand<string> _dragCommand;
+
+        /// <summary>
+        /// Gets the DragCommand.
+        /// </summary>
+        public RelayCommand<string> DragCommand
+        {
+            get
+            {
+                return _dragCommand ?? (_dragCommand = new RelayCommand<string>(
+                    ExecuteDragCommand,
+                    CanExecuteDragCommand));
+            }
+        }
+
+        private void ExecuteDragCommand(string parameter)
+        {
+
+        }
+
+        private bool CanExecuteDragCommand(string parameter)
+        {
+            return true;
+        }
+
+
+        private RelayCommand<string> _dropCommand;
+
+        /// <summary>
+        /// Gets the DropCommand.
+        /// </summary>
+        public ICommand DropCommand
+        {
+            get
+            {
+                return _dropCommand ?? (_dropCommand = new RelayCommand<string>(
+                    ExecuteDropCommand,
+                    CanExecuteDropCommand));
+            }
+        }
+
+        private void ExecuteDropCommand(string parameter)
+        {
+
+        }
+
+        private bool CanExecuteDropCommand(string parameter)
+        {
+            return true;
+        }
+
+       
+
     }
+
 }

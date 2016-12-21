@@ -15,7 +15,10 @@
             <ColumnDefinition Width="5*"/>
         </Grid.ColumnDefinitions>
         <StackPanel Orientation="Horizontal">
-            <TextBlock VerticalAlignment="Center" Text="test" Cursor="Hand">
+            <TextBlock VerticalAlignment="Center" Text="test" Cursor="Hand"
+                       b:FrameworkElementDragBehavior.DragCommand="{Binding DragCommand}"
+                       b:FrameworkElementDragBehavior.DragCommandParameter="TEST!!!"
+                       >
                 <!--<TextBlock.Text>
                     <MultiBinding StringFormat=" {0} {1}">
                         <Binding Path="FirstName"/>
@@ -35,9 +38,17 @@
             </TextBlock>
         </StackPanel>
 
-        <Rectangle Grid.Column="1" Width="250" Height="250" VerticalAlignment="Top"
-                        StrokeThickness="1"
-                        DataContext="{Binding}">
+        <StackPanel  Grid.Column="1" b:FrameworkElementDropBehavior.DropCommand="{Binding DropCommand}"
+                     b:FrameworkElementDropBehavior.DropCommandParameter="PANEL">
+            <i:Interaction.Behaviors>
+                <b:FrameworkElementDropBehavior >
+                </b:FrameworkElementDropBehavior>
+            </i:Interaction.Behaviors>
+
+            <Rectangle Width="250" Height="250" VerticalAlignment="Top"
+                   StrokeThickness="1"
+                   DataContext="{Binding}"
+                   >
             <Rectangle.Fill>
                 <LinearGradientBrush EndPoint="0,1"
                                        StartPoint="0,0">
@@ -54,12 +65,21 @@
                                   Offset="1" />
                 </LinearGradientBrush>
             </Rectangle.Stroke>
-            <i:Interaction.Behaviors>
-                <b:FrameworkElementDropBehavior/>
-            </i:Interaction.Behaviors>
 
+            
         </Rectangle>
 
+        </StackPanel>
+        <!--<Border Grid.Column="1" BorderBrush="Silver" BorderThickness="5" Height="250" HorizontalAlignment="Left" Margin="30,20,0,0" Name="border1" VerticalAlignment="Top" Width="250">
+            <Canvas Width="250" Height="250">
+
+                <Button Content="Test" />
+
+                <i:Interaction.Behaviors>
+                    <b:FrameworkElementDropBehavior/>
+                </i:Interaction.Behaviors>
+            </Canvas>
+        </Border>-->
 
     </Grid>
 </Window>

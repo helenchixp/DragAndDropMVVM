@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Interactivity;
 using DragAndDropMVVM.ViewModel;
 
@@ -44,21 +46,44 @@ namespace DragAndDropMVVM.Behavior
                 //if the data type can be dropped 
                 if (e.Data.GetDataPresent(_dataType))
                 {
-                    //drop the data
-                    IDropable target = this.AssociatedObject.DataContext as IDropable;
-                    target.Drop(e.Data.GetData(_dataType));
 
-                    //remove the data from the source
-                    IDragable source = e.Data.GetData(_dataType) as IDragable;
-                    source.Drag(e.Data.GetData(_dataType));
+                    ////drop the data
+                    //IDropable target = this.AssociatedObject.DataContext as IDropable;
+                    //target.Drop(source.DataContext);
+
+                    ////remove the data from the source
+                    //IDragable sourcevm = source.DataContext as IDragable;
+                    //sourcevm.Drag(e.Data.GetData(_dataType));
+                    UIElement element = sender as FrameworkElement;
+
+                    ICommand dropcommand = GetDropCommand(element);
+
+                    if (dropcommand != null)
+                    {
+                        object parameter = GetDropCommandParameter(element) ?? this.AssociatedObject.DataContext;
+
+                        if(dropcommand.CanExecute(parameter))
+                        {
+                            dropcommand.Execute(parameter);
+                        }
+                    }
+
+                    Point point = e.GetPosition(element);
+                    System.Diagnostics.Debug.WriteLine($"{nameof(AssociatedObject_Drop)} Current Point : X:{point.X} Y:{point.Y}");
+
+                    ////TODO: Add the 
+                    if (!GetIsFixedPosition(element) && (this.AssociatedObject is Panel) )
+                    {
+                        TextBlock testblock = new TextBlock() { Text = "DropTest", };
+                        (this.AssociatedObject as Panel).Children.Add(testblock);
+                    }
+
+
                 }
             }
+
             if (this._adorner != null)
                 this._adorner.Remove();
-
-            UIElement element = sender as UIElement;
-            Point point = e.GetPosition(element);
-            System.Diagnostics.Debug.WriteLine($"{nameof(AssociatedObject_Drop)} Current Point : X:{point.X} Y:{point.Y}");
 
 
             e.Handled = true;
@@ -127,6 +152,173 @@ namespace DragAndDropMVVM.Behavior
 
 
         #region Dependency Property
+
+        #region IsFixedPosition
+
+        /// <summary>
+        /// The IsFixedPosition attached property's name.
+        /// </summary>
+        public const string IsFixedPositionPropertyName = "IsFixedPosition";
+
+        /// <summary>
+        /// Gets the value of the IsFixedPosition attached property 
+        /// for a given dependency object.
+        /// </summary>
+        /// <param name="obj">The object for which the property value
+        /// is read.</param>
+        /// <returns>The value of the IsFixedPosition property of the specified object.</returns>
+        public static bool GetIsFixedPosition(DependencyObject obj)
+        {
+            return (bool)obj.GetValue(IsFixedPositionProperty);
+        }
+
+        /// <summary>
+        /// Sets the value of the IsFixedPosition attached property
+        /// for a given dependency object. 
+        /// </summary>
+        /// <param name="obj">The object to which the property value
+        /// is written.</param>
+        /// <param name="value">Sets the IsFixedPosition value of the specified object.</param>
+        public static void SetIsFixedPosition(DependencyObject obj, bool value)
+        {
+            obj.SetValue(IsFixedPositionProperty, value);
+        }
+
+        /// <summary>
+        /// Identifies the IsFixedPosition attached property.
+        /// </summary>
+        public static readonly DependencyProperty IsFixedPositionProperty = DependencyProperty.RegisterAttached(
+            IsFixedPositionPropertyName,
+            typeof(bool),
+            typeof(FrameworkElementDropBehavior),
+            new UIPropertyMetadata(false));
+
+        #endregion
+
+        #region AdornerType
+
+        /// <summary>
+        /// The AdornerType attached property's name.
+        /// </summary>
+        public const string AdornerTypePropertyName = "AdornerType";
+
+        /// <summary>
+        /// Gets the value of the AdornerType attached property 
+        /// for a given dependency object.
+        /// </summary>
+        /// <param name="obj">The object for which the property value
+        /// is read.</param>
+        /// <returns>The value of the AdornerType property of the specified object.</returns>
+        public static FrameworkElementAdornerType GetAdornerType(DependencyObject obj)
+        {
+            return (FrameworkElementAdornerType)obj.GetValue(AdornerTypeProperty);
+        }
+
+        /// <summary>
+        /// Sets the value of the AdornerType attached property
+        /// for a given dependency object. 
+        /// </summary>
+        /// <param name="obj">The object to which the property value
+        /// is written.</param>
+        /// <param name="value">Sets the AdornerType value of the specified object.</param>
+        public static void SetAdornerType(DependencyObject obj, FrameworkElementAdornerType value)
+        {
+            obj.SetValue(AdornerTypeProperty, value);
+        }
+
+        /// <summary>
+        /// Identifies the AdornerType attached property.
+        /// </summary>
+        public static readonly DependencyProperty AdornerTypeProperty = DependencyProperty.RegisterAttached(
+            AdornerTypePropertyName,
+            typeof(FrameworkElementAdornerType),
+            typeof(FrameworkElementDropBehavior),
+            new UIPropertyMetadata(FrameworkElementAdornerType.DrawEllipse));
+
+
+        #endregion
+
+        #region DropCommand
+
+        /// <summary>
+        /// The DropCommand attached property's name.
+        /// </summary>
+        public const string DropCommandPropertyName = "DropCommand";
+
+        /// <summary>
+        /// Gets the value of the DropCommand attached property 
+        /// for a given dependency object.
+        /// </summary>
+        /// <param name="obj">The object for which the property value
+        /// is read.</param>
+        /// <returns>The value of the DropCommand property of the specified object.</returns>
+        public static ICommand GetDropCommand(DependencyObject obj)
+        {
+            return (ICommand)obj.GetValue(DropCommandProperty);
+        }
+
+        /// <summary>
+        /// Sets the value of the DropCommand attached property
+        /// for a given dependency object. 
+        /// </summary>
+        /// <param name="obj">The object to which the property value
+        /// is written.</param>
+        /// <param name="value">Sets the DropCommand value of the specified object.</param>
+        public static void SetDropCommand(DependencyObject obj, ICommand value)
+        {
+            obj.SetValue(DropCommandProperty, value);
+        }
+
+        /// <summary>
+        /// Identifies the DropCommand attached property.
+        /// </summary>
+        public static readonly DependencyProperty DropCommandProperty = DependencyProperty.RegisterAttached(
+            DropCommandPropertyName,
+            typeof(ICommand),
+            typeof(FrameworkElementDropBehavior),
+            new UIPropertyMetadata(null));
+        #endregion
+
+        #region DropCommandParameter
+
+        /// <summary>
+        /// The DropCommandParameter attached property's name.
+        /// </summary>
+        public const string DropCommandParameterPropertyName = "DropCommandParameter";
+
+        /// <summary>
+        /// Gets the value of the DropCommandParameter attached property 
+        /// for a given dependency object.
+        /// </summary>
+        /// <param name="obj">The object for which the property value
+        /// is read.</param>
+        /// <returns>The value of the DropCommandParameter property of the specified object.</returns>
+        public static object GetDropCommandParameter(DependencyObject obj)
+        {
+            return (object)obj.GetValue(DropCommandParameterProperty);
+        }
+
+        /// <summary>
+        /// Sets the value of the DropCommandParameter attached property
+        /// for a given dependency object. 
+        /// </summary>
+        /// <param name="obj">The object to which the property value
+        /// is written.</param>
+        /// <param name="value">Sets the DropCommandParameter value of the specified object.</param>
+        public static void SetDropCommandParameter(DependencyObject obj, object value)
+        {
+            obj.SetValue(DropCommandParameterProperty, value);
+        }
+
+        /// <summary>
+        /// Identifies the DropCommandParameter attached property.
+        /// </summary>
+        public static readonly DependencyProperty DropCommandParameterProperty = DependencyProperty.RegisterAttached(
+            DropCommandParameterPropertyName,
+            typeof(object),
+            typeof(FrameworkElementDropBehavior),
+            new UIPropertyMetadata(null));
+        #endregion
 
         #endregion
     }

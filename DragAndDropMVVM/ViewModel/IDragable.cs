@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace DragAndDropMVVM.ViewModel
 {
@@ -16,6 +17,8 @@ namespace DragAndDropMVVM.ViewModel
         /// <summary>
         /// Remove the object from the collection
         /// </summary>
-        void Drag(object i);
+       // void Drag(object i);
+
+       //ICommand DragCommand { get; }
     }
 }

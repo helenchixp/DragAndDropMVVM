@@ -52,6 +52,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Behavior\Enum.cs" />
     <Compile Include="Behavior\DraggingAdorner.cs" />
     <Compile Include="Behavior\FrameworkElementAdorner.cs" />
     <Compile Include="Behavior\FrameworkElementDragBehavior.cs" />
