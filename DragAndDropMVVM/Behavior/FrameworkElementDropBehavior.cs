@@ -15,7 +15,7 @@ namespace DragAndDropMVVM.Behavior
     {
 
 
-        private Type _dataType; //the type of the data that can be dropped into this control
+        private Type _dataType = typeof(DraggingAdorner); //the type of the data that can be dropped into this control
         private FrameworkElementAdorner _adorner;
 
         protected override void OnAttached()
@@ -65,19 +65,51 @@ namespace DragAndDropMVVM.Behavior
                         if(dropcommand.CanExecute(parameter))
                         {
                             dropcommand.Execute(parameter);
+
+
+                            Point point = e.GetPosition(element);
+                            System.Diagnostics.Debug.WriteLine($"{nameof(AssociatedObject_Drop)} Current Point : X:{point.X} Y:{point.Y}");
+
+                            ////TODO: Add the 
+                            Canvas droppedcanvas = GetDroppedCanvas(element);
+
+                            if (!GetIsFixedPosition(element) && droppedcanvas != null)
+                            {
+
+                                if (e.Data.GetDataPresent(_dataType))
+                                {
+                                    var adn = e.Data.GetData(_dataType) as DraggingAdorner;
+                                    var testblock = adn.GetGhostElement();
+
+                                    if (testblock is UIElement)
+                                    {
+                                        var cc = testblock as UIElement;
+
+                                        Canvas.SetRight(cc, point.X);
+                                        Canvas.SetLeft(cc, point.X);
+                                        Canvas.SetBottom(cc, point.Y);
+                                        Canvas.SetTop(cc, point.Y);
+
+
+
+                                        droppedcanvas.Children.Add(cc);
+                                    }
+                                    //droppedcanvas.Children.Add(testblock);
+
+                                }
+                                ////TextBlock testblock = new TextBlock()
+                                ////{
+                                ////    Text = "DropTest",
+                                ////};
+                                ////Canvas.SetRight(testblock, point.X);
+                                ////Canvas.SetLeft(testblock, point.X);
+                                ////Canvas.SetBottom(testblock, point.Y);
+                                ////Canvas.SetTop(testblock, point.Y);
+
+                                ////droppedcanvas.Children.Add(testblock);
+                            }
                         }
                     }
-
-                    Point point = e.GetPosition(element);
-                    System.Diagnostics.Debug.WriteLine($"{nameof(AssociatedObject_Drop)} Current Point : X:{point.X} Y:{point.Y}");
-
-                    ////TODO: Add the 
-                    if (!GetIsFixedPosition(element) && (this.AssociatedObject is Panel) )
-                    {
-                        TextBlock testblock = new TextBlock() { Text = "DropTest", };
-                        (this.AssociatedObject as Panel).Children.Add(testblock);
-                    }
-
 
                 }
             }
@@ -117,17 +149,17 @@ namespace DragAndDropMVVM.Behavior
         private void AssociatedObject_DragEnter(object sender, DragEventArgs e)
         {
             //if the DataContext implements IDropable, record the data type that can be dropped
-            if (this._dataType == null)
-            {
-                if (this.AssociatedObject.DataContext != null)
-                {
-                    IDropable dropObject = this.AssociatedObject.DataContext as IDropable;
-                    if (dropObject != null)
-                    {
-                        this._dataType = dropObject.DataType;
-                    }
-                }
-            }
+            ////////////if (this._dataType == null)
+            ////////////{
+            ////////////    if (this.AssociatedObject.DataContext != null)
+            ////////////    {
+            ////////////        IDropable dropObject = this.AssociatedObject.DataContext as IDropable;
+            ////////////        if (dropObject != null)
+            ////////////        {
+            ////////////            this._dataType = dropObject.DataType;
+            ////////////        }
+            ////////////    }
+            ////////////}
 
             if (this._adorner == null)
                 this._adorner = new FrameworkElementAdorner(sender as UIElement);
@@ -148,8 +180,6 @@ namespace DragAndDropMVVM.Behavior
                 e.Effects = DragDropEffects.Move;
             }
         }
-
-
 
         #region Dependency Property
 
@@ -320,6 +350,52 @@ namespace DragAndDropMVVM.Behavior
             new UIPropertyMetadata(null));
         #endregion
 
+        #region DroppedCanvas
+        /// <summary>
+        /// The DroppedCanvas attached property's name.
+        /// </summary>
+        public const string DroppedCanvasPropertyName = "DroppedCanvas";
+
+        /// <summary>
+        /// Gets the value of the DroppedCanvas attached property 
+        /// for a given dependency object.
+        /// </summary>
+        /// <param name="obj">The object for which the property value
+        /// is read.</param>
+        /// <returns>The value of the DroppedCanvas property of the specified object.</returns>
+        public static Canvas GetDroppedCanvas(DependencyObject obj)
+        {
+            return (Canvas)obj.GetValue(DroppedCanvasProperty);
+        }
+
+        /// <summary>
+        /// Sets the value of the DroppedCanvas attached property
+        /// for a given dependency object. 
+        /// </summary>
+        /// <param name="obj">The object to which the property value
+        /// is written.</param>
+        /// <param name="value">Sets the DroppedCanvas value of the specified object.</param>
+        public static void SetDroppedCanvas(DependencyObject obj, Canvas value)
+        {
+            obj.SetValue(DroppedCanvasProperty, value);
+        }
+
+        /// <summary>
+        /// Identifies the DroppedCanvas attached property.
+        /// </summary>
+        public static readonly DependencyProperty DroppedCanvasProperty = DependencyProperty.RegisterAttached(
+            DroppedCanvasPropertyName,
+            typeof(Canvas),
+            typeof(FrameworkElementDropBehavior),
+            new UIPropertyMetadata(null));
         #endregion
+
+        #region DroppedControlType
+
+        #endregion
+
+        #endregion
+
+
     }
 }

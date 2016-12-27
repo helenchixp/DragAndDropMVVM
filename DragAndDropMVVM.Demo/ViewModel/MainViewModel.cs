@@ -1,4 +1,5 @@
 using System;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 using DragAndDropMVVM.ViewModel;
 using GalaSoft.MvvmLight;
@@ -103,14 +104,14 @@ namespace DragAndDropMVVM.Demo.ViewModel
             /// </summary>
         public const string LastNamePropertyName = "LastName";
 
-        private string _lastName = "Niki";
+        private object _lastName = new decimal(3.8);
 
         /// <summary>
         /// Sets and gets the LastName property.
         /// Changes to that property's value raise the PropertyChanged event. 
         /// This property's value is broadcasted by the MessengerInstance when it changes.
         /// </summary>
-        public string LastName
+        public object LastName
         {
             get
             {
@@ -132,33 +133,33 @@ namespace DragAndDropMVVM.Demo.ViewModel
 
 
 
-        private RelayCommand<string> _dragCommand;
+        private RelayCommand<object> _dragCommand;
 
         /// <summary>
         /// Gets the DragCommand.
         /// </summary>
-        public RelayCommand<string> DragCommand
+        public RelayCommand<object> DragCommand
         {
             get
             {
-                return _dragCommand ?? (_dragCommand = new RelayCommand<string>(
+                return _dragCommand ?? (_dragCommand = new RelayCommand<object>(
                     ExecuteDragCommand,
                     CanExecuteDragCommand));
             }
         }
 
-        private void ExecuteDragCommand(string parameter)
+        private void ExecuteDragCommand(object parameter)
         {
-
+            System.Diagnostics.Debug.WriteLine($"The DragCommandParameter is {(parameter ?? "null").ToString()}");
         }
 
-        private bool CanExecuteDragCommand(string parameter)
+        private bool CanExecuteDragCommand(object parameter)
         {
             return true;
         }
 
 
-        private RelayCommand<string> _dropCommand;
+        private RelayCommand<object> _dropCommand;
 
         /// <summary>
         /// Gets the DropCommand.
@@ -167,24 +168,56 @@ namespace DragAndDropMVVM.Demo.ViewModel
         {
             get
             {
-                return _dropCommand ?? (_dropCommand = new RelayCommand<string>(
+                return _dropCommand ?? (_dropCommand = new RelayCommand<object>(
                     ExecuteDropCommand,
                     CanExecuteDropCommand));
             }
         }
 
-        private void ExecuteDropCommand(string parameter)
+        private void ExecuteDropCommand(object parameter)
         {
-
+            System.Diagnostics.Debug.WriteLine($"The DropCommandParameter is {(parameter ?? "null").ToString()}");
+            DroppedItemSource.Add($"{(parameter ?? "null").ToString()}");
         }
 
-        private bool CanExecuteDropCommand(string parameter)
+        private bool CanExecuteDropCommand(object parameter)
         {
             return true;
         }
 
-       
+        //ObservableCollection
 
+        /// <summary>
+        /// The <see cref="DroppedItemSource" /> property's name.
+        /// </summary>
+        public const string DroppedItemSourcePropertyName = "DroppedItemSource";
+
+        private ObservableCollection<string> _droppedItemSource = new ObservableCollection<string>();
+
+        /// <summary>
+        /// Sets and gets the DroppedItemSource property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// This property's value is broadcasted by the MessengerInstance when it changes.
+        /// </summary>
+        public ObservableCollection<string> DroppedItemSource
+        {
+            get
+            {
+                return _droppedItemSource;
+            }
+
+            set
+            {
+                if (_droppedItemSource == value)
+                {
+                    return;
+                }
+
+                var oldValue = _droppedItemSource;
+                _droppedItemSource = value;
+                RaisePropertyChanged(DroppedItemSourcePropertyName, oldValue, value, true);
+            }
+        }
     }
 
 }

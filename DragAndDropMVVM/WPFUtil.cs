@@ -3,7 +3,12 @@ using System.Windows;
 using System.Windows.Media;
 using System.Runtime.InteropServices;
 using System.Windows.Interop;
-
+using System.Windows.Controls;
+using System.Windows.Markup;
+using System.IO;
+using System.Xml;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Reflection;
 
 namespace DragAndDropMVVM
 {
@@ -168,5 +173,86 @@ namespace DragAndDropMVVM
             ScreenToClient(hwnd, ref point);
             return new Point(point.X, point.Y);
         }
+
+
+        internal static object GetUIElementSimpleClone(object element)
+        {
+            if (element == null)
+                return null;
+
+       
+
+            // Get all properties and clone them.
+
+            var obj = element;
+
+            // from http://kiwigis.blogspot.jp/2010/06/cloning-path-geometry-in-silverlight.html
+
+            PropertyInfo[] properties = obj.GetType().GetProperties();
+            object cloneObj = obj.GetType().GetConstructors()[0].Invoke(null);
+            foreach (PropertyInfo property in properties)
+            {
+                object value = property.GetValue(obj, null);
+                if (value != null)
+                {
+                    if (IsPresentationFrameworkCollection(value.GetType()))
+                    {
+                        object collection = property.GetValue(obj, null);
+                        int count = (int)collection.GetType().
+                            GetProperty("Count").GetValue(collection, null);
+                        for (int i = 0; i < count; i++)
+                        {
+                            // Get each child of the collection.
+                            object child = collection.GetType().
+                                GetProperty("Item").
+                                GetValue(collection, new Object[] { i });
+                            object cloneChild = GetUIElementSimpleClone(child);
+                            object cloneCollection = property.
+                                GetValue(cloneObj, null);
+                            collection.GetType().
+                                InvokeMember("Add",
+                                             BindingFlags.InvokeMethod,
+                                             null,
+                                             cloneCollection,
+                                             new object[] { cloneChild });
+                        }
+                    }
+                    // If the property is a UIElement, we also need to clone it.
+                    else if (value is UIElement)
+                    {
+                        object obj2 = property.PropertyType.
+                                          GetConstructors()[0].Invoke(null);
+                        GetUIElementSimpleClone(obj2);
+                        if (property.CanWrite)
+                        {
+                            property.SetValue(cloneObj, obj2, null);
+                        }
+                    }
+                    // For a normal property, its value doesn't need to be
+                    // cloned. So just copy its value to the new object.
+                    else if (property.CanWrite)
+                    {
+                        property.SetValue(cloneObj, value, null);
+                    }
+                }
+            }
+            return cloneObj;
+
+        }
+
+
+        private static bool IsPresentationFrameworkCollection(Type type)
+        {
+            if (type == typeof(object))
+            {
+                return false;
+            }
+            if (type.Name.StartsWith("PresentationFrameworkCollection"))
+            {
+                return true;
+            }
+            return IsPresentationFrameworkCollection(type.BaseType);
+        }
+
     }
 }

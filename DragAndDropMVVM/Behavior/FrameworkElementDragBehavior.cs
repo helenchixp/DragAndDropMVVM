@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Interactivity;
 using System.Windows.Input;
 using DragAndDropMVVM.ViewModel;
+using System.Windows.Documents;
 
 namespace DragAndDropMVVM.Behavior
 {
@@ -57,12 +58,11 @@ namespace DragAndDropMVVM.Behavior
             if (e.LeftButton == MouseButtonState.Released)
             {
                 element.SetValue(FrameworkElementDragBehavior.StartPointProperty, null);
-                System.Diagnostics.Debug.WriteLine($"{nameof(AssociatedObject_MouseMove)} _ {nameof(e.LeftButton)}:{e.LeftButton}");
             }
             if (element.GetValue(FrameworkElementDragBehavior.StartPointProperty) == null) return;
 
             Point startPoint = (Point)element.GetValue(FrameworkElementDragBehavior.StartPointProperty);
-            Point point = e.GetPosition(element);
+            Point point = e.GetPosition(element as UIElement);
 
             if (!IsDragging(startPoint, point)) return;
 
@@ -71,7 +71,8 @@ namespace DragAndDropMVVM.Behavior
             FrameworkElementDragBehavior.SetDragAdorner(element, adorner);
 
             DataObject data = new DataObject();
-            data.SetData((element as IDragable)?.DataType ?? typeof(string), this.AssociatedObject.DataContext);
+            // data.SetData((element as IDragable)?.DataType ?? typeof(string), this.AssociatedObject.DataContext);
+            data.SetData(typeof(DraggingAdorner), adorner);
 
 
             ICommand dragcommand = GetDragCommand(element);

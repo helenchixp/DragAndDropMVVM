@@ -9,15 +9,26 @@
         DataContext="{Binding Source={StaticResource Locator}, Path=Main}"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary>
+                    <Style TargetType="TextBlock" x:Key="cusDropStyle"></Style>
+                    
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+        
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="5*"/>
             <ColumnDefinition Width="5*"/>
         </Grid.ColumnDefinitions>
-        <StackPanel Orientation="Horizontal">
+        <StackPanel Orientation="Vertical">
             <TextBlock VerticalAlignment="Center" Text="test" Cursor="Hand"
                        b:FrameworkElementDragBehavior.DragCommand="{Binding DragCommand}"
-                       b:FrameworkElementDragBehavior.DragCommandParameter="TEST!!!"
+                       b:FrameworkElementDragBehavior.DragCommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Text}"
                        >
                 <!--<TextBlock.Text>
                     <MultiBinding StringFormat=" {0} {1}">
@@ -36,20 +47,40 @@
                 <b:FrameworkElementDragBehavior/>
             </i:Interaction.Behaviors>
             </TextBlock>
+
+            <Ellipse Width="20" Height="20" Fill="AliceBlue"
+                       b:FrameworkElementDragBehavior.DragCommand="{Binding DragCommand}"
+                       b:FrameworkElementDragBehavior.DragCommandParameter="{Binding FirstName}">
+                <i:Interaction.Behaviors>
+                    <b:FrameworkElementDragBehavior/>
+                </i:Interaction.Behaviors>
+            </Ellipse>
         </StackPanel>
 
-        <StackPanel  Grid.Column="1" b:FrameworkElementDropBehavior.DropCommand="{Binding DropCommand}"
-                     b:FrameworkElementDropBehavior.DropCommandParameter="PANEL">
-            <i:Interaction.Behaviors>
-                <b:FrameworkElementDropBehavior >
-                </b:FrameworkElementDropBehavior>
-            </i:Interaction.Behaviors>
 
-            <Rectangle Width="250" Height="250" VerticalAlignment="Top"
+        <StackPanel  Grid.Column="1" >
+            <!--b:FrameworkElementDropBehavior.DropCommand="{Binding DropCommand}"
+                     b:FrameworkElementDropBehavior.DropCommandParameter="{Binding LastName}"
+                     b:FrameworkElementDropBehavior.DroppedCanvas="{Binding ElementName=myDroppedCanvas}">-->
+
+            <Canvas Panel.ZIndex="2" x:Name="myDroppedCanvas"
+                    
+                    HorizontalAlignment="{Binding ElementName=rect, Path=HorizontalAlignment}"
+                    VerticalAlignment="{Binding ElementName=rect, Path=VerticalAlignment}"
+                    Background="Yellow"/>
+
+
+            <Rectangle x:Name="rect"
+                    Width="250" Height="250" VerticalAlignment="Top"
                    StrokeThickness="1"
                    DataContext="{Binding}"
-                   >
-            <Rectangle.Fill>
+                        b:FrameworkElementDropBehavior.DropCommand="{Binding DropCommand}"
+                        b:FrameworkElementDropBehavior.DropCommandParameter="{Binding LastName}"
+                        b:FrameworkElementDropBehavior.DroppedCanvas="{Binding ElementName=myDroppedCanvas}">
+                <i:Interaction.Behaviors>
+                    <b:FrameworkElementDropBehavior />
+                </i:Interaction.Behaviors>
+                <Rectangle.Fill>
                 <LinearGradientBrush EndPoint="0,1"
                                        StartPoint="0,0">
                     <GradientStop Color="Azure" />
@@ -65,9 +96,9 @@
                                   Offset="1" />
                 </LinearGradientBrush>
             </Rectangle.Stroke>
-
-            
         </Rectangle>
+
+            <ListBox ItemsSource="{Binding DroppedItemSource}"></ListBox>
 
         </StackPanel>
         <!--<Border Grid.Column="1" BorderBrush="Silver" BorderThickness="5" Height="250" HorizontalAlignment="Left" Margin="30,20,0,0" Name="border1" VerticalAlignment="Top" Width="250">

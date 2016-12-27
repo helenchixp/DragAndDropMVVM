@@ -7,6 +7,7 @@ using System.Windows.Input;
 
 namespace DragAndDropMVVM.ViewModel
 {
+    [Obsolete]
     public interface IDropable
     {
         /// <summary>

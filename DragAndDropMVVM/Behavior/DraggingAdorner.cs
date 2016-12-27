@@ -81,5 +81,13 @@ namespace DragAndDropMVVM.Behavior
             result.Children.Add(new TranslateTransform(Position.X, Position.Y));
             return result;
         }
+
+
+        public object GetGhostElement()
+        {
+            //return (_ghost?.Fill as VisualBrush).Visual as UIElement;
+            return WPFUtil.GetUIElementSimpleClone((_ghost?.Fill as VisualBrush).Visual as UIElement);
+        }
+
     }
 }
