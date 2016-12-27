@@ -71,7 +71,8 @@ namespace DragAndDropMVVM.Behavior
             FrameworkElementDragBehavior.SetDragAdorner(element, adorner);
 
             DataObject data = new DataObject();
-            // data.SetData((element as IDragable)?.DataType ?? typeof(string), this.AssociatedObject.DataContext);
+
+            //set the adorner for drop action and create the clone element.
             data.SetData(typeof(DraggingAdorner), adorner);
 
 
@@ -80,6 +81,8 @@ namespace DragAndDropMVVM.Behavior
             if (dragcommand != null)
             {
                 object parameter = GetDragCommandParameter(element) ?? this.AssociatedObject.DataContext;
+
+                data.SetData(DataFormats.Serializable, parameter);
 
                 if (dragcommand.CanExecute(parameter))
                 {
@@ -90,7 +93,7 @@ namespace DragAndDropMVVM.Behavior
 
             adorner.Remove();
             
-            FrameworkElementDragBehavior.SetDragAdorner(element, null);
+            SetDragAdorner(element, null);
 
             System.Diagnostics.Debug.WriteLine($"{nameof(AssociatedObject_MouseMove)} Current Point : X:{point.X} Y:{point.Y}  and Start Point X:{startPoint.X} Y:{startPoint.Y}");
 
@@ -102,7 +105,7 @@ namespace DragAndDropMVVM.Behavior
             UIElement element = sender as UIElement;
             DraggingAdorner adorner = FrameworkElementDragBehavior.GetDragAdorner(element);
             Point point = WPFUtil.GetMousePosition(element);
-            if (adorner != null) adorner.Position = WPFUtil.GetMousePosition(element);
+            if (adorner != null) adorner.Position = point;
 
 
         }
@@ -139,13 +142,7 @@ namespace DragAndDropMVVM.Behavior
             if (_isMouseClicked)
             {
                 ////set the item's DataContext as the data to be transferred
-                //IDragable dragObject = this.AssociatedObject.DataContext as IDragable;
-                //if (dragObject != null)
-                //{
-                //    DataObject data = new DataObject();
-                //    data.SetData(dragObject.DataType, this.AssociatedObject.DataContext);
-                //    System.Windows.DragDrop.DoDragDrop(this.AssociatedObject, data, DragDropEffects.Move);
-                //}
+
             }
 
             _isMouseClicked = false;

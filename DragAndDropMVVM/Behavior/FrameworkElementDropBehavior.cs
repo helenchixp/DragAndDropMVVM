@@ -60,7 +60,9 @@ namespace DragAndDropMVVM.Behavior
 
                     if (dropcommand != null)
                     {
-                        object parameter = GetDropCommandParameter(element) ?? this.AssociatedObject.DataContext;
+                        object parameter = (GetDropCommandParameter(element) ??
+                            (e.Data.GetDataPresent(DataFormats.Serializable) ? e.Data.GetData(DataFormats.Serializable) : null)) ??
+                            this.AssociatedObject.DataContext;
 
                         if(dropcommand.CanExecute(parameter))
                         {
@@ -69,44 +71,31 @@ namespace DragAndDropMVVM.Behavior
 
                             Point point = e.GetPosition(element);
                             System.Diagnostics.Debug.WriteLine($"{nameof(AssociatedObject_Drop)} Current Point : X:{point.X} Y:{point.Y}");
-
                             ////TODO: Add the 
                             Canvas droppedcanvas = GetDroppedCanvas(element);
 
+                            // if copy the 
                             if (!GetIsFixedPosition(element) && droppedcanvas != null)
                             {
 
                                 if (e.Data.GetDataPresent(_dataType))
                                 {
                                     var adn = e.Data.GetData(_dataType) as DraggingAdorner;
-                                    var testblock = adn.GetGhostElement();
+                                    System.Diagnostics.Debug.WriteLine($"{nameof(DraggingAdorner)} Current Point : X:{adn.Position.X} Y:{adn.Position.Y}");
+                                   var clnele = adn.GetGhostElement() as UIElement;
 
-                                    if (testblock is UIElement)
+                                    //add the clone element
+                                    if (clnele != null)
                                     {
-                                        var cc = testblock as UIElement;
-
-                                        Canvas.SetRight(cc, point.X);
-                                        Canvas.SetLeft(cc, point.X);
-                                        Canvas.SetBottom(cc, point.Y);
-                                        Canvas.SetTop(cc, point.Y);
-
-
-
-                                        droppedcanvas.Children.Add(cc);
+                                        Canvas.SetRight(clnele, point.X - adn.CenterPoint.X);
+                                        Canvas.SetLeft(clnele, point.X - adn.CenterPoint.X);
+                                        Canvas.SetBottom(clnele, point.Y - adn.CenterPoint.Y);
+                                        Canvas.SetTop(clnele, point.Y - adn.CenterPoint.Y);
+                                        droppedcanvas.Children.Add(clnele);
                                     }
-                                    //droppedcanvas.Children.Add(testblock);
 
                                 }
-                                ////TextBlock testblock = new TextBlock()
-                                ////{
-                                ////    Text = "DropTest",
-                                ////};
-                                ////Canvas.SetRight(testblock, point.X);
-                                ////Canvas.SetLeft(testblock, point.X);
-                                ////Canvas.SetBottom(testblock, point.Y);
-                                ////Canvas.SetTop(testblock, point.Y);
 
-                                ////droppedcanvas.Children.Add(testblock);
                             }
                         }
                     }

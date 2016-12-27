@@ -14,11 +14,11 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary>
                     <Style TargetType="TextBlock" x:Key="cusDropStyle"></Style>
-                    
+
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-        
+
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -26,48 +26,49 @@
             <ColumnDefinition Width="5*"/>
         </Grid.ColumnDefinitions>
         <StackPanel Orientation="Vertical">
-            <TextBlock VerticalAlignment="Center" Text="test" Cursor="Hand"
+            <TextBlock VerticalAlignment="Top"
+                       HorizontalAlignment="Left"
+                       Text="test" Cursor="Hand"
                        b:FrameworkElementDragBehavior.DragCommand="{Binding DragCommand}"
-                       b:FrameworkElementDragBehavior.DragCommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Text}"
-                       >
-                <!--<TextBlock.Text>
-                    <MultiBinding StringFormat=" {0} {1}">
-                        <Binding Path="FirstName"/>
-                        <Binding Path="LastName"/>
-                    </MultiBinding>
-                </TextBlock.Text>-->
-                <TextBlock.DataContext>
-                    <Binding />
-                    <!--<MultiBinding StringFormat=" {0} {1}">
-                        <Binding Path="FirstName"/>
-                        <Binding Path="LastName"/>
-                    </MultiBinding>-->
-                </TextBlock.DataContext>
-            <i:Interaction.Behaviors>
-                <b:FrameworkElementDragBehavior/>
-            </i:Interaction.Behaviors>
+                       b:FrameworkElementDragBehavior.DragCommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Text}">
+                <i:Interaction.Behaviors>
+                    <b:FrameworkElementDragBehavior/>
+                </i:Interaction.Behaviors>
             </TextBlock>
 
-            <Ellipse Width="20" Height="20" Fill="AliceBlue"
+            <Ellipse Width="30" Height="30" Fill="RosyBrown"  VerticalAlignment="Center" 
+                     HorizontalAlignment="Left"
                        b:FrameworkElementDragBehavior.DragCommand="{Binding DragCommand}"
                        b:FrameworkElementDragBehavior.DragCommandParameter="{Binding FirstName}">
                 <i:Interaction.Behaviors>
                     <b:FrameworkElementDragBehavior/>
                 </i:Interaction.Behaviors>
             </Ellipse>
+
+
+            <WrapPanel Orientation="Vertical"
+                   b:FrameworkElementDragBehavior.DragCommand="{Binding DragCommand}"
+                   b:FrameworkElementDragBehavior.DragCommandParameter="{Binding FirstName}">
+                <i:Interaction.Behaviors>
+                    <b:FrameworkElementDragBehavior/>
+                </i:Interaction.Behaviors>
+                <Image Source="yuri_icon.png" Height="50" Width="50">
+                </Image>
+                <TextBlock Text="Yuri is Angle." />
+            </WrapPanel>
         </StackPanel>
 
 
-        <StackPanel  Grid.Column="1" >
+        <StackPanel  Grid.Column="1" Width="250" Height="250" VerticalAlignment="Top" >
             <!--b:FrameworkElementDropBehavior.DropCommand="{Binding DropCommand}"
                      b:FrameworkElementDropBehavior.DropCommandParameter="{Binding LastName}"
                      b:FrameworkElementDropBehavior.DroppedCanvas="{Binding ElementName=myDroppedCanvas}">-->
 
             <Canvas Panel.ZIndex="2" x:Name="myDroppedCanvas"
-                    
                     HorizontalAlignment="{Binding ElementName=rect, Path=HorizontalAlignment}"
                     VerticalAlignment="{Binding ElementName=rect, Path=VerticalAlignment}"
-                    Background="Yellow"/>
+                    Background="Yellow">
+            </Canvas>
 
 
             <Rectangle x:Name="rect"
@@ -81,22 +82,22 @@
                     <b:FrameworkElementDropBehavior />
                 </i:Interaction.Behaviors>
                 <Rectangle.Fill>
-                <LinearGradientBrush EndPoint="0,1"
+                    <LinearGradientBrush EndPoint="0,1"
                                        StartPoint="0,0">
-                    <GradientStop Color="Azure" />
-                    <GradientStop Color="Orange"
+                        <GradientStop Color="Azure" />
+                        <GradientStop Color="Orange"
                                   Offset="1" />
-                </LinearGradientBrush>
-            </Rectangle.Fill>
-            <Rectangle.Stroke>
-                <LinearGradientBrush EndPoint="0.48,-1"
+                    </LinearGradientBrush>
+                </Rectangle.Fill>
+                <Rectangle.Stroke>
+                    <LinearGradientBrush EndPoint="0.48,-1"
                                        StartPoint="0.48,1.25">
-                    <GradientStop Color="#FF494949" />
-                    <GradientStop Color="#FF9F9F9F"
+                        <GradientStop Color="#FF494949" />
+                        <GradientStop Color="#FF9F9F9F"
                                   Offset="1" />
-                </LinearGradientBrush>
-            </Rectangle.Stroke>
-        </Rectangle>
+                    </LinearGradientBrush>
+                </Rectangle.Stroke>
+            </Rectangle>
 
             <ListBox ItemsSource="{Binding DroppedItemSource}"></ListBox>
 

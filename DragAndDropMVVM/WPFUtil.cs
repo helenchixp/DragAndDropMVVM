@@ -195,7 +195,7 @@ namespace DragAndDropMVVM
                 object value = property.GetValue(obj, null);
                 if (value != null)
                 {
-                    if (IsPresentationFrameworkCollection(value.GetType()))
+                    if (IsCollectionInterface(value.GetType()))
                     {
                         object collection = property.GetValue(obj, null);
                         int count = (int)collection.GetType().
@@ -204,17 +204,20 @@ namespace DragAndDropMVVM
                         {
                             // Get each child of the collection.
                             object child = collection.GetType().
-                                GetProperty("Item").
+                                GetProperty("Item")?.
                                 GetValue(collection, new Object[] { i });
-                            object cloneChild = GetUIElementSimpleClone(child);
-                            object cloneCollection = property.
-                                GetValue(cloneObj, null);
-                            collection.GetType().
-                                InvokeMember("Add",
-                                             BindingFlags.InvokeMethod,
-                                             null,
-                                             cloneCollection,
-                                             new object[] { cloneChild });
+                            if (child != null)
+                            {
+                                object cloneChild = GetUIElementSimpleClone(child);
+                                object cloneCollection = property.
+                                    GetValue(cloneObj, null);
+                                collection.GetType().
+                                    InvokeMember("Add",
+                                                 BindingFlags.InvokeMethod,
+                                                 null,
+                                                 cloneCollection,
+                                                 new object[] { cloneChild });
+                            }
                         }
                     }
                     // If the property is a UIElement, we also need to clone it.
@@ -241,17 +244,23 @@ namespace DragAndDropMVVM
         }
 
 
-        private static bool IsPresentationFrameworkCollection(Type type)
+        private static bool IsCollectionInterface(Type type)
         {
             if (type == typeof(object))
             {
                 return false;
             }
-            if (type.Name.StartsWith("PresentationFrameworkCollection"))
+
+            if(type.GetInterface("ICollection") != null)
             {
                 return true;
             }
-            return IsPresentationFrameworkCollection(type.BaseType);
+
+            //if (type.Name.StartsWith("PresentationFrameworkCollection"))
+            //{
+            //    return true;
+            //}
+            return IsCollectionInterface(type.BaseType);
         }
 
     }

@@ -20,11 +20,19 @@ namespace DragAndDropMVVM.Behavior
                 Fill = new VisualBrush(element) { Opacity = opacity }
             };
 
+            CenterPoint = point;
+
             _move = (Vector)Window.GetWindow(element).PointFromScreen(element.PointToScreen(point));
             _move.Negate();
 
             AdornerLayer adorner = AdornerLayer.GetAdornerLayer((Visual)WPFUtil.FindVisualParent<Window>(this.AdornedElement).Content);
             if (adorner != null) adorner.Add(this);
+        }
+
+
+        public Point CenterPoint
+        {
+            get; private set;
         }
 
         private Point _position;
