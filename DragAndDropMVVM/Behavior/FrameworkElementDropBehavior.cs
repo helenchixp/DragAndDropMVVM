@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interactivity;
-using DragAndDropMVVM.ViewModel;
 
 namespace DragAndDropMVVM.Behavior
 {
@@ -16,7 +16,7 @@ namespace DragAndDropMVVM.Behavior
 
 
         private Type _dataType = typeof(DraggingAdorner); //the type of the data that can be dropped into this control
-        private FrameworkElementAdorner _adorner;
+        private DroppingAdorner _adorner;
 
         protected override void OnAttached()
         {
@@ -77,12 +77,24 @@ namespace DragAndDropMVVM.Behavior
                             // if copy the 
                             if (!GetIsFixedPosition(element) && droppedcanvas != null)
                             {
+                                var droppedcontroltype = GetDroppedControlType(element);
+
+
+                                if (droppedcontroltype != null && !IsCorrectType(droppedcontroltype, typeof(ContentControl)))
+                                {
+                                    throw new ArgumentException("DroppedControlType is base on ContentControl.");
+                                }
 
                                 if (e.Data.GetDataPresent(_dataType))
                                 {
                                     var adn = e.Data.GetData(_dataType) as DraggingAdorner;
                                     System.Diagnostics.Debug.WriteLine($"{nameof(DraggingAdorner)} Current Point : X:{adn.Position.X} Y:{adn.Position.Y}");
                                    var clnele = adn.GetGhostElement() as UIElement;
+
+                                    if(droppedcontroltype != null)
+                                    {
+                                        clnele = CreateNewContentControl(droppedcontroltype, clnele);
+                                    }
 
                                     //add the clone element
                                     if (clnele != null)
@@ -151,7 +163,7 @@ namespace DragAndDropMVVM.Behavior
             ////////////}
 
             if (this._adorner == null)
-                this._adorner = new FrameworkElementAdorner(sender as UIElement);
+                this._adorner = new DroppingAdorner(sender as UIElement);
             e.Handled = true;
         }
 
@@ -380,11 +392,73 @@ namespace DragAndDropMVVM.Behavior
         #endregion
 
         #region DroppedControlType
+        /// <summary>
+        /// The DroppedControlType attached property's name.
+        /// </summary>
+        public const string DroppedControlTypePropertyName = "DroppedControlType";
 
+        /// <summary>
+        /// Gets the value of the DroppedControlType attached property 
+        /// for a given dependency object.
+        /// </summary>
+        /// <param name="obj">The object for which the property value
+        /// is read.</param>
+        /// <returns>The value of the DroppedControlType property of the specified object.</returns>
+        public static Type GetDroppedControlType(DependencyObject obj)
+        {
+            return (Type)obj.GetValue(DroppedControlTypeProperty);
+        }
+
+        /// <summary>
+        /// Sets the value of the DroppedControlType attached property
+        /// for a given dependency object. 
+        /// </summary>
+        /// <param name="obj">The object to which the property value
+        /// is written.</param>
+        /// <param name="value">Sets the DroppedControlType value of the specified object.</param>
+        public static void SetDroppedControlType(DependencyObject obj, Type value)
+        {
+            obj.SetValue(DroppedControlTypeProperty, value);
+        }
+
+        /// <summary>
+        /// Identifies the DroppedControlType attached property.
+        /// </summary>
+        public static readonly DependencyProperty DroppedControlTypeProperty = DependencyProperty.RegisterAttached(
+            DroppedControlTypePropertyName,
+            typeof(Type),
+            typeof(FrameworkElementDropBehavior),
+            new UIPropertyMetadata(null));
         #endregion
 
         #endregion
 
+
+        #region Private Method
+
+        private bool IsCorrectType(Type checktype, Type correcttype)
+        {
+            if (checktype == null || correcttype == null) return false;
+
+            if (!checktype.Equals(correcttype)) return IsCorrectType(checktype.BaseType, correcttype);
+
+            else return true;
+        }
+
+
+
+        public ContentControl CreateNewContentControl(Type contenttype, object content)
+        {
+            var newobj = contenttype.GetConstructors()[0].Invoke(null);
+
+            PropertyInfo contentpro = contenttype.GetProperty("Content");
+
+            contentpro.SetValue(newobj, content);
+
+            return newobj as ContentControl;
+        }
+
+        #endregion
 
     }
 }

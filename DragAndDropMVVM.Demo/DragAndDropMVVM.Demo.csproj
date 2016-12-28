@@ -75,6 +75,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\StampDiagram.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Page Include="MainWindow.xaml">
@@ -125,7 +126,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="yuri_icon.png" />
+    <Resource Include="ImagesResource\yuri_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ImagesResource\yuri_01.png" />
+    <Resource Include="ImagesResource\yuri_02.png" />
+    <Resource Include="ImagesResource\yuri_03.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

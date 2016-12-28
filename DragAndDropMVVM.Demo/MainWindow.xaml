@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:DragAndDropMVVM.Demo"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:b="clr-namespace:DragAndDropMVVM.Behavior;assembly=DragAndDropMVVM"
+        xmlns:ctrl="clr-namespace:DragAndDropMVVM.Demo.Controls"
         DataContext="{Binding Source={StaticResource Locator}, Path=Main}"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
@@ -22,9 +23,10 @@
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="5*"/>
-            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="1*" MinWidth="100"/>
+            <ColumnDefinition Width="9*"/>
         </Grid.ColumnDefinitions>
+        <GroupBox Header="Drag Panel">
         <StackPanel Orientation="Vertical">
             <TextBlock VerticalAlignment="Top"
                        HorizontalAlignment="Left"
@@ -46,46 +48,43 @@
             </Ellipse>
 
 
-            <WrapPanel Orientation="Vertical"
-                   b:FrameworkElementDragBehavior.DragCommand="{Binding DragCommand}"
-                   b:FrameworkElementDragBehavior.DragCommandParameter="{Binding FirstName}">
+            <WrapPanel Orientation="Vertical" 
+                   b:FrameworkElementDragBehavior.DragCommand="{Binding DragCommand}">
                 <i:Interaction.Behaviors>
                     <b:FrameworkElementDragBehavior/>
                 </i:Interaction.Behaviors>
-                <Image Source="yuri_icon.png" Height="50" Width="50">
+                <Image Source="ImagesResource/yuri_icon.png" Height="50" Width="50">
                 </Image>
-                <TextBlock Text="Yuri is Angle." />
+                <TextBlock x:Name="imgText" Text="Yuri is Angle." />
             </WrapPanel>
         </StackPanel>
 
-
-        <StackPanel  Grid.Column="1" Width="250" Height="250" VerticalAlignment="Top" >
-            <!--b:FrameworkElementDropBehavior.DropCommand="{Binding DropCommand}"
-                     b:FrameworkElementDropBehavior.DropCommandParameter="{Binding LastName}"
-                     b:FrameworkElementDropBehavior.DroppedCanvas="{Binding ElementName=myDroppedCanvas}">-->
+        </GroupBox>
+        <StackPanel  Grid.Column="1" Width="{Binding ElementName=rectDropPanel, Path=Width}"
+                     Height="{Binding ElementName=rectDropPanel, Path=Height}"
+                     VerticalAlignment="Top" >
 
             <Canvas Panel.ZIndex="2" x:Name="myDroppedCanvas"
-                    HorizontalAlignment="{Binding ElementName=rect, Path=HorizontalAlignment}"
-                    VerticalAlignment="{Binding ElementName=rect, Path=VerticalAlignment}"
+                    HorizontalAlignment="{Binding ElementName=rectDropPanel, Path=HorizontalAlignment}"
+                    VerticalAlignment="{Binding ElementName=rectDropPanel, Path=VerticalAlignment}"
                     Background="Yellow">
             </Canvas>
 
 
-            <Rectangle x:Name="rect"
-                    Width="250" Height="250" VerticalAlignment="Top"
-                   StrokeThickness="1"
-                   DataContext="{Binding}"
-                        b:FrameworkElementDropBehavior.DropCommand="{Binding DropCommand}"
-                        b:FrameworkElementDropBehavior.DropCommandParameter="{Binding LastName}"
-                        b:FrameworkElementDropBehavior.DroppedCanvas="{Binding ElementName=myDroppedCanvas}">
+            <Rectangle x:Name="rectDropPanel"
+                       Width="Auto" Height="Auto" MinWidth="250" MinHeight="350" VerticalAlignment="Top"
+                       StrokeThickness="1"
+                       b:FrameworkElementDropBehavior.DroppedControlType="{x:Type ctrl:StampDiagram}"
+                       b:FrameworkElementDropBehavior.DropCommand="{Binding DropCommand}"
+                       b:FrameworkElementDropBehavior.DroppedCanvas="{Binding ElementName=myDroppedCanvas}">
                 <i:Interaction.Behaviors>
                     <b:FrameworkElementDropBehavior />
                 </i:Interaction.Behaviors>
                 <Rectangle.Fill>
-                    <LinearGradientBrush EndPoint="0,1"
+                    <LinearGradientBrush EndPoint="1,1"
                                        StartPoint="0,0">
-                        <GradientStop Color="Azure" />
-                        <GradientStop Color="Orange"
+                        <GradientStop Color="WhiteSmoke" />
+                        <GradientStop Color="FloralWhite"
                                   Offset="1" />
                     </LinearGradientBrush>
                 </Rectangle.Fill>

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
-using DragAndDropMVVM.ViewModel;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 
@@ -19,7 +18,7 @@ namespace DragAndDropMVVM.Demo.ViewModel
     /// See http://www.galasoft.ch/mvvm
     /// </para>
     /// </summary>
-    public class MainViewModel : ViewModelBase, IDragable, IDropable
+    public class MainViewModel : ViewModelBase//, IDragable, IDropable
     {
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
@@ -36,39 +35,10 @@ namespace DragAndDropMVVM.Demo.ViewModel
             ////}
         }
 
-        Type IDragable.DataType
-        {
-            get
-            {
-                return typeof(string);
-            }
-        }
-
-        Type IDropable.DataType
-        {
-            get
-            {
-                return typeof(string);
-            }
-        }
-
-        public void Drag(object i)
-        {
-            //throw new NotImplementedException();
-        }
-
-        //void IDropable.Drop(object data, int index)
-        //{
-        //    //throw new NotImplementedException();
-
-        //    System.Diagnostics.Debug.WriteLine($"{nameof(IDropable.Drop)}.{nameof(IDropable.DataType)} : {(data ?? "null").ToString() }" );
-
-        //}
-
 
         /// <summary>
-            /// The <see cref="FirstName" /> property's name.
-            /// </summary>
+        /// The <see cref="FirstName" /> property's name.
+        /// </summary>
         public const string FirstNamePropertyName = "FirstName";
 
         private string _firstName = "Victory";

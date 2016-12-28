@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interactivity;
 using System.Windows.Input;
-using DragAndDropMVVM.ViewModel;
 using System.Windows.Documents;
 
 namespace DragAndDropMVVM.Behavior

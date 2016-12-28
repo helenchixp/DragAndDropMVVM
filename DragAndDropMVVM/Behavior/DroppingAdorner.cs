@@ -9,11 +9,11 @@ using System.Windows.Media;
 
 namespace DragAndDropMVVM.Behavior
 {
-    public class FrameworkElementAdorner : Adorner
+    public class DroppingAdorner : Adorner
     {
         private AdornerLayer adornerLayer;
 
-        public FrameworkElementAdorner(UIElement adornedElement)
+        public DroppingAdorner(UIElement adornedElement)
             : base(adornedElement)
         {
             this.adornerLayer = AdornerLayer.GetAdornerLayer(this.AdornedElement);
