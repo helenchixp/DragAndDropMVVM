@@ -10,6 +10,9 @@ using System.Windows.Documents;
 
 namespace DragAndDropMVVM.Behavior
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class FrameworkElementDragBehavior : Behavior<FrameworkElement>
     {
         private bool _isMouseClicked = false;
@@ -42,13 +45,6 @@ namespace DragAndDropMVVM.Behavior
 
         #region EventHander Method
 
-        private Boolean IsDragging(Point pointA, Point pointB)
-        {
-            if (Math.Abs(pointA.X - pointB.X) > SystemParameters.MinimumHorizontalDragDistance) return true;
-            if (Math.Abs(pointA.Y - pointB.Y) > SystemParameters.MinimumVerticalDragDistance) return true;
-            return false;
-        }
-
         private void AssociatedObject_MouseMove(object sender, MouseEventArgs e)
         {
 
@@ -56,18 +52,18 @@ namespace DragAndDropMVVM.Behavior
 
             if (e.LeftButton == MouseButtonState.Released)
             {
-                element.SetValue(FrameworkElementDragBehavior.StartPointProperty, null);
+                element.SetValue(StartPointProperty, null);
             }
-            if (element.GetValue(FrameworkElementDragBehavior.StartPointProperty) == null) return;
+            if (element.GetValue(StartPointProperty) == null) return;
 
-            Point startPoint = (Point)element.GetValue(FrameworkElementDragBehavior.StartPointProperty);
+            Point startPoint = (Point)element.GetValue(StartPointProperty);
             Point point = e.GetPosition(element as UIElement);
 
-            if (!IsDragging(startPoint, point)) return;
+            if (!WPFUtil.IsDragging(startPoint, point)) return;
 
 
             DraggingAdorner adorner = new DraggingAdorner(element, 0.5, point);
-            FrameworkElementDragBehavior.SetDragAdorner(element, adorner);
+            SetDragAdorner(element, adorner);
 
             DataObject data = new DataObject();
 
@@ -77,6 +73,7 @@ namespace DragAndDropMVVM.Behavior
 
             ICommand dragcommand = GetDragCommand(element);
 
+            //cann't drag without command
             if (dragcommand != null)
             {
                 object parameter = GetDragCommandParameter(element) ?? this.AssociatedObject.DataContext;
@@ -102,7 +99,7 @@ namespace DragAndDropMVVM.Behavior
         private void AssociatedObject_QueryContinueDrag(object sender, QueryContinueDragEventArgs e)
         {
             UIElement element = sender as UIElement;
-            DraggingAdorner adorner = FrameworkElementDragBehavior.GetDragAdorner(element);
+            DraggingAdorner adorner = GetDragAdorner(element);
             Point point = WPFUtil.GetMousePosition(element);
             if (adorner != null) adorner.Position = point;
 
@@ -119,7 +116,7 @@ namespace DragAndDropMVVM.Behavior
 
             UIElement element = sender as UIElement;
 
-            element.SetValue(FrameworkElementDragBehavior.StartPointProperty, e.GetPosition(element));
+            element.SetValue(StartPointProperty, e.GetPosition(element));
 
         }
 
@@ -258,6 +255,8 @@ namespace DragAndDropMVVM.Behavior
             new UIPropertyMetadata(null));
 
         #endregion
+
+
 
 
     }

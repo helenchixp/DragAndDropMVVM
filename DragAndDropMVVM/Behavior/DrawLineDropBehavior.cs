@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Interactivity;
 
 namespace DragAndDropMVVM.Behavior
 {
-    public enum FrameworkElementAdornerType
+    public class DrawLineDropBehavior : Behavior<FrameworkElement>
     {
-        DrawEllipse,
-        DrawLine,
     }
 }

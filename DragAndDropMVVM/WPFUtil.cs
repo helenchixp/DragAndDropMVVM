@@ -263,5 +263,14 @@ namespace DragAndDropMVVM
             return IsCollectionInterface(type.BaseType);
         }
 
+
+        internal static Boolean IsDragging(Point pointA, Point pointB)
+        {
+            if (Math.Abs(pointA.X - pointB.X) > SystemParameters.MinimumHorizontalDragDistance) return true;
+            if (Math.Abs(pointA.Y - pointB.Y) > SystemParameters.MinimumVerticalDragDistance) return true;
+            return false;
+        }
+
+
     }
 }

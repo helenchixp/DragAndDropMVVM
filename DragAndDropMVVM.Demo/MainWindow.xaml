@@ -63,7 +63,20 @@
         <StackPanel  Grid.Column="1" Width="{Binding ElementName=rectDropPanel, Path=Width}"
                      Height="{Binding ElementName=rectDropPanel, Path=Height}"
                      VerticalAlignment="Top" >
-
+            <StackPanel.Resources>
+                <Style TargetType="{x:Type ctrl:StampDiagram}">
+                    <Style.Setters>
+                        <Setter Property="b:DrawLineDragBehavior.DragLineCommand" Value="{Binding DragLineCommand}" />
+                        <Setter Property="b:DrawLineDragBehavior.DragLineCommandParameter" Value="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}" />
+                    </Style.Setters>
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="Red" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </StackPanel.Resources>
+            
             <Canvas Panel.ZIndex="2" x:Name="myDroppedCanvas"
                     HorizontalAlignment="{Binding ElementName=rectDropPanel, Path=HorizontalAlignment}"
                     VerticalAlignment="{Binding ElementName=rectDropPanel, Path=VerticalAlignment}"
@@ -101,16 +114,7 @@
             <ListBox ItemsSource="{Binding DroppedItemSource}"></ListBox>
 
         </StackPanel>
-        <!--<Border Grid.Column="1" BorderBrush="Silver" BorderThickness="5" Height="250" HorizontalAlignment="Left" Margin="30,20,0,0" Name="border1" VerticalAlignment="Top" Width="250">
-            <Canvas Width="250" Height="250">
 
-                <Button Content="Test" />
-
-                <i:Interaction.Behaviors>
-                    <b:FrameworkElementDropBehavior/>
-                </i:Interaction.Behaviors>
-            </Canvas>
-        </Border>-->
 
     </Grid>
 </Window>

@@ -188,6 +188,32 @@ namespace DragAndDropMVVM.Demo.ViewModel
                 RaisePropertyChanged(DroppedItemSourcePropertyName, oldValue, value, true);
             }
         }
+
+
+        private RelayCommand<object> _dragLineCommand;
+
+        /// <summary>
+        /// Gets the DragLineCommand.
+        /// </summary>
+        public RelayCommand<object> DragLineCommand
+        {
+            get
+            {
+                return _dragLineCommand ?? (_dragLineCommand = new RelayCommand<object>(
+                    ExecuteDragLineCommand,
+                    CanExecuteDragLineCommand));
+            }
+        }
+
+        private void ExecuteDragLineCommand(object parameter)
+        {
+
+        }
+
+        private bool CanExecuteDragLineCommand(object parameter)
+        {
+            return true;
+        }
     }
 
 }
