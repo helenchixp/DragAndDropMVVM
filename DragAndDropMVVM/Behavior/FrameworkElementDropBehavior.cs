@@ -125,12 +125,15 @@ namespace DragAndDropMVVM.Behavior
 
         private  void AssociatedObject_DragLeave(object sender, DragEventArgs e)
         {
-            if (this._adorner != null)
-                this._adorner.Remove();
-            e.Handled = true;
+            if (e.Data.GetDataPresent(_dataType))
+            {
+                if (this._adorner != null)
+                    this._adorner.Remove();
+                e.Handled = true;
+            }
         }
 
-        private  void AssociatedObject_DragOver(object sender, DragEventArgs e)
+        private void AssociatedObject_DragOver(object sender, DragEventArgs e)
         {
             if (_dataType != null)
             {
@@ -142,9 +145,10 @@ namespace DragAndDropMVVM.Behavior
                     //draw the dots
                     if (this._adorner != null)
                         this._adorner.Update();
+
+                    e.Handled = true;
                 }
             }
-            e.Handled = true;
         }
 
         private void AssociatedObject_DragEnter(object sender, DragEventArgs e)
@@ -161,10 +165,12 @@ namespace DragAndDropMVVM.Behavior
             ////////////        }
             ////////////    }
             ////////////}
-
-            if (this._adorner == null)
-                this._adorner = new DroppingAdorner(sender as UIElement);
-            e.Handled = true;
+            if (e.Data.GetDataPresent(_dataType))
+            {
+                if (this._adorner == null)
+                    this._adorner = new DroppingAdorner(sender as UIElement);
+                e.Handled = true;
+            }
         }
 
         /// <summary>

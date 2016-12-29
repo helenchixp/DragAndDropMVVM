@@ -66,12 +66,14 @@
             <StackPanel.Resources>
                 <Style TargetType="{x:Type ctrl:StampDiagram}">
                     <Style.Setters>
-                        <Setter Property="b:DrawLineDragBehavior.DragLineCommand" Value="{Binding DragLineCommand}" />
+                        <Setter Property="b:DrawLineDragBehavior.DragLineCommand" Value="{Binding  RelativeSource={RelativeSource AncestorType=Window,Mode=FindAncestor}, Path=DataContext.DragLineCommand}" />
                         <Setter Property="b:DrawLineDragBehavior.DragLineCommandParameter" Value="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}" />
+                        <Setter Property="b:DrawLineDropBehavior.DropLineCommand" Value="{Binding  RelativeSource={RelativeSource AncestorType=Window,Mode=FindAncestor}, Path=DataContext.DropLineCommand}" />
+                        <Setter Property="b:DrawLineDropBehavior.DroppedLineCanvas" Value="{Binding ElementName=myDroppedCanvas}" />
                     </Style.Setters>
                     <Style.Triggers>
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Background" Value="Red" />
+                            <Setter Property="Foreground" Value="Red" />
                         </Trigger>
                     </Style.Triggers>
                 </Style>
@@ -82,7 +84,6 @@
                     VerticalAlignment="{Binding ElementName=rectDropPanel, Path=VerticalAlignment}"
                     Background="Yellow">
             </Canvas>
-
 
             <Rectangle x:Name="rectDropPanel"
                        Width="Auto" Height="Auto" MinWidth="250" MinHeight="350" VerticalAlignment="Top"

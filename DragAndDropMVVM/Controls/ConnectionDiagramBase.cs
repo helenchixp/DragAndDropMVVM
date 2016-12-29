@@ -1,23 +1,87 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interactivity;
+using System.Windows.Media;
 using DragAndDropMVVM.Behavior;
 
 namespace DragAndDropMVVM.Controls
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public abstract class ConnectionDiagramBase : ContentControl
     {
         public ConnectionDiagramBase()
         {
             //Add the Behavior in code-behind
-            BehaviorCollection bcollection = Interaction.GetBehaviors(this);
-            bcollection.Add(new DrawLineDragBehavior());
+            BehaviorCollection bhcol= Interaction.GetBehaviors(this);
+            bhcol.Add(new DrawLineDragBehavior());
+
+            if(GetIsDrawLineDropEnabled(this))
+            {
+                bhcol.Add(new DrawLineDropBehavior());
+            }
         }
+
+        #region override method
+
+        protected override void OnInitialized(EventArgs e)
+        {
+            base.OnInitialized(e);
+
+            //set the AllowDrop
+            if (GetIsDrawLineDropEnabled(this))
+            {
+                this.AllowDrop = true;
+
+                if(this.Content is UIElement)
+                {
+                    // (this.Content as UIElement).AllowDrop = true;
+                    SetContentAllowDrop(this.Content as UIElement);
+                }
+            }
+
+            
+        }
+
+        #endregion
+
+        #region private method
+
+        private void SetContentAllowDrop(DependencyObject d)
+        {
+            if (d == null) return;
+
+            PropertyInfo propdrop = d.GetType().GetProperty("AllowDrop");
+
+            if(propdrop != null)
+            {
+                propdrop.SetValue(d, true);
+            }
+
+            try
+            {
+                for (int i = 0; i <= VisualTreeHelper.GetChildrenCount(d) - 1; i++)
+                {
+                    DependencyObject root = VisualTreeHelper.GetChild(d, i);
+
+                    SetContentAllowDrop(root);
+                }
+
+                return;
+            }
+            catch
+            {
+                return;
+            }
+        }
+        #endregion
 
         #region Attached Property
 
@@ -102,6 +166,47 @@ namespace DragAndDropMVVM.Controls
             typeof(ConnectionDiagramBase),
             new UIPropertyMetadata(null));
 
+        #endregion
+
+
+        #region IsDrawLineDropEnabled
+        /// <summary>
+        /// The IsDrawLineDropEnabled attached property's name.
+        /// </summary>
+        public const string IsDrawLineDropEnabledPropertyName = "IsDrawLineDropEnabled";
+
+        /// <summary>
+        /// Gets the value of the IsDrawLineDropEnabled attached property 
+        /// for a given dependency object.
+        /// </summary>
+        /// <param name="obj">The object for which the property value
+        /// is read.</param>
+        /// <returns>The value of the IsDrawLineDropEnabled property of the specified object.</returns>
+        public static bool GetIsDrawLineDropEnabled(DependencyObject obj)
+        {
+            return (bool)obj.GetValue(IsDrawLineDropEnabledProperty);
+        }
+
+        /// <summary>
+        /// Sets the value of the IsDrawLineDropEnabled attached property
+        /// for a given dependency object. 
+        /// </summary>
+        /// <param name="obj">The object to which the property value
+        /// is written.</param>
+        /// <param name="value">Sets the IsDrawLineDropEnabled value of the specified object.</param>
+        public static void SetIsDrawLineDropEnabled(DependencyObject obj, bool value)
+        {
+            obj.SetValue(IsDrawLineDropEnabledProperty, value);
+        }
+
+        /// <summary>
+        /// Identifies the IsDrawLineDropEnabled attached property.
+        /// </summary>
+        public static readonly DependencyProperty IsDrawLineDropEnabledProperty = DependencyProperty.RegisterAttached(
+            IsDrawLineDropEnabledPropertyName,
+            typeof(bool),
+            typeof(ConnectionDiagramBase),
+            new UIPropertyMetadata(true));
         #endregion
 
         #endregion

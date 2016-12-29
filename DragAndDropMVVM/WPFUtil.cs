@@ -256,10 +256,6 @@ namespace DragAndDropMVVM
                 return true;
             }
 
-            //if (type.Name.StartsWith("PresentationFrameworkCollection"))
-            //{
-            //    return true;
-            //}
             return IsCollectionInterface(type.BaseType);
         }
 

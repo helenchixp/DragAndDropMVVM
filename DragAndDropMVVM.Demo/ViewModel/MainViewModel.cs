@@ -214,6 +214,32 @@ namespace DragAndDropMVVM.Demo.ViewModel
         {
             return true;
         }
+
+
+        private RelayCommand<object> _dropLineCommand;
+
+        /// <summary>
+        /// Gets the DropLineCommand.
+        /// </summary>
+        public RelayCommand<object> DropLineCommand
+        {
+            get
+            {
+                return _dropLineCommand ?? (_dropLineCommand = new RelayCommand<object>(
+                    ExecuteDropLineCommand,
+                    CanExecuteDropLineCommand));
+            }
+        }
+
+        private void ExecuteDropLineCommand(object parameter)
+        {
+
+        }
+
+        private bool CanExecuteDropLineCommand(object parameter)
+        {
+            return true;
+        }
     }
 
 }

@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interactivity;
 using DragAndDropMVVM.Controls;
+using DragAndDropMVVM.ViewModel;
 
 namespace DragAndDropMVVM.Behavior
 {
@@ -72,6 +73,7 @@ namespace DragAndDropMVVM.Behavior
             DataObject data = new DataObject();
 
             //set the adorner for drop action and create the clone element.
+            data.SetData(typeof(ConnectionDiagramBase), element);
             data.SetData(typeof(DrawLineAdorner), adorner);
 
             ICommand dragcommand = GetDragLineCommand(element);
@@ -102,6 +104,11 @@ namespace DragAndDropMVVM.Behavior
 
             var element = sender as ConnectionDiagramBase;
             element.SetValue(ConnectionDiagramBase.IsSelectedProperty, false);
+
+            if(element.DataContext is IConnectionDiagramViewModel)
+            {
+                (element.DataContext as IConnectionDiagramViewModel).IsSelected = false;
+            }
         }
 
         private void AssociatedObject_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -112,6 +119,11 @@ namespace DragAndDropMVVM.Behavior
             var element = sender as ConnectionDiagramBase;
             element.Focus();
             element.SetValue(ConnectionDiagramBase.IsSelectedProperty, true);
+
+            if (element.DataContext is IConnectionDiagramViewModel)
+            {
+                (element.DataContext as IConnectionDiagramViewModel).IsSelected = true;
+            }
         }
         #endregion
 
