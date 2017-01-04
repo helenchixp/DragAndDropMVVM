@@ -70,7 +70,9 @@ namespace DragAndDropMVVM.Behavior
 
 
                             Point point = e.GetPosition(element);
+
                             System.Diagnostics.Debug.WriteLine($"{nameof(AssociatedObject_Drop)} Current Point : X:{point.X} Y:{point.Y}");
+
                             ////TODO: Add the 
                             Canvas droppedcanvas = GetDroppedCanvas(element);
 
@@ -88,7 +90,7 @@ namespace DragAndDropMVVM.Behavior
                                 if (e.Data.GetDataPresent(_dataType))
                                 {
                                     var adn = e.Data.GetData(_dataType) as DraggingAdorner;
-                                    System.Diagnostics.Debug.WriteLine($"{nameof(DraggingAdorner)} Current Point : X:{adn.Position.X} Y:{adn.Position.Y}");
+                                    //System.Diagnostics.Debug.WriteLine($"{nameof(DraggingAdorner)} Current Point : X:{adn.Position.X} Y:{adn.Position.Y}");
                                    var clnele = adn.GetGhostElement() as UIElement;
 
                                     if(droppedcontroltype != null)

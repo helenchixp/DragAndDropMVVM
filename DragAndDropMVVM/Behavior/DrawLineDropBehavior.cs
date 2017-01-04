@@ -9,6 +9,7 @@ using System.Windows.Input;
 using System.Windows.Interactivity;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using DragAndDropMVVM.Controls;
 
 namespace DragAndDropMVVM.Behavior
 {
@@ -67,81 +68,33 @@ namespace DragAndDropMVVM.Behavior
                         {
                             dropcommand.Execute(parameter);
 
-
                             Point point = e.GetPosition(element);
-                            System.Diagnostics.Debug.WriteLine($"{nameof(DrawLineDropBehavior)}.{nameof(AssociatedObject_Drop)} Current Point : X:{point.X} Y:{point.Y}");
 
                             var adn = e.Data.GetData(_dataType) as DrawLineAdorner;
                             Point adnPoint = adn.Position;
 
-                            ////TODO: Add the 
                             Canvas droppedcanvas = GetDroppedLineCanvas(element);
-                            System.Diagnostics.Debug.WriteLine($"{nameof(DrawLineDropBehavior)}.{nameof(AssociatedObject_Drop)} Adorner Point : X:{adnPoint.X} Y:{adnPoint.Y}");
 
                             //****************************************
                             //TODO:The Line Position is need to Calcute
                             //****************************************
 
-                            Line conline = new Line()
+
+                            DrawLineThump conline = new DrawLineThump()
                             {
-                                Stroke = Brushes.Black,
-                                StrokeThickness = 2,
-                                //StrokeDashArray = new DoubleCollection(new double[] { 1, 1, 1, 1, }), //破線のスタイル
-                                //X1 = point.X,
-                                //Y1 = point.X,
-                                //X2 = point.X,
-                                //Y2 = point.Y,
-                                X1 = point.X,
-                                Y1 = point.Y,
-                                X2 = adnPoint.X,
-                                Y2 = adnPoint.Y,
-                                Focusable = true,
-                                IsHitTestVisible = true,
+                                X1 = adn.GetLineStartEndPosition().Item1,
+                                Y1 = adn.GetLineStartEndPosition().Item2,
+                                X2 = adn.GetLineStartEndPosition().Item3,
+                                Y2 = adn.GetLineStartEndPosition().Item4,
                             };
 
-                            Canvas.SetTop(conline, point.Y);
-                            Canvas.SetLeft(conline, point.X);
-                            //****************************************
-                            //
-                            //****************************************
+                            Canvas.SetTop(conline, (double)element.GetValue(Canvas.TopProperty));
+                            Canvas.SetLeft(conline, (double)element.GetValue(Canvas.LeftProperty));
+             
 
                             droppedcanvas.Children.Add(conline);
 
-                            ////////////// if copy the 
-                            ////////////if (!GetIsFixedPosition(element) && droppedcanvas != null)
-                            ////////////{
-                            ////////////    var droppedcontroltype = GetDroppedControlType(element);
 
-
-                            ////////////    if (droppedcontroltype != null && !IsCorrectType(droppedcontroltype, typeof(ContentControl)))
-                            ////////////    {
-                            ////////////        throw new ArgumentException("DroppedControlType is base on ContentControl.");
-                            ////////////    }
-
-                            ////////////    if (e.Data.GetDataPresent(_dataType))
-                            ////////////    {
-                            ////////////        var adn = e.Data.GetData(_dataType) as DraggingAdorner;
-                            ////////////        System.Diagnostics.Debug.WriteLine($"{nameof(DraggingAdorner)} Current Point : X:{adn.Position.X} Y:{adn.Position.Y}");
-                            ////////////        var clnele = adn.GetGhostElement() as UIElement;
-
-                            ////////////        if (droppedcontroltype != null)
-                            ////////////        {
-                            ////////////            clnele = CreateNewContentControl(droppedcontroltype, clnele);
-                            ////////////        }
-
-                            ////////////        //add the clone element
-                            ////////////        if (clnele != null)
-                            ////////////        {
-                            ////////////            Canvas.SetRight(clnele, point.X - adn.CenterPoint.X);
-                            ////////////            Canvas.SetLeft(clnele, point.X - adn.CenterPoint.X);
-                            ////////////            Canvas.SetBottom(clnele, point.Y - adn.CenterPoint.Y);
-                            ////////////            Canvas.SetTop(clnele, point.Y - adn.CenterPoint.Y);
-                            ////////////            droppedcanvas.Children.Add(clnele);
-                            ////////////        }
-
-                            ////////////    }
-
-                            ////////////}
                         }
                     }
 

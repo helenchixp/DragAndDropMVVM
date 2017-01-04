@@ -110,5 +110,11 @@ namespace DragAndDropMVVM.Behavior
 
             return result;
         }
+
+        public Tuple<double, double, double, double> GetLineStartEndPosition()
+        {
+            return new Tuple<double, double, double, double>(_line.X1, _line.Y1, _line.X2, _line.Y2);
+        }
+
     }
 }

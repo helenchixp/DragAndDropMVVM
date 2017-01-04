@@ -45,11 +45,11 @@
       <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\System.Windows.Interactivity.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
@@ -57,6 +57,7 @@
     <Compile Include="Behavior\DrawLineAdorner.cs" />
     <Compile Include="Behavior\DrawLineDragBehavior.cs" />
     <Compile Include="Behavior\DrawLineDropBehavior.cs" />
+    <Compile Include="Controls\DrawLineThump.cs" />
     <Compile Include="Behavior\DroppingDiagramAdorner.cs" />
     <Compile Include="Enum.cs" />
     <Compile Include="Behavior\DraggingAdorner.cs" />
@@ -70,11 +71,14 @@
     <Compile Include="ViewModel\IDragable.cs" />
     <Compile Include="ViewModel\IDropable.cs" />
     <Compile Include="WPFUtil.cs" />
+    <Page Include="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
