@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -211,15 +212,14 @@ namespace DragAndDropMVVM.Controls
 
         #endregion
 
-        //public virtual Point CenterPosition
-        //{
-        //    get;set;
-        //}
 
+        #region Property
 
-        //public bool IsSelected
-        //{
-        //    get;set;
-        //}
+        public ObservableCollection<ConnectionLineBase> DepartureLines { get; internal set; } = new ObservableCollection<ConnectionLineBase>();
+
+        public ObservableCollection<ConnectionLineBase> ArrivalLines { get; internal set; } = new ObservableCollection<ConnectionLineBase>();
+
+        #endregion
+
     }
 }

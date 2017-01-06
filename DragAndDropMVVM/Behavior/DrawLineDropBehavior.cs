@@ -10,6 +10,7 @@ using System.Windows.Interactivity;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using DragAndDropMVVM.Controls;
+using DragAndDropMVVM.ViewModel;
 
 namespace DragAndDropMVVM.Behavior
 {
@@ -60,13 +61,13 @@ namespace DragAndDropMVVM.Behavior
 
                     if (dropcommand != null)
                     {
-                        object parameter = (GetDropLineCommandParameter(element) ??
-                            (e.Data.GetDataPresent(DataFormats.Serializable) ? e.Data.GetData(DataFormats.Serializable) : null)) ??
-                            this.AssociatedObject.DataContext;
+                        object parameter = GetDropLineCommandParameter(element);//(GetDropLineCommandParameter(element) ??
+                            //(e.Data.GetDataPresent(DataFormats.Serializable) ? e.Data.GetData(DataFormats.Serializable) : null));
+                            //??
+                            //this.AssociatedObject.DataContext;
 
                         if (dropcommand.CanExecute(parameter))
                         {
-                            dropcommand.Execute(parameter);
 
                             Point point = e.GetPosition(element);
 
@@ -74,26 +75,112 @@ namespace DragAndDropMVVM.Behavior
                             Point adnPoint = adn.Position;
 
                             Canvas droppedcanvas = GetDroppedLineCanvas(element);
+                            ConnectionDiagramBase origindiagram = e.Data.GetData(typeof(ConnectionDiagramBase)) as ConnectionDiagramBase;
+                            ConnectionDiagramBase terminaldiagram = element as ConnectionDiagramBase;
 
-                            //****************************************
-                            //TODO:The Line Position is need to Calcute
-                            //****************************************
+                            //the line type of custom
+                            Type linetype = GetDropLineControlType(element);
 
-
-                            DrawLineThump conline = new DrawLineThump()
+                            if (!WPFUtil.IsCorrectType(linetype, typeof(ConnectionLineBase)))
                             {
-                                X1 = adn.GetLineStartEndPosition().Item1,
-                                Y1 = adn.GetLineStartEndPosition().Item2,
-                                X2 = adn.GetLineStartEndPosition().Item3,
-                                Y2 = adn.GetLineStartEndPosition().Item4,
-                            };
+                                throw new ArgumentException($"DropLineControlType is base on {nameof(ConnectionLineBase)}.");
+                            }
+
+                            dynamic conline;
+
+                            if (!typeof(DrawLineThump).Equals(linetype))
+                            {
+                                conline = Activator.CreateInstance(linetype);
+
+                                if(conline is ConnectionLineBase)
+                                {
+
+                                    (conline as ConnectionLineBase).OriginDiagram = origindiagram;
+                                    (conline as ConnectionLineBase).TerminalDiagram = terminaldiagram;
+
+                                    //if inherb
+                                    if(conline is DrawLineThump)
+                                    {
+                                        (conline as DrawLineThump).X1 = adn.GetLineStartEndPosition().Item1;
+                                        (conline as DrawLineThump).Y1 = adn.GetLineStartEndPosition().Item2;
+                                        (conline as DrawLineThump).X2 = adn.GetLineStartEndPosition().Item3;
+                                        (conline as DrawLineThump).Y2 = adn.GetLineStartEndPosition().Item4;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                //****************************************
+                                //TODO:The Line Position is need to Calcute
+                                //****************************************
+
+
+                                conline = new DrawLineThump()
+                                {
+                                    X1 = adn.GetLineStartEndPosition().Item1,
+                                    Y1 = adn.GetLineStartEndPosition().Item2,
+                                    X2 = adn.GetLineStartEndPosition().Item3,
+                                    Y2 = adn.GetLineStartEndPosition().Item4,
+                                    OriginDiagram = origindiagram,
+                                    TerminalDiagram = terminaldiagram,
+                                };
+                            }
 
                             Canvas.SetTop(conline, (double)element.GetValue(Canvas.TopProperty));
                             Canvas.SetLeft(conline, (double)element.GetValue(Canvas.LeftProperty));
-             
+
+
+                            //add the relation of the diagram
+                            if(origindiagram!=null)
+                            {
+                                origindiagram.DepartureLines.Add(conline);
+                            }
+                            if(terminaldiagram!=null)
+                            {
+                                terminaldiagram.ArrivalLines.Add(conline);
+                            }
 
                             droppedcanvas.Children.Add(conline);
 
+
+                            //add the relation in viewmodel 
+                            if (conline is ConnectionLineBase)
+                            {
+                                IConnectionLineViewModel linevm = (conline as ConnectionLineBase).DataContext as IConnectionLineViewModel;
+
+                                if (linevm != null)
+                                {
+                                    IConnectionDiagramViewModel originvm = origindiagram.DataContext as IConnectionDiagramViewModel;
+                                    IConnectionDiagramViewModel terminalvm = terminaldiagram.DataContext as IConnectionDiagramViewModel;
+
+                                    if (originvm != null)
+                                    {
+                                        if (originvm.ArrivalLinesViewModel != null)
+                                        {
+                                            originvm.ArrivalLinesViewModel.Add(linevm);
+                                        }
+                                        linevm.OriginDiagramViewModel = originvm;
+                                    }
+
+                                    if (terminalvm != null)
+                                    {
+                                        if (terminalvm.DepartureLinesViewModel != null)
+                                        {
+                                            terminalvm.DepartureLinesViewModel.Add(linevm);
+                                        }
+                                        linevm.TerminalDiagramViewModel = terminalvm;
+                                    }
+                                }
+                            }
+
+                            if (parameter == null)
+                            {
+                                dropcommand.Execute((conline as ConnectionLineBase).DataContext);
+                            }
+                            else
+                            {
+                                dropcommand.Execute(parameter);
+                            }
 
                         }
                     }
@@ -240,7 +327,6 @@ namespace DragAndDropMVVM.Behavior
             new UIPropertyMetadata(null));
         #endregion
 
-
         #region DropLineCommandParameter
         /// <summary>
         /// The DropLineCommandParameter attached property's name.
@@ -279,6 +365,47 @@ namespace DragAndDropMVVM.Behavior
             typeof(object),
             typeof(DrawLineDropBehavior),
             new UIPropertyMetadata(null));
+        #endregion
+
+        #region DropLineControlType
+
+        /// <summary>
+        /// The DropLineControlType attached property's name.
+        /// </summary>
+        public const string DropLineControlTypePropertyName = "DropLineControlType";
+
+        /// <summary>
+        /// Gets the value of the DropLineControlType attached property 
+        /// for a given dependency object.
+        /// </summary>
+        /// <param name="obj">The object for which the property value
+        /// is read.</param>
+        /// <returns>The value of the DropLineControlType property of the specified object.</returns>
+        public static Type GetDropLineControlType(DependencyObject obj)
+        {
+            return (Type)obj.GetValue(DropLineControlTypeProperty);
+        }
+
+        /// <summary>
+        /// Sets the value of the DropLineControlType attached property
+        /// for a given dependency object. 
+        /// </summary>
+        /// <param name="obj">The object to which the property value
+        /// is written.</param>
+        /// <param name="value">Sets the DropLineControlType value of the specified object.</param>
+        public static void SetDropLineControlType(DependencyObject obj, Type value)
+        {
+            obj.SetValue(DropLineControlTypeProperty, value);
+        }
+
+        /// <summary>
+        /// Identifies the DropLineControlType attached property.
+        /// </summary>
+        public static readonly DependencyProperty DropLineControlTypeProperty = DependencyProperty.RegisterAttached(
+            DropLineControlTypePropertyName,
+            typeof(Type),
+            typeof(DrawLineDropBehavior),
+            new UIPropertyMetadata(typeof(DrawLineThump)));
         #endregion
 
         #endregion

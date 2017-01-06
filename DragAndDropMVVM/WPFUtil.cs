@@ -14,6 +14,7 @@ namespace DragAndDropMVVM
 {
     class WPFUtil
     {
+        #region FindVisualParent
         public static T FindVisualParent<T>(DependencyObject d) where T : DependencyObject
         {
             if (d == null) return null;
@@ -85,6 +86,10 @@ namespace DragAndDropMVVM
             }
         }
 
+        #endregion
+
+        #region FindVisualChild
+
         public static T FindVisualChild<T>(DependencyObject d) where T : DependencyObject
         {
             if (d == null) return null;
@@ -150,6 +155,10 @@ namespace DragAndDropMVVM
             }
         }
 
+        #endregion
+
+        #region GetMousePosition
+
         [DllImport("user32.dll")]
         private static extern void GetCursorPos(out POINT pt);
 
@@ -173,8 +182,9 @@ namespace DragAndDropMVVM
             ScreenToClient(hwnd, ref point);
             return new Point(point.X, point.Y);
         }
+        #endregion
 
-
+        #region GetUIElementSimpleClone
         internal static object GetUIElementSimpleClone(object element)
         {
             if (element == null)
@@ -258,15 +268,28 @@ namespace DragAndDropMVVM
 
             return IsCollectionInterface(type.BaseType);
         }
+        #endregion
 
 
-        internal static Boolean IsDragging(Point pointA, Point pointB)
+        #region IsDragging
+        internal static bool IsDragging(Point pointA, Point pointB)
         {
             if (Math.Abs(pointA.X - pointB.X) > SystemParameters.MinimumHorizontalDragDistance) return true;
             if (Math.Abs(pointA.Y - pointB.Y) > SystemParameters.MinimumVerticalDragDistance) return true;
             return false;
         }
+        #endregion
 
+        #region IsCorrectType
+        internal static bool IsCorrectType(Type checktype, Type correcttype)
+        {
+            if (checktype == null || correcttype == null) return false;
+
+            if (!checktype.Equals(correcttype)) return IsCorrectType(checktype.BaseType, correcttype);
+
+            else return true;
+        }
+        #endregion
 
     }
 }

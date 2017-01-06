@@ -120,7 +120,7 @@ namespace DragAndDropMVVM.Demo.ViewModel
 
         private void ExecuteDragCommand(object parameter)
         {
-            System.Diagnostics.Debug.WriteLine($"The DragCommandParameter is {(parameter ?? "null").ToString()}");
+         //   System.Diagnostics.Debug.WriteLine($"The DragCommandParameter is {(parameter ?? "null").ToString()}");
         }
 
         private bool CanExecuteDragCommand(object parameter)
@@ -134,7 +134,7 @@ namespace DragAndDropMVVM.Demo.ViewModel
         /// <summary>
         /// Gets the DropCommand.
         /// </summary>
-        public ICommand DropCommand
+        public RelayCommand<object> DropCommand
         {
             get
             {
@@ -146,8 +146,20 @@ namespace DragAndDropMVVM.Demo.ViewModel
 
         private void ExecuteDropCommand(object parameter)
         {
-            System.Diagnostics.Debug.WriteLine($"The DropCommandParameter is {(parameter ?? "null").ToString()}");
-            DroppedItemSource.Add($"{(parameter ?? "null").ToString()}");
+            if(parameter is StampDiagramViewModel)
+            {
+                (parameter as StampDiagramViewModel).Index = DroppedItemSource.Count;
+                DroppedItemSource.Add(parameter as StampDiagramViewModel);
+            }
+
+            ////System.Diagnostics.Debug.WriteLine($"The DropCommandParameter is {(parameter ?? "null").ToString()}");
+            //////DroppedItemSource.Add($"{(parameter ?? "null").ToString()}");
+            ////int idx = DroppedItemSource.Count;
+            ////DroppedItemSource.Add(new StampDiagramViewModel()
+            ////{
+            ////    Index = idx,
+            ////});
+
         }
 
         private bool CanExecuteDropCommand(object parameter)
@@ -162,14 +174,14 @@ namespace DragAndDropMVVM.Demo.ViewModel
         /// </summary>
         public const string DroppedItemSourcePropertyName = "DroppedItemSource";
 
-        private ObservableCollection<string> _droppedItemSource = new ObservableCollection<string>();
+        private ObservableCollection<StampDiagramViewModel> _droppedItemSource = new ObservableCollection<StampDiagramViewModel>();
 
         /// <summary>
         /// Sets and gets the DroppedItemSource property.
         /// Changes to that property's value raise the PropertyChanged event. 
         /// This property's value is broadcasted by the MessengerInstance when it changes.
         /// </summary>
-        public ObservableCollection<string> DroppedItemSource
+        public ObservableCollection<StampDiagramViewModel> DroppedItemSource
         {
             get
             {
@@ -207,7 +219,7 @@ namespace DragAndDropMVVM.Demo.ViewModel
 
         private void ExecuteDragLineCommand(object parameter)
         {
-
+            System.Diagnostics.Debug.WriteLine($"Drag Diagram ID:{(parameter as StampDiagramViewModel).Index}");
         }
 
         private bool CanExecuteDragLineCommand(object parameter)
@@ -233,7 +245,7 @@ namespace DragAndDropMVVM.Demo.ViewModel
 
         private void ExecuteDropLineCommand(object parameter)
         {
-
+            System.Diagnostics.Debug.WriteLine($"Drop Diagram ID:{(parameter as StampDiagramViewModel).Index}");
         }
 
         private bool CanExecuteDropLineCommand(object parameter)

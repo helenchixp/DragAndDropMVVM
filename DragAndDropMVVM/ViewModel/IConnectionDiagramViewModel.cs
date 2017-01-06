@@ -11,10 +11,14 @@ namespace DragAndDropMVVM.ViewModel
     {
         string DiagramID { get; set; }
 
-        ObservableCollection<IConnectionLineViewModel> LinesDataContext { get; set; }
+        ObservableCollection<IConnectionLineViewModel> DepartureLinesViewModel { get; set; }
+
+        ObservableCollection<IConnectionLineViewModel> ArrivalLinesViewModel { get; set; }
 
         ObservableCollection<IConnectionDiagramViewModel> ConnectingDiagramsDataContext { get; set; }
 
         bool IsSelected { get; set; }
+
+        int Index { get; set; }
     }
 }

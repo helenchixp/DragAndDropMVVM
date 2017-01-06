@@ -61,13 +61,12 @@ namespace DragAndDropMVVM.Behavior
                     if (dropcommand != null)
                     {
                         object parameter = (GetDropCommandParameter(element) ??
-                            (e.Data.GetDataPresent(DataFormats.Serializable) ? e.Data.GetData(DataFormats.Serializable) : null)) ??
-                            this.AssociatedObject.DataContext;
+                            (e.Data.GetDataPresent(DataFormats.Serializable) ? e.Data.GetData(DataFormats.Serializable) : null));
+                            //??
+                           // this.AssociatedObject.DataContext;
 
                         if(dropcommand.CanExecute(parameter))
                         {
-                            dropcommand.Execute(parameter);
-
 
                             Point point = e.GetPosition(element);
 
@@ -82,7 +81,7 @@ namespace DragAndDropMVVM.Behavior
                                 var droppedcontroltype = GetDroppedControlType(element);
 
 
-                                if (droppedcontroltype != null && !IsCorrectType(droppedcontroltype, typeof(ContentControl)))
+                                if (droppedcontroltype != null && !WPFUtil.IsCorrectType(droppedcontroltype, typeof(ContentControl)))
                                 {
                                     throw new ArgumentException("DroppedControlType is base on ContentControl.");
                                 }
@@ -101,6 +100,16 @@ namespace DragAndDropMVVM.Behavior
                                     //add the clone element
                                     if (clnele != null)
                                     {
+                                        if (parameter != null)
+                                        {
+                                            dropcommand.Execute(parameter);
+                                        }
+                                        else
+                                        {
+                                            dropcommand.Execute((clnele as ContentControl).DataContext);
+                                        }
+
+
                                         Canvas.SetRight(clnele, point.X - adn.CenterPoint.X);
                                         Canvas.SetLeft(clnele, point.X - adn.CenterPoint.X);
                                         Canvas.SetBottom(clnele, point.Y - adn.CenterPoint.Y);
@@ -444,14 +453,6 @@ namespace DragAndDropMVVM.Behavior
 
         #region Private Method
 
-        private bool IsCorrectType(Type checktype, Type correcttype)
-        {
-            if (checktype == null || correcttype == null) return false;
-
-            if (!checktype.Equals(correcttype)) return IsCorrectType(checktype.BaseType, correcttype);
-
-            else return true;
-        }
 
 
 

@@ -6,16 +6,18 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Shapes;
 
 namespace DragAndDropMVVM.Controls
 {
-    public class DrawLineThump : Thumb
+    public class DrawLineThump : ConnectionLineBase
     {
+        private Line _drawLine;
+
         public DrawLineThump()
         {
-            this.Focusable = true;
-            this.Focus();
+            Focusable = true;
         }
 
         static DrawLineThump()
@@ -23,7 +25,52 @@ namespace DragAndDropMVVM.Controls
             DefaultStyleKeyProperty.OverrideMetadata(typeof(DrawLineThump), new FrameworkPropertyMetadata(typeof(DrawLineThump)));
         }
 
-        #region Attached Property
+        #region Override Methods
+
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+
+            _drawLine = this.Template.FindName("PART_DrawLine", this) as Line;
+
+            if(_drawLine!=null)
+            {
+
+            }
+        }
+
+
+        //protected override void OnMouseDown(MouseButtonEventArgs e)
+        //{
+        //    Focus();
+
+        //    if (IsFocused)
+        //    {
+        //        IsSelected = true;
+        //    }
+        //    base.OnMouseDown(e);
+        //}
+
+        //protected override void OnGotFocus(RoutedEventArgs e)
+        //{
+        //    IsSelected = true;
+        //    base.OnGotFocus(e);
+        //}
+
+        //protected override void OnMouseDoubleClick(MouseButtonEventArgs e)
+        //{
+        //    base.OnMouseDoubleClick(e);
+        //}
+
+        //protected override void OnLostFocus(RoutedEventArgs e)
+        //{
+        //    IsSelected = false;
+
+        //    base.OnLostFocus(e);
+        //}
+        #endregion
+
+        #region Dependence Properties
 
         #region X1
 
@@ -92,7 +139,6 @@ namespace DragAndDropMVVM.Controls
             new FrameworkPropertyMetadata(0.0, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
         #endregion
 
-
         #region X2
 
         /// <summary>
@@ -158,6 +204,9 @@ namespace DragAndDropMVVM.Controls
             new FrameworkPropertyMetadata(0.0, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
         #endregion
 
+
+
         #endregion
+
     }
 }

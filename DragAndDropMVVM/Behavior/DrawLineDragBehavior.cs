@@ -81,9 +81,10 @@ namespace DragAndDropMVVM.Behavior
             //cann't drag without command
             if (dragcommand != null)
             {
-                object parameter = GetDragLineCommandParameter(element) ?? this.AssociatedObject.DataContext;
+                object parameter = GetDragLineCommandParameter(element); //?? this.AssociatedObject.DataContext;
 
-                data.SetData(DataFormats.Serializable, parameter);
+                if (parameter != null)
+                    data.SetData(DataFormats.Serializable, parameter);
 
                 if (dragcommand.CanExecute(parameter))
                 {

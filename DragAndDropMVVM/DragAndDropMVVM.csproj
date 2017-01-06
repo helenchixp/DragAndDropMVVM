@@ -57,6 +57,7 @@
     <Compile Include="Behavior\DrawLineAdorner.cs" />
     <Compile Include="Behavior\DrawLineDragBehavior.cs" />
     <Compile Include="Behavior\DrawLineDropBehavior.cs" />
+    <Compile Include="Controls\ConnectionLineBase.cs" />
     <Compile Include="Controls\DrawLineThump.cs" />
     <Compile Include="Behavior\DroppingDiagramAdorner.cs" />
     <Compile Include="Enum.cs" />

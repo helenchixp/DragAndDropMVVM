@@ -24,17 +24,23 @@
     <Style TargetType="{x:Type local:DrawLineThump}"
         >
         <Style.Setters>
-            <!--<Setter Property="Canvas.Top" Value="{Binding Y1, RelativeSource={RelativeSource Self}, Mode=TwoWay}" />
-            <Setter Property="Canvas.Left" Value="{Binding X1, RelativeSource={RelativeSource Self}, Mode=TwoWay}" />-->
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type local:DrawLineThump}">
-                        <Line x:Name="drawline"
+                        <Canvas>
+                        <Line x:Name="PART_DrawLine"
                               X1="{TemplateBinding X1}" 
                               X2="{TemplateBinding X2}"
                               Y1="{TemplateBinding Y1}" 
                               Y2="{TemplateBinding Y2}"
                               StrokeThickness="4" Stroke="Blue"/>
+                            <ContentPresenter />
+                        </Canvas>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Stroke" Value="Red" TargetName="PART_DrawLine"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>

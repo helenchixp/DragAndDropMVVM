@@ -12,8 +12,8 @@ namespace DragAndDropMVVM.ViewModel
 
         bool IsSelected { get; set; }
 
-        IConnectionDiagramViewModel StartDiagramViewModel { get; set; }
+        IConnectionDiagramViewModel OriginDiagramViewModel { get; set; }
 
-        IConnectionDiagramViewModel EndDiagramViewModel { get; set; }
+        IConnectionDiagramViewModel TerminalDiagramViewModel { get; set; }
     }
 }

@@ -10,7 +10,7 @@
         DataContext="{Binding Source={StaticResource Locator}, Path=Main}"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
-    <Window.Resources>
+    <!--<Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary>
@@ -20,7 +20,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
 
-    </Window.Resources>
+    </Window.Resources>-->
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" MinWidth="100"/>
@@ -28,28 +28,29 @@
         </Grid.ColumnDefinitions>
         <GroupBox Header="Drag Panel">
         <StackPanel Orientation="Vertical">
-            <TextBlock VerticalAlignment="Top"
+                <TextBlock VerticalAlignment="Top"
                        HorizontalAlignment="Left"
                        Text="test" Cursor="Hand"
-                       b:FrameworkElementDragBehavior.DragCommand="{Binding DragCommand}"
-                       b:FrameworkElementDragBehavior.DragCommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Text}">
+                       b:FrameworkElementDragBehavior.DragCommand="{Binding DragCommand}">
+                       <!--b:FrameworkElementDragBehavior.DragCommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Text}">-->
                 <i:Interaction.Behaviors>
                     <b:FrameworkElementDragBehavior/>
                 </i:Interaction.Behaviors>
             </TextBlock>
 
-            <Ellipse Width="30" Height="30" Fill="RosyBrown"  VerticalAlignment="Center" 
+                <Ellipse Width="30" Height="30" Fill="RosyBrown"  VerticalAlignment="Center" 
                      HorizontalAlignment="Left"
-                       b:FrameworkElementDragBehavior.DragCommand="{Binding DragCommand}"
-                       b:FrameworkElementDragBehavior.DragCommandParameter="{Binding FirstName}">
+                       b:FrameworkElementDragBehavior.DragCommand="{Binding DragCommand}">
+                    <!--b:FrameworkElementDragBehavior.DragCommandParameter="EllipseTest">-->
                 <i:Interaction.Behaviors>
                     <b:FrameworkElementDragBehavior/>
                 </i:Interaction.Behaviors>
             </Ellipse>
 
 
-            <WrapPanel Orientation="Vertical" 
+                <WrapPanel Orientation="Vertical" 
                    b:FrameworkElementDragBehavior.DragCommand="{Binding DragCommand}">
+                    <!--b:FrameworkElementDragBehavior.DragCommandParameter="{Binding ElementName=imgText, Path=Text}">-->
                 <i:Interaction.Behaviors>
                     <b:FrameworkElementDragBehavior/>
                 </i:Interaction.Behaviors>
@@ -66,10 +67,15 @@
             <StackPanel.Resources>
                 <Style TargetType="{x:Type ctrl:StampDiagram}">
                     <Style.Setters>
+                        <!--<Setter Property="b:DrawLineDragBehavior.DragLineCommand" Value="{Binding  RelativeSource={RelativeSource AncestorType=Window,Mode=FindAncestor}, Path=DataContext.DragLineCommand}" />
+                        <Setter Property="b:DrawLineDragBehavior.DragLineCommandParameter" Value="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}" />
+                        <Setter Property="b:DrawLineDropBehavior.DropLineCommand" Value="{Binding  RelativeSource={RelativeSource AncestorType=Window,Mode=FindAncestor}, Path=DataContext.DropLineCommand}" />-->
                         <Setter Property="b:DrawLineDragBehavior.DragLineCommand" Value="{Binding  RelativeSource={RelativeSource AncestorType=Window,Mode=FindAncestor}, Path=DataContext.DragLineCommand}" />
                         <Setter Property="b:DrawLineDragBehavior.DragLineCommandParameter" Value="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}" />
                         <Setter Property="b:DrawLineDropBehavior.DropLineCommand" Value="{Binding  RelativeSource={RelativeSource AncestorType=Window,Mode=FindAncestor}, Path=DataContext.DropLineCommand}" />
+                        <Setter Property="b:DrawLineDropBehavior.DropLineCommandParameter" Value="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}" />
                         <Setter Property="b:DrawLineDropBehavior.DroppedLineCanvas" Value="{Binding ElementName=myDroppedCanvas}" />
+                        <Setter Property="b:DrawLineDropBehavior.DropLineControlType" Value="{x:Type ctrl:StampLine}" />
                     </Style.Setters>
                     <Style.Triggers>
                         <Trigger Property="IsSelected" Value="True">
@@ -112,7 +118,10 @@
                 </Rectangle.Stroke>
             </Rectangle>
 
-            <ListBox ItemsSource="{Binding DroppedItemSource}"></ListBox>
+            <ListBox ItemsSource="{Binding DroppedItemSource}" ItemStringFormat="{}Index:{Index}">
+                
+                
+            </ListBox>
 
         </StackPanel>
 
