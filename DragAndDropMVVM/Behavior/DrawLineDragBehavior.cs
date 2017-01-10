@@ -58,12 +58,7 @@ namespace DragAndDropMVVM.Behavior
             ConnectionDiagramBase element = sender as ConnectionDiagramBase;
             Point point = e.GetPosition(element as UIElement);
 
-            if (element.GetValue(ConnectionDiagramBase.CenterPositionProperty) == null )
-            {
-                element.SetValue(ConnectionDiagramBase.CenterPositionProperty, point);
-            }
-
-            Point startPoint = (Point)element.GetValue(ConnectionDiagramBase.CenterPositionProperty);
+            Point startPoint = element.CenterPosition ?? new Point(0, 0);
 
             if (!WPFUtil.IsDragging(startPoint, point)) return;
 

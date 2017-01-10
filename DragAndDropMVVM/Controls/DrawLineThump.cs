@@ -39,35 +39,6 @@ namespace DragAndDropMVVM.Controls
             }
         }
 
-
-        //protected override void OnMouseDown(MouseButtonEventArgs e)
-        //{
-        //    Focus();
-
-        //    if (IsFocused)
-        //    {
-        //        IsSelected = true;
-        //    }
-        //    base.OnMouseDown(e);
-        //}
-
-        //protected override void OnGotFocus(RoutedEventArgs e)
-        //{
-        //    IsSelected = true;
-        //    base.OnGotFocus(e);
-        //}
-
-        //protected override void OnMouseDoubleClick(MouseButtonEventArgs e)
-        //{
-        //    base.OnMouseDoubleClick(e);
-        //}
-
-        //protected override void OnLostFocus(RoutedEventArgs e)
-        //{
-        //    IsSelected = false;
-
-        //    base.OnLostFocus(e);
-        //}
         #endregion
 
         #region Dependence Properties

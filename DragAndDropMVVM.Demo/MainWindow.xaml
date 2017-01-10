@@ -76,6 +76,7 @@
                         <Setter Property="b:DrawLineDropBehavior.DropLineCommandParameter" Value="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}" />
                         <Setter Property="b:DrawLineDropBehavior.DroppedLineCanvas" Value="{Binding ElementName=myDroppedCanvas}" />
                         <Setter Property="b:DrawLineDropBehavior.DropLineControlType" Value="{x:Type ctrl:StampLine}" />
+                        <Setter Property="ConnectorPositionType" Value="Center" />
                     </Style.Setters>
                     <Style.Triggers>
                         <Trigger Property="IsSelected" Value="True">

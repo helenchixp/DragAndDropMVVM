@@ -24,7 +24,7 @@ namespace DragAndDropMVVM.Controls
             BehaviorCollection bhcol= Interaction.GetBehaviors(this);
             bhcol.Add(new DrawLineDragBehavior());
 
-            if(GetIsDrawLineDropEnabled(this))
+            if(IsDrawLineDropEnabled)
             {
                 bhcol.Add(new DrawLineDropBehavior());
             }
@@ -37,7 +37,7 @@ namespace DragAndDropMVVM.Controls
             base.OnInitialized(e);
 
             //set the AllowDrop
-            if (GetIsDrawLineDropEnabled(this))
+            if (IsDrawLineDropEnabled)
             {
                 this.AllowDrop = true;
 
@@ -84,134 +84,137 @@ namespace DragAndDropMVVM.Controls
         }
         #endregion
 
-        #region Attached Property
-
+        #region Dependence Properties
 
         #region IsSelected
         /// <summary>
-        /// The IsSelected attached property's name.
+        /// The <see cref="IsSelected" /> dependency property's name.
         /// </summary>
         public const string IsSelectedPropertyName = "IsSelected";
 
         /// <summary>
-        /// Gets the value of the IsSelected attached property 
-        /// for a given dependency object.
+        /// Gets or sets the value of the <see cref="IsSelected" />
+        /// property. This is a dependency property.
         /// </summary>
-        /// <param name="obj">The object for which the property value
-        /// is read.</param>
-        /// <returns>The value of the IsSelected property of the specified object.</returns>
-        public static bool GetIsSelected(DependencyObject obj)
+        public bool IsSelected
         {
-            return (bool)obj.GetValue(IsSelectedProperty);
+            get
+            {
+                return (bool)GetValue(IsSelectedProperty);
+            }
+            set
+            {
+                SetValue(IsSelectedProperty, value);
+            }
         }
 
         /// <summary>
-        /// Sets the value of the IsSelected attached property
-        /// for a given dependency object. 
+        /// Identifies the <see cref="IsSelected" /> dependency property.
         /// </summary>
-        /// <param name="obj">The object to which the property value
-        /// is written.</param>
-        /// <param name="value">Sets the IsSelected value of the specified object.</param>
-        public static void SetIsSelected(DependencyObject obj, bool value)
-        {
-            obj.SetValue(IsSelectedProperty, value);
-        }
-
-        /// <summary>
-        /// Identifies the IsSelected attached property.
-        /// </summary>
-        public static readonly DependencyProperty IsSelectedProperty = DependencyProperty.RegisterAttached(
+        public static readonly DependencyProperty IsSelectedProperty = DependencyProperty.Register(
             IsSelectedPropertyName,
             typeof(bool),
             typeof(ConnectionDiagramBase),
             new UIPropertyMetadata(false));
         #endregion
 
-
         #region CenterPosition
         /// <summary>
-        /// The CenterPosition attached property's name.
+        /// The <see cref="CenterPosition" /> dependency property's name.
         /// </summary>
         public const string CenterPositionPropertyName = "CenterPosition";
 
         /// <summary>
-        /// Gets the value of the CenterPosition attached property 
-        /// for a given dependency object.
+        /// Gets or sets the value of the <see cref="CenterPosition" />
+        /// property. This is a dependency property.
         /// </summary>
-        /// <param name="obj">The object for which the property value
-        /// is read.</param>
-        /// <returns>The value of the CenterPosition property of the specified object.</returns>
-        public static Point? GetCenterPosition(DependencyObject obj)
+        public Point? CenterPosition
         {
-            return (Point?)obj.GetValue(CenterPositionProperty);
+            get
+            {
+                return (Point?)GetValue(CenterPositionProperty);
+            }
+            set
+            {
+                SetValue(CenterPositionProperty, value);
+            }
         }
 
         /// <summary>
-        /// Sets the value of the CenterPosition attached property
-        /// for a given dependency object. 
+        /// Identifies the <see cref="CenterPosition" /> dependency property.
         /// </summary>
-        /// <param name="obj">The object to which the property value
-        /// is written.</param>
-        /// <param name="value">Sets the CenterPosition value of the specified object.</param>
-        public static void SetCenterPosition(DependencyObject obj, Point? value)
-        {
-            obj.SetValue(CenterPositionProperty, value);
-        }
-
-        /// <summary>
-        /// Identifies the CenterPosition attached property.
-        /// </summary>
-        public static readonly DependencyProperty CenterPositionProperty = DependencyProperty.RegisterAttached(
+        public static readonly DependencyProperty CenterPositionProperty = DependencyProperty.Register(
             CenterPositionPropertyName,
             typeof(Point?),
             typeof(ConnectionDiagramBase),
             new UIPropertyMetadata(null));
-
         #endregion
-
 
         #region IsDrawLineDropEnabled
         /// <summary>
-        /// The IsDrawLineDropEnabled attached property's name.
+        /// The <see cref="IsDrawLineDropEnabled" /> dependency property's name.
         /// </summary>
         public const string IsDrawLineDropEnabledPropertyName = "IsDrawLineDropEnabled";
 
         /// <summary>
-        /// Gets the value of the IsDrawLineDropEnabled attached property 
-        /// for a given dependency object.
+        /// Gets or sets the value of the <see cref="IsDrawLineDropEnabled" />
+        /// property. This is a dependency property.
         /// </summary>
-        /// <param name="obj">The object for which the property value
-        /// is read.</param>
-        /// <returns>The value of the IsDrawLineDropEnabled property of the specified object.</returns>
-        public static bool GetIsDrawLineDropEnabled(DependencyObject obj)
+        public bool IsDrawLineDropEnabled
         {
-            return (bool)obj.GetValue(IsDrawLineDropEnabledProperty);
+            get
+            {
+                return (bool)GetValue(IsDrawLineDropEnabledProperty);
+            }
+            set
+            {
+                SetValue(IsDrawLineDropEnabledProperty, value);
+            }
         }
 
         /// <summary>
-        /// Sets the value of the IsDrawLineDropEnabled attached property
-        /// for a given dependency object. 
+        /// Identifies the <see cref="IsDrawLineDropEnabled" /> dependency property.
         /// </summary>
-        /// <param name="obj">The object to which the property value
-        /// is written.</param>
-        /// <param name="value">Sets the IsDrawLineDropEnabled value of the specified object.</param>
-        public static void SetIsDrawLineDropEnabled(DependencyObject obj, bool value)
-        {
-            obj.SetValue(IsDrawLineDropEnabledProperty, value);
-        }
-
-        /// <summary>
-        /// Identifies the IsDrawLineDropEnabled attached property.
-        /// </summary>
-        public static readonly DependencyProperty IsDrawLineDropEnabledProperty = DependencyProperty.RegisterAttached(
+        public static readonly DependencyProperty IsDrawLineDropEnabledProperty = DependencyProperty.Register(
             IsDrawLineDropEnabledPropertyName,
             typeof(bool),
             typeof(ConnectionDiagramBase),
             new UIPropertyMetadata(true));
         #endregion
 
+        #region ConnectorPositionType
+        /// <summary>
+        /// The <see cref="ConnectorPositionType" /> dependency property's name.
+        /// </summary>
+        public const string ConnectorPositionTypePropertyName = "ConnectorPositionType";
+
+        /// <summary>
+        /// Gets or sets the value of the <see cref="ConnectorPositionType" />
+        /// property. This is a dependency property.
+        /// </summary>
+        public ConnectorPositionType ConnectorPositionType
+        {
+            get
+            {
+                return (ConnectorPositionType)GetValue(ConnectorPositionTypeProperty);
+            }
+            set
+            {
+                SetValue(ConnectorPositionTypeProperty, value);
+            }
+        }
+
+        /// <summary>
+        /// Identifies the <see cref="ConnectorPositionType" /> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty ConnectorPositionTypeProperty = DependencyProperty.Register(
+            ConnectorPositionTypePropertyName,
+            typeof(ConnectorPositionType),
+            typeof(ConnectionDiagramBase),
+            new UIPropertyMetadata(ConnectorPositionType.Custom));
         #endregion
 
+        #endregion
 
         #region Property
 

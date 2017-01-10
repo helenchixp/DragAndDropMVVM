@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interactivity;
+using DragAndDropMVVM.Controls;
 
 namespace DragAndDropMVVM.Behavior
 {
@@ -72,6 +73,8 @@ namespace DragAndDropMVVM.Behavior
 
                             System.Diagnostics.Debug.WriteLine($"{nameof(AssociatedObject_Drop)} Current Point : X:{point.X} Y:{point.Y}");
 
+
+
                             ////TODO: Add the 
                             Canvas droppedcanvas = GetDroppedCanvas(element);
 
@@ -110,11 +113,48 @@ namespace DragAndDropMVVM.Behavior
                                         }
 
 
-                                        Canvas.SetRight(clnele, point.X - adn.CenterPoint.X);
-                                        Canvas.SetLeft(clnele, point.X - adn.CenterPoint.X);
-                                        Canvas.SetBottom(clnele, point.Y - adn.CenterPoint.Y);
-                                        Canvas.SetTop(clnele, point.Y - adn.CenterPoint.Y);
+                                        var canvaspoint = point - adn.CenterPoint;
+
+                                        Canvas.SetRight(clnele, canvaspoint.X);
+                                        Canvas.SetLeft(clnele, canvaspoint.X);
+                                        Canvas.SetBottom(clnele, canvaspoint.Y);
+                                        Canvas.SetTop(clnele, canvaspoint.Y);
+
                                         droppedcanvas.Children.Add(clnele);
+
+                                        if (clnele is ConnectionDiagramBase)
+                                        {
+                                            var elediagram = (clnele as ConnectionDiagramBase);
+
+                                            double elewidth = ((clnele as ContentControl).Content as FrameworkElement)?.ActualWidth ?? 0.0;
+                                            double eleheight = ((clnele as ContentControl).Content as FrameworkElement)?.ActualHeight ?? 0.0;
+
+                                            switch (elediagram.ConnectorPositionType)
+                                            {
+                                                case ConnectorPositionType.Center:
+                                                    (clnele as ConnectionDiagramBase).CenterPosition = new Point(elewidth / 2, eleheight / 2);
+                                                    break;
+                                                case ConnectorPositionType.Top:
+                                                    (clnele as ConnectionDiagramBase).CenterPosition = new Point(elewidth / 2, 0);
+                                                    break;
+                                                case ConnectorPositionType.Left:
+                                                    (clnele as ConnectionDiagramBase).CenterPosition = new Point(0, eleheight / 2);
+                                                    break;
+                                                case ConnectorPositionType.Bottom:
+                                                    (clnele as ConnectionDiagramBase).CenterPosition = new Point(elewidth / 2, eleheight);
+                                                    break;
+                                                case ConnectorPositionType.Right:
+                                                    (clnele as ConnectionDiagramBase).CenterPosition = new Point(elewidth, eleheight);
+                                                    break;
+
+                                                default:
+                                                    break;
+                                            }
+                                           
+
+                                            
+                                        }
+
                                     }
 
                                 }

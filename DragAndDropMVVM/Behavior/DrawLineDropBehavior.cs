@@ -47,14 +47,6 @@ namespace DragAndDropMVVM.Behavior
                 //if the data type can be dropped 
                 if (e.Data.GetDataPresent(_dataType))
                 {
-
-                    ////drop the data
-                    //IDropable target = this.AssociatedObject.DataContext as IDropable;
-                    //target.Drop(source.DataContext);
-
-                    ////remove the data from the source
-                    //IDragable sourcevm = source.DataContext as IDragable;
-                    //sourcevm.Drag(e.Data.GetData(_dataType));
                     UIElement element = sender as FrameworkElement;
 
                     ICommand dropcommand = GetDropLineCommand(element);
@@ -77,6 +69,18 @@ namespace DragAndDropMVVM.Behavior
                             Canvas droppedcanvas = GetDroppedLineCanvas(element);
                             ConnectionDiagramBase origindiagram = e.Data.GetData(typeof(ConnectionDiagramBase)) as ConnectionDiagramBase;
                             ConnectionDiagramBase terminaldiagram = element as ConnectionDiagramBase;
+
+                            double x1, y1, x2, y2 = 0.0;
+
+                           
+                            Point orpos = (origindiagram.CenterPosition.HasValue ?
+                                e.GetPosition(terminaldiagram) - e.GetPosition(origindiagram) + origindiagram.CenterPosition :
+                                new Point(adn.GetLineStartEndPosition().Item1, adn.GetLineStartEndPosition().Item2)).Value;
+
+                            x1 = orpos.X;
+                            y1 = orpos.Y;
+                            x2 = terminaldiagram.CenterPosition?.X ?? adn.GetLineStartEndPosition().Item3;
+                            y2 = terminaldiagram.CenterPosition?.Y ?? adn.GetLineStartEndPosition().Item4;
 
                             //the line type of custom
                             Type linetype = GetDropLineControlType(element);
@@ -101,10 +105,10 @@ namespace DragAndDropMVVM.Behavior
                                     //if inherb
                                     if(conline is DrawLineThump)
                                     {
-                                        (conline as DrawLineThump).X1 = adn.GetLineStartEndPosition().Item1;
-                                        (conline as DrawLineThump).Y1 = adn.GetLineStartEndPosition().Item2;
-                                        (conline as DrawLineThump).X2 = adn.GetLineStartEndPosition().Item3;
-                                        (conline as DrawLineThump).Y2 = adn.GetLineStartEndPosition().Item4;
+                                        (conline as DrawLineThump).X1 = x1;//adn.GetLineStartEndPosition().Item1;
+                                        (conline as DrawLineThump).Y1 = y1;// adn.GetLineStartEndPosition().Item2;
+                                        (conline as DrawLineThump).X2 = x2;// adn.GetLineStartEndPosition().Item3;
+                                        (conline as DrawLineThump).Y2 = y2;// adn.GetLineStartEndPosition().Item4;
                                     }
                                 }
                             }
@@ -117,10 +121,10 @@ namespace DragAndDropMVVM.Behavior
 
                                 conline = new DrawLineThump()
                                 {
-                                    X1 = adn.GetLineStartEndPosition().Item1,
-                                    Y1 = adn.GetLineStartEndPosition().Item2,
-                                    X2 = adn.GetLineStartEndPosition().Item3,
-                                    Y2 = adn.GetLineStartEndPosition().Item4,
+                                    X1 = x1,// adn.GetLineStartEndPosition().Item1,
+                                    Y1 = y1,//adn.GetLineStartEndPosition().Item2,
+                                    X2 = x2,//adn.GetLineStartEndPosition().Item3,
+                                    Y2 = y2,//adn.GetLineStartEndPosition().Item4,
                                     OriginDiagram = origindiagram,
                                     TerminalDiagram = terminaldiagram,
                                 };

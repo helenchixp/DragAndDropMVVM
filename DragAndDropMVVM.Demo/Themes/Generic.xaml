@@ -24,6 +24,18 @@
                         <Trigger Property="IsSelected" Value="True">
                             <Setter Property="Stroke" Value="Red" TargetName="PART_DrawLine"/>
                         </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Cursor" Value="Hand"  TargetName="PART_DrawLine"/>
+                            <Setter Property="Stroke" Value="Pink" TargetName="PART_DrawLine"/>
+                            <Setter Property="Effect" TargetName="PART_DrawLine">
+                                <Setter.Value>
+                                    <DropShadowEffect BlurRadius="3"
+                                      Direction="315"
+                                      ShadowDepth="2"
+                                      Color="Pink" />
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
