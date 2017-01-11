@@ -63,10 +63,10 @@ namespace DragAndDropMVVM.Behavior
                     {
                         object parameter = (GetDropCommandParameter(element) ??
                             (e.Data.GetDataPresent(DataFormats.Serializable) ? e.Data.GetData(DataFormats.Serializable) : null));
-                            //??
-                           // this.AssociatedObject.DataContext;
+                        //??
+                        // this.AssociatedObject.DataContext;
 
-                        if(dropcommand.CanExecute(parameter))
+                        if (dropcommand.CanExecute(parameter))
                         {
 
                             Point point = e.GetPosition(element);
@@ -81,8 +81,9 @@ namespace DragAndDropMVVM.Behavior
                             // if copy the 
                             if (!GetIsFixedPosition(element) && droppedcanvas != null)
                             {
-                                var droppedcontroltype = GetDroppedControlType(element);
+                                UIElement dragelement = e.Data.GetDataPresent(typeof(UIElement)) ? e.Data.GetData(typeof(UIElement)) as UIElement : null;
 
+                                Type droppedcontroltype = dragelement != null ? GetDroppedControlType(dragelement) : null;
 
                                 if (droppedcontroltype != null && !WPFUtil.IsCorrectType(droppedcontroltype, typeof(ContentControl)))
                                 {
@@ -93,12 +94,20 @@ namespace DragAndDropMVVM.Behavior
                                 {
                                     var adn = e.Data.GetData(_dataType) as DraggingAdorner;
                                     //System.Diagnostics.Debug.WriteLine($"{nameof(DraggingAdorner)} Current Point : X:{adn.Position.X} Y:{adn.Position.Y}");
-                                   var clnele = adn.GetGhostElement() as UIElement;
+                                    UIElement clnele = null;
 
-                                    if(droppedcontroltype != null)
+                                    bool iscopy = false;
+
+                                    if (droppedcontroltype != null)
                                     {
-                                        clnele = CreateNewContentControl(droppedcontroltype, clnele);
+                                        clnele = CreateNewContentControl(droppedcontroltype, adn.GetGhostElement() as UIElement);
+                                        iscopy = true;
                                     }
+                                    else
+                                    {
+                                        clnele = dragelement;
+                                    }
+
 
                                     //add the clone element
                                     if (clnele != null)
@@ -120,7 +129,8 @@ namespace DragAndDropMVVM.Behavior
                                         Canvas.SetBottom(clnele, canvaspoint.Y);
                                         Canvas.SetTop(clnele, canvaspoint.Y);
 
-                                        droppedcanvas.Children.Add(clnele);
+                                        if (iscopy)
+                                            droppedcanvas.Children.Add(clnele);
 
                                         if (clnele is ConnectionDiagramBase)
                                         {
@@ -137,22 +147,35 @@ namespace DragAndDropMVVM.Behavior
                                                 case ConnectorPositionType.Top:
                                                     (clnele as ConnectionDiagramBase).CenterPosition = new Point(elewidth / 2, 0);
                                                     break;
+                                                case ConnectorPositionType.TopLeft:
+                                                    (clnele as ConnectionDiagramBase).CenterPosition = new Point(0, 0);
+                                                    break;
+                                                case ConnectorPositionType.TopRight:
+                                                    (clnele as ConnectionDiagramBase).CenterPosition = new Point(elewidth, 0);
+                                                    break;
+
                                                 case ConnectorPositionType.Left:
                                                     (clnele as ConnectionDiagramBase).CenterPosition = new Point(0, eleheight / 2);
                                                     break;
                                                 case ConnectorPositionType.Bottom:
                                                     (clnele as ConnectionDiagramBase).CenterPosition = new Point(elewidth / 2, eleheight);
                                                     break;
-                                                case ConnectorPositionType.Right:
+                                                case ConnectorPositionType.BottomLeft:
+                                                    (clnele as ConnectionDiagramBase).CenterPosition = new Point(0, eleheight);
+                                                    break;
+                                                case ConnectorPositionType.BottomRight:
                                                     (clnele as ConnectionDiagramBase).CenterPosition = new Point(elewidth, eleheight);
+                                                    break;
+                                                case ConnectorPositionType.Right:
+                                                    (clnele as ConnectionDiagramBase).CenterPosition = new Point(elewidth, eleheight / 2);
                                                     break;
 
                                                 default:
                                                     break;
                                             }
-                                           
 
-                                            
+
+
                                         }
 
                                     }
@@ -496,13 +519,24 @@ namespace DragAndDropMVVM.Behavior
 
 
 
-        public ContentControl CreateNewContentControl(Type contenttype, object content)
+        private ContentControl CreateNewContentControl(Type contenttype, object content)
         {
+            if (content == null) return null;
+
             var newobj = contenttype.GetConstructors()[0].Invoke(null);
 
             PropertyInfo contentpro = contenttype.GetProperty("Content");
 
-            contentpro.SetValue(newobj, content);
+
+            if (content.GetType().Equals(contenttype))
+            {
+                var concon = contentpro.GetValue(content) as UIElement;
+                contentpro.SetValue(newobj, concon);
+            }
+            else
+            { 
+                contentpro.SetValue(newobj, content);
+            }
 
             return newobj as ContentControl;
         }

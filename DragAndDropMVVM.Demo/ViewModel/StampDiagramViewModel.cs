@@ -24,7 +24,7 @@ namespace DragAndDropMVVM.Demo.ViewModel
         public string DiagramID { get; set; }
 
 
-        public ObservableCollection<IConnectionDiagramViewModel> ConnectingDiagramsDataContext
+        public IConnectionDiagramViewModel DragFromDiagramViewModel
         {
             get;
 

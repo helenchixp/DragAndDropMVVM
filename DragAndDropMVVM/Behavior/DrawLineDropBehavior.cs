@@ -54,92 +54,94 @@ namespace DragAndDropMVVM.Behavior
                     if (dropcommand != null)
                     {
                         object parameter = GetDropLineCommandParameter(element);//(GetDropLineCommandParameter(element) ??
-                            //(e.Data.GetDataPresent(DataFormats.Serializable) ? e.Data.GetData(DataFormats.Serializable) : null));
-                            //??
-                            //this.AssociatedObject.DataContext;
+                                                                                //(e.Data.GetDataPresent(DataFormats.Serializable) ? e.Data.GetData(DataFormats.Serializable) : null));
+                                                                                //??
+                                                                                //this.AssociatedObject.DataContext;
 
-                        if (dropcommand.CanExecute(parameter))
+
+                        Point point = e.GetPosition(element);
+
+                        var adn = e.Data.GetData(_dataType) as DrawLineAdorner;
+                        Point adnPoint = adn.Position;
+
+                        Canvas droppedcanvas = GetDroppedLineCanvas(element);
+                        ConnectionDiagramBase origindiagram = e.Data.GetData(typeof(ConnectionDiagramBase)) as ConnectionDiagramBase;
+                        ConnectionDiagramBase terminaldiagram = element as ConnectionDiagramBase;
+
+                        double x1, y1, x2, y2 = 0.0;
+
+
+                        Point orpos = (origindiagram.CenterPosition.HasValue ?
+                            e.GetPosition(terminaldiagram) - e.GetPosition(origindiagram) + origindiagram.CenterPosition :
+                            new Point(adn.GetLineStartEndPosition().Item1, adn.GetLineStartEndPosition().Item2)).Value;
+
+                        x1 = orpos.X;
+                        y1 = orpos.Y;
+                        x2 = terminaldiagram.CenterPosition?.X ?? adn.GetLineStartEndPosition().Item3;
+                        y2 = terminaldiagram.CenterPosition?.Y ?? adn.GetLineStartEndPosition().Item4;
+
+                        //the line type of custom
+                        Type linetype = GetDropLineControlType(element);
+
+                        if (!WPFUtil.IsCorrectType(linetype, typeof(ConnectionLineBase)))
                         {
+                            throw new ArgumentException($"DropLineControlType is base on {nameof(ConnectionLineBase)}.");
+                        }
 
-                            Point point = e.GetPosition(element);
+                        dynamic conline;
 
-                            var adn = e.Data.GetData(_dataType) as DrawLineAdorner;
-                            Point adnPoint = adn.Position;
+                        if (!typeof(DrawLineThump).Equals(linetype))
+                        {
+                            conline = Activator.CreateInstance(linetype);
 
-                            Canvas droppedcanvas = GetDroppedLineCanvas(element);
-                            ConnectionDiagramBase origindiagram = e.Data.GetData(typeof(ConnectionDiagramBase)) as ConnectionDiagramBase;
-                            ConnectionDiagramBase terminaldiagram = element as ConnectionDiagramBase;
-
-                            double x1, y1, x2, y2 = 0.0;
-
-                           
-                            Point orpos = (origindiagram.CenterPosition.HasValue ?
-                                e.GetPosition(terminaldiagram) - e.GetPosition(origindiagram) + origindiagram.CenterPosition :
-                                new Point(adn.GetLineStartEndPosition().Item1, adn.GetLineStartEndPosition().Item2)).Value;
-
-                            x1 = orpos.X;
-                            y1 = orpos.Y;
-                            x2 = terminaldiagram.CenterPosition?.X ?? adn.GetLineStartEndPosition().Item3;
-                            y2 = terminaldiagram.CenterPosition?.Y ?? adn.GetLineStartEndPosition().Item4;
-
-                            //the line type of custom
-                            Type linetype = GetDropLineControlType(element);
-
-                            if (!WPFUtil.IsCorrectType(linetype, typeof(ConnectionLineBase)))
+                            if (conline is ConnectionLineBase)
                             {
-                                throw new ArgumentException($"DropLineControlType is base on {nameof(ConnectionLineBase)}.");
-                            }
 
-                            dynamic conline;
+                                (conline as ConnectionLineBase).OriginDiagram = origindiagram;
+                                (conline as ConnectionLineBase).TerminalDiagram = terminaldiagram;
 
-                            if (!typeof(DrawLineThump).Equals(linetype))
-                            {
-                                conline = Activator.CreateInstance(linetype);
-
-                                if(conline is ConnectionLineBase)
+                                //if inherb
+                                if (conline is DrawLineThump)
                                 {
-
-                                    (conline as ConnectionLineBase).OriginDiagram = origindiagram;
-                                    (conline as ConnectionLineBase).TerminalDiagram = terminaldiagram;
-
-                                    //if inherb
-                                    if(conline is DrawLineThump)
-                                    {
-                                        (conline as DrawLineThump).X1 = x1;//adn.GetLineStartEndPosition().Item1;
-                                        (conline as DrawLineThump).Y1 = y1;// adn.GetLineStartEndPosition().Item2;
-                                        (conline as DrawLineThump).X2 = x2;// adn.GetLineStartEndPosition().Item3;
-                                        (conline as DrawLineThump).Y2 = y2;// adn.GetLineStartEndPosition().Item4;
-                                    }
+                                    (conline as DrawLineThump).X1 = x1;//adn.GetLineStartEndPosition().Item1;
+                                    (conline as DrawLineThump).Y1 = y1;// adn.GetLineStartEndPosition().Item2;
+                                    (conline as DrawLineThump).X2 = x2;// adn.GetLineStartEndPosition().Item3;
+                                    (conline as DrawLineThump).Y2 = y2;// adn.GetLineStartEndPosition().Item4;
                                 }
                             }
-                            else
+                        }
+                        else
+                        {
+                            //****************************************
+                            //TODO:The Line Position is need to Calcute
+                            //****************************************
+
+
+                            conline = new DrawLineThump()
                             {
-                                //****************************************
-                                //TODO:The Line Position is need to Calcute
-                                //****************************************
+                                X1 = x1,// adn.GetLineStartEndPosition().Item1,
+                                Y1 = y1,//adn.GetLineStartEndPosition().Item2,
+                                X2 = x2,//adn.GetLineStartEndPosition().Item3,
+                                Y2 = y2,//adn.GetLineStartEndPosition().Item4,
+                                OriginDiagram = origindiagram,
+                                TerminalDiagram = terminaldiagram,
+                            };
+                        }
 
 
-                                conline = new DrawLineThump()
-                                {
-                                    X1 = x1,// adn.GetLineStartEndPosition().Item1,
-                                    Y1 = y1,//adn.GetLineStartEndPosition().Item2,
-                                    X2 = x2,//adn.GetLineStartEndPosition().Item3,
-                                    Y2 = y2,//adn.GetLineStartEndPosition().Item4,
-                                    OriginDiagram = origindiagram,
-                                    TerminalDiagram = terminaldiagram,
-                                };
-                            }
+                        if (dropcommand.CanExecute(new Tuple<object, object>(origindiagram.DataContext, terminaldiagram.DataContext)))
+                        {
 
                             Canvas.SetTop(conline, (double)element.GetValue(Canvas.TopProperty));
                             Canvas.SetLeft(conline, (double)element.GetValue(Canvas.LeftProperty));
 
 
                             //add the relation of the diagram
-                            if(origindiagram!=null)
+                            if (origindiagram != null)
                             {
                                 origindiagram.DepartureLines.Add(conline);
                             }
-                            if(terminaldiagram!=null)
+                            if (terminaldiagram != null)
                             {
                                 terminaldiagram.ArrivalLines.Add(conline);
                             }
@@ -168,6 +170,7 @@ namespace DragAndDropMVVM.Behavior
 
                                     if (terminalvm != null)
                                     {
+                                        //terminalvm.DragFromDiagramViewModel = originvm;
                                         if (terminalvm.DepartureLinesViewModel != null)
                                         {
                                             terminalvm.DepartureLinesViewModel.Add(linevm);

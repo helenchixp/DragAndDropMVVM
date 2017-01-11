@@ -14,8 +14,8 @@ namespace DragAndDropMVVM.ViewModel
         ObservableCollection<IConnectionLineViewModel> DepartureLinesViewModel { get; set; }
 
         ObservableCollection<IConnectionLineViewModel> ArrivalLinesViewModel { get; set; }
-
-        ObservableCollection<IConnectionDiagramViewModel> ConnectingDiagramsDataContext { get; set; }
+        [Obsolete]
+        IConnectionDiagramViewModel DragFromDiagramViewModel { get; set; }
 
         bool IsSelected { get; set; }
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using DragAndDropMVVM.ViewModel;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 
@@ -219,7 +220,7 @@ namespace DragAndDropMVVM.Demo.ViewModel
 
         private void ExecuteDragLineCommand(object parameter)
         {
-            System.Diagnostics.Debug.WriteLine($"Drag Diagram ID:{(parameter as StampDiagramViewModel).Index}");
+            System.Diagnostics.Debug.WriteLine($"Drag Diagram ID:{(parameter as StampDiagramViewModel)?.Index}");
         }
 
         private bool CanExecuteDragLineCommand(object parameter)
@@ -245,11 +246,43 @@ namespace DragAndDropMVVM.Demo.ViewModel
 
         private void ExecuteDropLineCommand(object parameter)
         {
-            System.Diagnostics.Debug.WriteLine($"Drop Diagram ID:{(parameter as StampDiagramViewModel).Index}");
+            System.Diagnostics.Debug.WriteLine($"Drop Diagram ID:{(parameter as StampDiagramViewModel)?.Index}");
         }
 
         private bool CanExecuteDropLineCommand(object parameter)
         {
+            var ddobj = parameter as Tuple<object, object>;
+
+            if (ddobj == null) return false;
+
+            var dragobj = ddobj.Item1 as IConnectionDiagramViewModel;
+            var dropobj = ddobj.Item2 as IConnectionDiagramViewModel;
+
+            if (dropobj == null || dragobj == null) return false;
+
+            if (dragobj.ArrivalLinesViewModel != null)
+            {
+                foreach (var aline in dragobj.ArrivalLinesViewModel)
+                {
+                    if(dropobj.Equals(aline.TerminalDiagramViewModel))
+                    {
+                        return false;
+                    }
+
+                }
+            }
+
+            if(dropobj.DepartureLinesViewModel != null)
+            {
+                foreach(var dline in dropobj.DepartureLinesViewModel)
+                {
+                    if(dragobj.Equals(dline.OriginDiagramViewModel))
+                    {
+                        return false;
+                    }
+                }
+            }
+
             return true;
         }
     }

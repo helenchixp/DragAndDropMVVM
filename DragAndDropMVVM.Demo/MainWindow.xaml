@@ -48,8 +48,9 @@
             </Ellipse>
 
 
-                <WrapPanel Orientation="Vertical" 
-                   b:FrameworkElementDragBehavior.DragCommand="{Binding DragCommand}">
+            <WrapPanel Orientation="Vertical" 
+                           b:FrameworkElementDropBehavior.DroppedControlType="{x:Type ctrl:StampDiagram}"
+                           b:FrameworkElementDragBehavior.DragCommand="{Binding DragCommand}">
                     <!--b:FrameworkElementDragBehavior.DragCommandParameter="{Binding ElementName=imgText, Path=Text}">-->
                 <i:Interaction.Behaviors>
                     <b:FrameworkElementDragBehavior/>
@@ -76,6 +77,8 @@
                         <Setter Property="b:DrawLineDropBehavior.DropLineCommandParameter" Value="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}" />
                         <Setter Property="b:DrawLineDropBehavior.DroppedLineCanvas" Value="{Binding ElementName=myDroppedCanvas}" />
                         <Setter Property="b:DrawLineDropBehavior.DropLineControlType" Value="{x:Type ctrl:StampLine}" />
+                        <Setter Property="b:FrameworkElementDragBehavior.DragCommand" Value="{Binding  RelativeSource={RelativeSource AncestorType=Window,Mode=FindAncestor}, Path=DataContext.DragCommand}" />
+                        <Setter Property="b:FrameworkElementDragBehavior.DragCommandParameter" Value="Test" />
                         <Setter Property="ConnectorPositionType" Value="Center" />
                     </Style.Setters>
                     <Style.Triggers>
@@ -95,7 +98,7 @@
             <Rectangle x:Name="rectDropPanel"
                        Width="Auto" Height="Auto" MinWidth="250" MinHeight="350" VerticalAlignment="Top"
                        StrokeThickness="1"
-                       b:FrameworkElementDropBehavior.DroppedControlType="{x:Type ctrl:StampDiagram}"
+                       
                        b:FrameworkElementDropBehavior.DropCommand="{Binding DropCommand}"
                        b:FrameworkElementDropBehavior.DroppedCanvas="{Binding ElementName=myDroppedCanvas}">
                 <i:Interaction.Behaviors>

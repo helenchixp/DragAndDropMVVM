@@ -69,7 +69,7 @@ namespace DragAndDropMVVM.Behavior
 
             //set the adorner for drop action and create the clone element.
             data.SetData(typeof(DraggingAdorner), adorner);
-
+            data.SetData(typeof(UIElement), element);
 
             ICommand dragcommand = GetDragCommand(element);
 
