@@ -142,52 +142,6 @@ namespace DragAndDropMVVM.Behavior
                                             dropcommand.Execute((clnele as ContentControl)?.DataContext);
                                         }
 
-                                        if (clnele is ConnectionDiagramBase)
-                                        {
-                                            var elediagram = (clnele as ConnectionDiagramBase);
-
-                                            double elewidth = ((clnele as ContentControl).Content as FrameworkElement)?.ActualWidth ?? 0.0;
-                                            double eleheight = ((clnele as ContentControl).Content as FrameworkElement)?.ActualHeight ?? 0.0;
-
-                                            switch (elediagram.ConnectorPositionType)
-                                            {
-                                                case ConnectorPositionType.Center:
-                                                    (clnele as ConnectionDiagramBase).CenterPosition = new Point(elewidth / 2, eleheight / 2);
-                                                    break;
-                                                case ConnectorPositionType.Top:
-                                                    (clnele as ConnectionDiagramBase).CenterPosition = new Point(elewidth / 2, 0);
-                                                    break;
-                                                case ConnectorPositionType.TopLeft:
-                                                    (clnele as ConnectionDiagramBase).CenterPosition = new Point(0, 0);
-                                                    break;
-                                                case ConnectorPositionType.TopRight:
-                                                    (clnele as ConnectionDiagramBase).CenterPosition = new Point(elewidth, 0);
-                                                    break;
-
-                                                case ConnectorPositionType.Left:
-                                                    (clnele as ConnectionDiagramBase).CenterPosition = new Point(0, eleheight / 2);
-                                                    break;
-                                                case ConnectorPositionType.Bottom:
-                                                    (clnele as ConnectionDiagramBase).CenterPosition = new Point(elewidth / 2, eleheight);
-                                                    break;
-                                                case ConnectorPositionType.BottomLeft:
-                                                    (clnele as ConnectionDiagramBase).CenterPosition = new Point(0, eleheight);
-                                                    break;
-                                                case ConnectorPositionType.BottomRight:
-                                                    (clnele as ConnectionDiagramBase).CenterPosition = new Point(elewidth, eleheight);
-                                                    break;
-                                                case ConnectorPositionType.Right:
-                                                    (clnele as ConnectionDiagramBase).CenterPosition = new Point(elewidth, eleheight / 2);
-                                                    break;
-
-                                                default:
-                                                    break;
-                                            }
-
-
-
-                                        }
-
                                     }
 
                                 }

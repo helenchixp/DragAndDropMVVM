@@ -70,15 +70,37 @@ namespace DragAndDropMVVM.Behavior
 
                         double x1, y1, x2, y2 = 0.0;
 
+                        if(origindiagram.ConnectorPositionType != ConnectorPositionType.Custom)
+                        {
+                            Point orpos = e.GetPosition(terminaldiagram) - e.GetPosition(origindiagram) + origindiagram.CenterPosition;
+                            x1 = orpos.X;
+                            y1 = orpos.Y;
+                        }
+                        else
+                        {
+                            x1 = adn.GetLineStartEndPosition().Item1;
+                            y1 = adn.GetLineStartEndPosition().Item2;
+                        }
 
-                        Point orpos = (origindiagram.CenterPosition.HasValue ?
-                            e.GetPosition(terminaldiagram) - e.GetPosition(origindiagram) + origindiagram.CenterPosition :
-                            new Point(adn.GetLineStartEndPosition().Item1, adn.GetLineStartEndPosition().Item2)).Value;
+                        if(terminaldiagram.ConnectorPositionType != ConnectorPositionType.Custom)
+                        {
+                            x2 = terminaldiagram.CenterPosition.X;
+                            y2 = terminaldiagram.CenterPosition.Y;
+                        }
+                        else
+                        {
+                            x2 = adn.GetLineStartEndPosition().Item3;
+                            y2 = adn.GetLineStartEndPosition().Item4;
+                        }
 
-                        x1 = orpos.X;
-                        y1 = orpos.Y;
-                        x2 = terminaldiagram.CenterPosition?.X ?? adn.GetLineStartEndPosition().Item3;
-                        y2 = terminaldiagram.CenterPosition?.Y ?? adn.GetLineStartEndPosition().Item4;
+                        //Point orpos = (origindiagram.CenterPosition.HasValue ?
+                        //    e.GetPosition(terminaldiagram) - e.GetPosition(origindiagram) + origindiagram.CenterPosition :
+                        //    new Point(adn.GetLineStartEndPosition().Item1, adn.GetLineStartEndPosition().Item2)).Value;
+
+                        //x1 = orpos.X;
+                        //y1 = orpos.Y;
+                        //x2 = terminaldiagram.CenterPosition?.X ?? adn.GetLineStartEndPosition().Item3;
+                        //y2 = terminaldiagram.CenterPosition?.Y ?? adn.GetLineStartEndPosition().Item4;
 
                         //the line type of custom
                         Type linetype = GetDropLineControlType(element);

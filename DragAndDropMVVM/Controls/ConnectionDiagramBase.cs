@@ -119,39 +119,6 @@ namespace DragAndDropMVVM.Controls
             new UIPropertyMetadata(false));
         #endregion
 
-        #region CenterPosition
-        /// <summary>
-        /// The <see cref="CenterPosition" /> dependency property's name.
-        /// </summary>
-        public const string CenterPositionPropertyName = "CenterPosition";
-
-        /// <summary>
-        /// Gets or sets the value of the <see cref="CenterPosition" />
-        /// property. This is a dependency property.
-        /// </summary>
-        [Obsolete]
-        public Point? CenterPosition
-        {
-            get
-            {
-                return (Point?)GetValue(CenterPositionProperty);
-            }
-            set
-            {
-                SetValue(CenterPositionProperty, value);
-            }
-        }
-
-        /// <summary>
-        /// Identifies the <see cref="CenterPosition" /> dependency property.
-        /// </summary>
-        public static readonly DependencyProperty CenterPositionProperty = DependencyProperty.Register(
-            CenterPositionPropertyName,
-            typeof(Point?),
-            typeof(ConnectionDiagramBase),
-            new UIPropertyMetadata(null));
-        #endregion
-
         #region IsDrawLineDropEnabled
         /// <summary>
         /// The <see cref="IsDrawLineDropEnabled" /> dependency property's name.
@@ -223,6 +190,66 @@ namespace DragAndDropMVVM.Controls
         public ObservableCollection<ConnectionLineBase> DepartureLines { get; internal set; } = new ObservableCollection<ConnectionLineBase>();
 
         public ObservableCollection<ConnectionLineBase> ArrivalLines { get; internal set; } = new ObservableCollection<ConnectionLineBase>();
+
+
+
+        #region CenterPosition
+
+        /// <summary>
+        /// Gets or sets the value of the <see cref="CenterPosition" />
+        /// property. This is a dependency property.
+        /// </summary>
+        public Point CenterPosition
+        {
+            get
+            {
+
+                Point retpoint = new Point(0, 0);
+
+                double elewidth = ActualWidth != 0.0 ? ActualWidth : ((Content as FrameworkElement)?.ActualWidth ?? 0.0);
+                double eleheight = ActualHeight != 0.0 ? ActualHeight : ((Content as FrameworkElement)?.ActualHeight ?? 0.0);
+
+                switch (ConnectorPositionType)
+                {
+                    case ConnectorPositionType.Center:
+                        retpoint = new Point(elewidth / 2, eleheight / 2);
+                        break;
+                    case ConnectorPositionType.Top:
+                        retpoint = new Point(elewidth / 2, 0);
+                        break;
+                    case ConnectorPositionType.TopLeft:
+                        retpoint = new Point(0, 0);
+                        break;
+                    case ConnectorPositionType.TopRight:
+                        retpoint = new Point(elewidth, 0);
+                        break;
+
+                    case ConnectorPositionType.Left:
+                        retpoint = new Point(0, eleheight / 2);
+                        break;
+                    case ConnectorPositionType.Bottom:
+                        retpoint = new Point(elewidth / 2, eleheight);
+                        break;
+                    case ConnectorPositionType.BottomLeft:
+                        retpoint = new Point(0, eleheight);
+                        break;
+                    case ConnectorPositionType.BottomRight:
+                        retpoint = new Point(elewidth, eleheight);
+                        break;
+                    case ConnectorPositionType.Right:
+                        retpoint = new Point(elewidth, eleheight / 2);
+                        break;
+
+                    default:
+                        break;
+                }
+                return retpoint;
+            }
+
+        }
+
+        #endregion
+
 
         #endregion
 

@@ -88,7 +88,7 @@
                         <Setter Property="b:DrawLineDropBehavior.DropLineControlType" Value="{x:Type ctrl:StampLine}" />
                         <Setter Property="b:FrameworkElementDragBehavior.DragCommand" Value="{Binding  RelativeSource={RelativeSource AncestorType=Window,Mode=FindAncestor}, Path=DataContext.DragCommand}" />
                         <Setter Property="b:FrameworkElementDragBehavior.DragCommandParameter" Value="Test" />
-                        <Setter Property="ConnectorPositionType" Value="Center" />
+                        <!--<Setter Property="ConnectorPositionType" Value="Center" />-->
                     </Style.Setters>
                     <Style.Triggers>
                         <Trigger Property="IsSelected" Value="True">
