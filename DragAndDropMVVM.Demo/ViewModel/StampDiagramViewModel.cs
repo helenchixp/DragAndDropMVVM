@@ -51,55 +51,5 @@ namespace DragAndDropMVVM.Demo.ViewModel
         public int Index { get; set; } = 0;
 
 
-        ////private RelayCommand<object> _dragLineCommand;
-
-        /////// <summary>
-        /////// Gets the DragLineCommand.
-        /////// </summary>
-        ////public RelayCommand<object> DragLineCommand
-        ////{
-        ////    get
-        ////    {
-        ////        return _dragLineCommand ?? (_dragLineCommand = new RelayCommand<object>(
-        ////            ExecuteDragLineCommand,
-        ////            CanExecuteDragLineCommand));
-        ////    }
-        ////}
-
-        ////private void ExecuteDragLineCommand(object parameter)
-        ////{
-        ////    System.Diagnostics.Debug.WriteLine($"The ExecuteDragLineCommand is {((parameter as StampDiagramViewModel)?.Index)}");
-        ////}
-
-        ////private bool CanExecuteDragLineCommand(object parameter)
-        ////{
-        ////    return true;
-        ////}
-
-
-        ////private RelayCommand<object> _dropLineCommand;
-
-        /////// <summary>
-        /////// Gets the DropLineCommand.
-        /////// </summary>
-        ////public RelayCommand<object> DropLineCommand
-        ////{
-        ////    get
-        ////    {
-        ////        return _dropLineCommand ?? (_dropLineCommand = new RelayCommand<object>(
-        ////            ExecuteDropLineCommand,
-        ////            CanExecuteDropLineCommand));
-        ////    }
-        ////}
-
-        ////private void ExecuteDropLineCommand(object parameter)
-        ////{
-        ////    System.Diagnostics.Debug.WriteLine($"The ExecuteDropLineCommand is {((parameter as StampDiagramViewModel)?.Index)}");
-        ////}
-
-        ////private bool CanExecuteDropLineCommand(object parameter)
-        ////{
-        ////    return true;
-        ////}
     }
 }

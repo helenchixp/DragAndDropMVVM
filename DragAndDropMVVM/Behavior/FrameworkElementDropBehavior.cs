@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interactivity;
 using DragAndDropMVVM.Controls;
+using DragAndDropMVVM.ViewModel;
 
 namespace DragAndDropMVVM.Behavior
 {
@@ -61,10 +62,15 @@ namespace DragAndDropMVVM.Behavior
 
                     if (dropcommand != null)
                     {
-                        object parameter = (GetDropCommandParameter(element) ??
-                            (e.Data.GetDataPresent(DataFormats.Serializable) ? e.Data.GetData(DataFormats.Serializable) : null));
+                        object parameter = GetDropCommandParameter(element);// ??
+                         //   (e.Data.GetDataPresent(DataFormats.Serializable) ? e.Data.GetData(DataFormats.Serializable) : null));
                         //??
                         // this.AssociatedObject.DataContext;
+
+                        if(this.AssociatedObject.DataContext is IDragged)
+                        {
+                            (this.AssociatedObject.DataContext as IDragged).DraggedData = (e.Data.GetDataPresent(DataFormats.Serializable) ? e.Data.GetData(DataFormats.Serializable) : null);
+                        }
 
                         if (dropcommand.CanExecute(parameter))
                         {
@@ -72,8 +78,6 @@ namespace DragAndDropMVVM.Behavior
                             Point point = e.GetPosition(element);
 
                             System.Diagnostics.Debug.WriteLine($"{nameof(AssociatedObject_Drop)} Current Point : X:{point.X} Y:{point.Y}");
-
-
 
                             ////TODO: Add the 
                             Canvas droppedcanvas = GetDroppedCanvas(element);
@@ -100,7 +104,12 @@ namespace DragAndDropMVVM.Behavior
 
                                     if (droppedcontroltype != null)
                                     {
-                                        clnele = CreateNewContentControl(droppedcontroltype, adn.GetGhostElement() as UIElement);
+
+                                        //TODO: Copy Control or create new control
+                                        if (GetIsDuplication(dragelement))
+                                            clnele = CreateNewContentControl(droppedcontroltype, adn.GetGhostElement() as UIElement);
+                                        else
+                                            clnele = Activator.CreateInstance(droppedcontroltype) as UIElement;
                                         iscopy = true;
                                     }
                                     else
@@ -112,14 +121,6 @@ namespace DragAndDropMVVM.Behavior
                                     //add the clone element
                                     if (clnele != null)
                                     {
-                                        if (parameter != null)
-                                        {
-                                            dropcommand.Execute(parameter);
-                                        }
-                                        else
-                                        {
-                                            dropcommand.Execute((clnele as ContentControl).DataContext);
-                                        }
 
 
                                         var canvaspoint = point - adn.CenterPoint;
@@ -131,6 +132,15 @@ namespace DragAndDropMVVM.Behavior
 
                                         if (iscopy)
                                             droppedcanvas.Children.Add(clnele);
+
+                                        if (parameter != null)
+                                        {
+                                            dropcommand.Execute(parameter);
+                                        }
+                                        else
+                                        {
+                                            dropcommand.Execute((clnele as ContentControl)?.DataContext);
+                                        }
 
                                         if (clnele is ConnectionDiagramBase)
                                         {
@@ -184,6 +194,11 @@ namespace DragAndDropMVVM.Behavior
 
                             }
                         }
+
+                        if (this.AssociatedObject.DataContext is IDragged)
+                        {
+                            (this.AssociatedObject.DataContext as IDragged).DraggedData = null;
+                        }
                     }
 
                 }
@@ -227,18 +242,7 @@ namespace DragAndDropMVVM.Behavior
 
         private void AssociatedObject_DragEnter(object sender, DragEventArgs e)
         {
-            //if the DataContext implements IDropable, record the data type that can be dropped
-            ////////////if (this._dataType == null)
-            ////////////{
-            ////////////    if (this.AssociatedObject.DataContext != null)
-            ////////////    {
-            ////////////        IDropable dropObject = this.AssociatedObject.DataContext as IDropable;
-            ////////////        if (dropObject != null)
-            ////////////        {
-            ////////////            this._dataType = dropObject.DataType;
-            ////////////        }
-            ////////////    }
-            ////////////}
+            
             if (e.Data.GetDataPresent(_dataType))
             {
                 if (this._adorner == null)
@@ -510,6 +514,47 @@ namespace DragAndDropMVVM.Behavior
             typeof(FrameworkElementDropBehavior),
             new UIPropertyMetadata(null));
         #endregion
+
+        #region
+
+        #endregion IsDuplication
+        /// <summary>
+        /// The IsDuplication attached property's name.
+        /// </summary>
+        public const string IsDuplicationPropertyName = "IsDuplication";
+
+        /// <summary>
+        /// Gets the value of the IsDuplication attached property 
+        /// for a given dependency object.
+        /// </summary>
+        /// <param name="obj">The object for which the property value
+        /// is read.</param>
+        /// <returns>The value of the IsDuplication property of the specified object.</returns>
+        public static bool GetIsDuplication(DependencyObject obj)
+        {
+            return (bool)obj.GetValue(IsDuplicationProperty);
+        }
+
+        /// <summary>
+        /// Sets the value of the IsDuplication attached property
+        /// for a given dependency object. 
+        /// </summary>
+        /// <param name="obj">The object to which the property value
+        /// is written.</param>
+        /// <param name="value">Sets the IsDuplication value of the specified object.</param>
+        public static void SetIsDuplication(DependencyObject obj, bool value)
+        {
+            obj.SetValue(IsDuplicationProperty, value);
+        }
+
+        /// <summary>
+        /// Identifies the IsDuplication attached property.
+        /// </summary>
+        public static readonly DependencyProperty IsDuplicationProperty = DependencyProperty.RegisterAttached(
+            IsDuplicationPropertyName,
+            typeof(bool),
+            typeof(FrameworkElementDropBehavior),
+            new UIPropertyMetadata(false));
 
         #endregion
 

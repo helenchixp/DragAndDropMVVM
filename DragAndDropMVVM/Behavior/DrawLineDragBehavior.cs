@@ -40,9 +40,8 @@ namespace DragAndDropMVVM.Behavior
         #region Event Handler
         private void AssociatedObject_QueryContinueDrag(object sender, QueryContinueDragEventArgs e)
         {
-            if (!(sender is ConnectionDiagramBase)) return;
-
-            var element = sender as ConnectionDiagramBase;
+            var element = GetSenderDiagram(sender);
+            if (element == null) return;
 
             DrawLineAdorner adorner = GetDraggingLineAdorner(element);
             Point point = WPFUtil.GetMousePosition(element);
@@ -51,11 +50,12 @@ namespace DragAndDropMVVM.Behavior
 
         private void AssociatedObject_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            if (!(sender is ConnectionDiagramBase)) return;
             if (e.LeftButton == MouseButtonState.Released) return;
 
             //use the connection object base on ConnectionDiagramBase
-            ConnectionDiagramBase element = sender as ConnectionDiagramBase;
+            var element = GetSenderDiagram(sender);
+            if (element == null) return;
+
             Point point = e.GetPosition(element as UIElement);
 
             Point startPoint = element.CenterPosition ?? new Point(0, 0);
@@ -96,9 +96,9 @@ namespace DragAndDropMVVM.Behavior
 
         private void AssociatedObject_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (!(sender is ConnectionDiagramBase)) return;
+            var element = GetSenderDiagram(sender);
+            if (element == null) return;
 
-            var element = sender as ConnectionDiagramBase;
             element.SetValue(ConnectionDiagramBase.IsSelectedProperty, false);
 
             if(element.DataContext is IConnectionDiagramViewModel)
@@ -109,10 +109,11 @@ namespace DragAndDropMVVM.Behavior
 
         private void AssociatedObject_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (!(sender is ConnectionDiagramBase)) return;
             if (e.LeftButton != MouseButtonState.Pressed) return;
 
-            var element = sender as ConnectionDiagramBase;
+            var element = GetSenderDiagram(sender);
+            if (element == null) return;
+
             element.Focus();
             element.SetValue(ConnectionDiagramBase.IsSelectedProperty, true);
 
@@ -291,5 +292,24 @@ namespace DragAndDropMVVM.Behavior
 
         #endregion
 
-    }
+
+        #region Private Method
+
+        private ConnectionDiagramBase GetSenderDiagram(object sender)
+        {
+            ConnectionDiagramBase element = null;
+            if (!(sender is ConnectionDiagramBase))
+            {
+                element = WPFUtil.FindVisualParent<ConnectionDiagramBase>(sender as UIElement);
+            }
+            else
+            {
+                element = sender as ConnectionDiagramBase;
+            }
+            return element;
+        }
+
+    #endregion
+
+}
 }

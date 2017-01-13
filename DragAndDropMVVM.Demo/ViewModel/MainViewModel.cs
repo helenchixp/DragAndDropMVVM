@@ -1,6 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using DragAndDropMVVM.Demo.Model;
 using DragAndDropMVVM.ViewModel;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
@@ -19,7 +20,7 @@ namespace DragAndDropMVVM.Demo.ViewModel
     /// See http://www.galasoft.ch/mvvm
     /// </para>
     /// </summary>
-    public class MainViewModel : ViewModelBase//, IDragable, IDropable
+    public class MainViewModel : ViewModelBase, IDragged//, IDragable, IDropable
     {
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
@@ -34,74 +35,31 @@ namespace DragAndDropMVVM.Demo.ViewModel
             ////{
             ////    // Code runs "for real"
             ////}
+
+            YuriPalletItems.Add(new YuriModel()
+            {
+                ImagePath = "/DragAndDropMVVM.Demo;component/ImagesResource/yuri_01.png",
+                Title = "Sorry!",
+                Detail = "Apologize by Japanese Style",
+                Index = 1,
+            });
+            YuriPalletItems.Add(new YuriModel()
+            {
+                ImagePath = "/DragAndDropMVVM.Demo;component/ImagesResource/yuri_02.png",
+                Title = "Really?",
+                Detail = "I Can't believe it! But it is really!!!",
+                Index = 2,
+            });
+            YuriPalletItems.Add(new YuriModel()
+            {
+                ImagePath = "/DragAndDropMVVM.Demo;component/ImagesResource/yuri_03.png",
+                Title = "Wow!",
+                Detail = "I'm Maccachin.",
+                Index = 3,
+            });
         }
 
-
-        /// <summary>
-        /// The <see cref="FirstName" /> property's name.
-        /// </summary>
-        public const string FirstNamePropertyName = "FirstName";
-
-        private string _firstName = "Victory";
-
-        /// <summary>
-        /// Sets and gets the FirstName property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// This property's value is broadcasted by the MessengerInstance when it changes.
-        /// </summary>
-        public string FirstName
-        {
-            get
-            {
-                return _firstName;
-            }
-
-            set
-            {
-                if (_firstName == value)
-                {
-                    return;
-                }
-
-                var oldValue = _firstName;
-                _firstName = value;
-                RaisePropertyChanged(FirstNamePropertyName, oldValue, value, true);
-            }
-        }
-
-
-        /// <summary>
-            /// The <see cref="LastName" /> property's name.
-            /// </summary>
-        public const string LastNamePropertyName = "LastName";
-
-        private object _lastName = new decimal(3.8);
-
-        /// <summary>
-        /// Sets and gets the LastName property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// This property's value is broadcasted by the MessengerInstance when it changes.
-        /// </summary>
-        public object LastName
-        {
-            get
-            {
-                return _lastName;
-            }
-
-            set
-            {
-                if (_lastName == value)
-                {
-                    return;
-                }
-
-                var oldValue = _lastName;
-                _lastName = value;
-                RaisePropertyChanged(LastNamePropertyName, oldValue, value, true);
-            }
-        }
-
+        public ObservableCollection<YuriModel> YuriPalletItems { get; private set; } = new ObservableCollection<YuriModel>();
 
 
         private RelayCommand<object> _dragCommand;
@@ -153,6 +111,16 @@ namespace DragAndDropMVVM.Demo.ViewModel
                 DroppedItemSource.Add(parameter as StampDiagramViewModel);
             }
 
+            if (parameter is YuriDiagramViewModel)
+            {
+                if (DraggedData != null && DraggedData is YuriModel)
+                {
+                    (parameter as YuriDiagramViewModel).Title = (DraggedData as YuriModel).Title;
+                    (parameter as YuriDiagramViewModel).Detail = (DraggedData as YuriModel).Detail;
+                    (parameter as YuriDiagramViewModel).ImagePath = (DraggedData as YuriModel).ImagePath;
+                    (parameter as YuriDiagramViewModel).IconType = (DraggedData as YuriModel).Index;
+                }
+            }
             ////System.Diagnostics.Debug.WriteLine($"The DropCommandParameter is {(parameter ?? "null").ToString()}");
             //////DroppedItemSource.Add($"{(parameter ?? "null").ToString()}");
             ////int idx = DroppedItemSource.Count;
@@ -285,6 +253,15 @@ namespace DragAndDropMVVM.Demo.ViewModel
 
             return true;
         }
+
+        public object DraggedData
+        {
+            get;
+
+            set;
+        }
+
+
     }
 
 }

@@ -20,15 +20,15 @@ namespace DragAndDropMVVM.Controls
     {
         public ConnectionDiagramBase()
         {
-            //Add the Behavior in code-behind
-            BehaviorCollection bhcol= Interaction.GetBehaviors(this);
-            bhcol.Add(new FrameworkElementDragBehavior());
-            bhcol.Add(new DrawLineDragBehavior());
+            ////Add the Behavior in code-behind
+            //BehaviorCollection bhcol= Interaction.GetBehaviors(this);
+            //bhcol.Add(new FrameworkElementDragBehavior());
+            //bhcol.Add(new DrawLineDragBehavior());
 
-            if(IsDrawLineDropEnabled)
-            {
-                bhcol.Add(new DrawLineDropBehavior());
-            }
+            //if(IsDrawLineDropEnabled)
+            //{
+            //    bhcol.Add(new DrawLineDropBehavior());
+            //}
         }
 
         #region override method
@@ -129,6 +129,7 @@ namespace DragAndDropMVVM.Controls
         /// Gets or sets the value of the <see cref="CenterPosition" />
         /// property. This is a dependency property.
         /// </summary>
+        [Obsolete]
         public Point? CenterPosition
         {
             get

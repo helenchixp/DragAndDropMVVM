@@ -15,14 +15,16 @@ namespace DragAndDropMVVM.Controls
     {
         private Line _drawLine;
 
-        public DrawLineThump()
-        {
-            Focusable = true;
-        }
-
         static DrawLineThump()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(DrawLineThump), new FrameworkPropertyMetadata(typeof(DrawLineThump)));
+        }
+
+
+        public DrawLineThump()
+        {
+            Focusable = true;
+            IsHitTestVisible = true;
         }
 
         #region Override Methods
