@@ -77,7 +77,9 @@ namespace DragAndDropMVVM.Behavior
 
         protected override Size MeasureOverride(Size finalSize)
         {
-            //System.Diagnostics.Debug.WriteLine("finalSize :" + finalSize.ToString() + "_ghost.DesiredSize:" + _ghost.DesiredSize);
+            //System.Diagnostics.Debug.WriteLine("###########    StartPoint    " + _startPoint.ToString());
+            //System.Diagnostics.Debug.WriteLine("###########    Current    " + Position.ToString());
+            //System.Diagnostics.Debug.WriteLine("finalSize :" + finalSize.ToString() + "_ghost.DesiredSize:" + _line.DesiredSize);
 
             //System.Diagnostics.Debug.Write(string.Format("_ghost Size {0}, {1}, {2} , {3}" , _ghost.X1,_ghost.Y1, _ghost.X2, _ghost.Y2));
 
@@ -85,6 +87,8 @@ namespace DragAndDropMVVM.Behavior
 
             _line.X1 = _startPoint.X - Position.X;
             _line.Y1 = _startPoint.Y - Position.Y;
+
+            //System.Diagnostics.Debug.WriteLine($"........Line X1={_line.X1}  Y1={_line.Y1}  X2={_line.X2}  Y2={_line.Y2}");
 
             _line.Measure(finalSize);
 

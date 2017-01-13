@@ -62,10 +62,7 @@ namespace DragAndDropMVVM.Behavior
 
                     if (dropcommand != null)
                     {
-                        object parameter = GetDropCommandParameter(element);// ??
-                         //   (e.Data.GetDataPresent(DataFormats.Serializable) ? e.Data.GetData(DataFormats.Serializable) : null));
-                        //??
-                        // this.AssociatedObject.DataContext;
+                        object parameter = GetDropCommandParameter(element);
 
                         if(this.AssociatedObject.DataContext is IDragged)
                         {
@@ -77,12 +74,12 @@ namespace DragAndDropMVVM.Behavior
 
                             Point point = e.GetPosition(element);
 
-                            System.Diagnostics.Debug.WriteLine($"{nameof(AssociatedObject_Drop)} Current Point : X:{point.X} Y:{point.Y}");
+                            ////System.Diagnostics.Debug.WriteLine($"{nameof(AssociatedObject_Drop)} Current Point : X:{point.X} Y:{point.Y}");
 
                             ////TODO: Add the 
                             Canvas droppedcanvas = GetDroppedCanvas(element);
 
-                            // if copy the 
+                            // if copy this dragobj 
                             if (!GetIsFixedPosition(element) && droppedcanvas != null)
                             {
                                 UIElement dragelement = e.Data.GetDataPresent(typeof(UIElement)) ? e.Data.GetData(typeof(UIElement)) as UIElement : null;

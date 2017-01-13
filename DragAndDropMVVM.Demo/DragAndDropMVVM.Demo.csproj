@@ -78,6 +78,7 @@
     <Compile Include="Controls\StampDiagram.cs" />
     <Compile Include="Controls\StampLine.cs" />
     <Compile Include="Controls\YuriDiagram.cs" />
+    <Compile Include="Controls\YuriLine.cs" />
     <Compile Include="Model\MatsunoBrotherModel.cs" />
     <Compile Include="Model\YuriModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
@@ -85,6 +86,7 @@
     <Compile Include="ViewModel\StampLineViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="ViewModel\YuriDiagramViewModel.cs" />
+    <Compile Include="ViewModel\YuriLineViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

@@ -54,43 +54,95 @@
         <Setter Property="b:DrawLineDropBehavior.DropLineCommand" Value="{Binding  RelativeSource={RelativeSource AncestorType=Window,Mode=FindAncestor}, Path=DataContext.DropLineCommand}" />
         <Setter Property="b:DrawLineDropBehavior.DropLineCommandParameter" Value="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}" />
         <Setter Property="b:DrawLineDropBehavior.DroppedLineCanvas" Value="{Binding ElementName=myDroppedCanvas}" />
-        <!--<Setter Property="b:DrawLineDropBehavior.DropLineControlType" Value="{x:Type ctrl:StampLine}" />-->
+        <Setter Property="b:DrawLineDropBehavior.DropLineControlType" Value="{x:Type ctrl:YuriLine}" />
         <Setter Property="b:FrameworkElementDragBehavior.DragCommand" Value="{Binding  RelativeSource={RelativeSource AncestorType=Window,Mode=FindAncestor}, Path=DataContext.DragCommand}" />
         <Setter Property="b:FrameworkElementDragBehavior.DragCommandParameter" Value="Test" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ctrl:YuriDiagram}">
                     <Border Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
+                            BorderBrush="Honeydew"
+                            BorderThickness="2"
                             x:Name="PART_Border">
-                        <!--<i:Interaction.Behaviors>
-                            <b:FrameworkElementDragBehavior/>
-                        </i:Interaction.Behaviors>-->
+
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
-                            <Image Source="{Binding ImagePath}" Height="80" Width="80" ToolTip="{Binding Detail}">
-                                   <!--b:DrawLineDragBehavior.DragLineCommand="{TemplateBinding b:DrawLineDragBehavior.DragLineCommand}"
-                                   b:DrawLineDragBehavior.DragLineCommandParameter="{TemplateBinding b:DrawLineDragBehavior.DragLineCommandParameter}"
-                                   b:DrawLineDropBehavior.DropLineCommand="{TemplateBinding b:DrawLineDropBehavior.DropLineCommand}"
-                                   b:DrawLineDropBehavior.DropLineCommandParameter="{TemplateBinding b:DrawLineDropBehavior.DropLineCommandParameter}"
-                                   b:DrawLineDropBehavior.DroppedLineCanvas="{TemplateBinding b:DrawLineDropBehavior.DroppedLineCanvas}"
-                                   b:DrawLineDropBehavior.DropLineControlType="{TemplateBinding b:DrawLineDropBehavior.DropLineControlType}"-->
-                                   
-                            
-                                <!--<i:Interaction.Behaviors>
-                                    <b:DrawLineDragBehavior/>
-                                </i:Interaction.Behaviors>-->
+                            <Image Source="{Binding ImagePath}" Height="80" Width="80" ToolTip="{Binding Detail}" IsHitTestVisible="True">
+                         
                             </Image>
-                            <TextBlock Text="{Binding Title}" Grid.Row="1" FontSize="16"/>
+                            <TextBlock Text="{Binding Title}" Grid.Row="1" FontSize="16" IsHitTestVisible="True" HorizontalAlignment="Center"/>
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsSelected" Value="True">
+                        <Trigger Property="IsFocused" Value="True">
                             <Setter Property="BorderBrush" Value="Red" TargetName="PART_Border"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type ctrl:YuriLine}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ctrl:YuriLine}">
+                    <Canvas>
+                        <Line x:Name="PART_DrawLine"
+                              X1="{TemplateBinding X1}" 
+                              X2="{TemplateBinding X2}"
+                              Y1="{TemplateBinding Y1}" 
+                              Y2="{TemplateBinding Y2}"
+                              StrokeThickness="4" Stroke="Purple"/>
+                        <Ellipse x:Name="PART_StartPoint" Width="16" Height="16"
+                                 Fill="Purple"
+                                 Margin="-8"
+                                 Canvas.Left="{TemplateBinding X1}"
+                                 Canvas.Top="{TemplateBinding Y1}"/>
+
+                        <Polygon x:Name="PART_EndPoint"
+                                 Points="-5,11 11, -5 16,16"
+                                 Fill="Purple"
+                                 Margin="-5"
+                                 Canvas.Left="{TemplateBinding X2}"
+                                 Canvas.Top="{TemplateBinding Y2}">
+                            <Polygon.RenderTransform>
+                                <RotateTransform Angle="{TemplateBinding Angle}" CenterX="{TemplateBinding X2}" CenterY="{TemplateBinding Y2}"/>
+                            </Polygon.RenderTransform>
+                        </Polygon>
+                        <ContentPresenter />
+                    </Canvas>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Stroke" Value="Blue" TargetName="PART_DrawLine"/>
+                            <Setter Property="Fill" Value="Blue" TargetName="PART_StartPoint"/>
+                            <Setter Property="Fill" Value="Blue" TargetName="PART_EndPoint"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Cursor" Value="Hand"  TargetName="PART_DrawLine"/>
+                            <Setter Property="Stroke" Value="Yellow" TargetName="PART_DrawLine"/>
+                            <Setter Property="Effect" TargetName="PART_DrawLine">
+                                <Setter.Value>
+                                    <DropShadowEffect BlurRadius="3"
+                                      Direction="315"
+                                      ShadowDepth="2"
+                                      Color="Pink" />
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Cursor" Value="Hand"  TargetName="PART_StartPoint"/>
+                            <Setter Property="Fill" Value="Yellow" TargetName="PART_StartPoint"/>
+                            <Setter Property="Effect" TargetName="PART_StartPoint">
+                                <Setter.Value>
+                                    <DropShadowEffect BlurRadius="3"
+                                      Direction="315"
+                                      ShadowDepth="2"
+                                      Color="Pink" />
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Fill" Value="Yellow" TargetName="PART_EndPoint"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

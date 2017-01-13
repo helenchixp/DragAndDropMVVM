@@ -37,7 +37,7 @@ namespace DragAndDropMVVM.Controls
 
             if(_drawLine!=null)
             {
-
+                Angle = Math.Atan2(Y1 - Y2, X1 - X2);
             }
         }
 
@@ -177,7 +177,39 @@ namespace DragAndDropMVVM.Controls
             new FrameworkPropertyMetadata(0.0, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
         #endregion
 
+        #region Angle
 
+        /// <summary>
+        /// The <see cref="Angle" /> dependency property's name.
+        /// </summary>
+        public const string AnglePropertyName = "Angle";
+
+        /// <summary>
+        /// Gets or sets the value of the <see cref="Angle" />
+        /// property. This is a dependency property.
+        /// </summary>
+        public double Angle
+        {
+            get
+            {
+                return (double)GetValue(AngleProperty);
+            }
+            set
+            {
+                SetValue(AngleProperty, value);
+            }
+        }
+
+        /// <summary>
+        /// Identifies the <see cref="Angle" /> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty AngleProperty = DependencyProperty.Register(
+            AnglePropertyName,
+            typeof(double),
+            typeof(DrawLineThump),
+            new FrameworkPropertyMetadata(0.0, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        #endregion
 
         #endregion
 

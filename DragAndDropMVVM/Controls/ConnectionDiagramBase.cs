@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Interactivity;
 using System.Windows.Media;
 using DragAndDropMVVM.Behavior;
@@ -33,25 +34,53 @@ namespace DragAndDropMVVM.Controls
 
         #region override method
 
-        protected override void OnInitialized(EventArgs e)
+
+        public override void OnApplyTemplate()
         {
-            base.OnInitialized(e);
+            base.OnApplyTemplate();
+
+            Focusable = true;
+            IsHitTestVisible = true;
 
             //set the AllowDrop
             if (IsDrawLineDropEnabled)
             {
                 this.AllowDrop = true;
 
-                if(this.Content is UIElement)
+                if (this.Content is UIElement)
                 {
                     // (this.Content as UIElement).AllowDrop = true;
                     SetContentAllowDrop(this.Content as UIElement);
                 }
             }
 
-            
         }
 
+        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        {
+            base.OnMouseLeftButtonDown(e);
+
+            Focus();
+        }
+
+        protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
+        {
+            base.OnMouseLeftButtonUp(e);
+        }
+
+        protected override void OnGotFocus(RoutedEventArgs e)
+        {
+            IsSelected = true;
+
+            base.OnGotFocus(e);
+        }
+
+        protected override void OnLostFocus(RoutedEventArgs e)
+        {
+            IsSelected = false;
+
+            base.OnLostFocus(e);
+        }
         #endregion
 
         #region private method
