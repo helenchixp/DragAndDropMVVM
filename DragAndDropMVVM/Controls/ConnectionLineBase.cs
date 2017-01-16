@@ -42,6 +42,7 @@ namespace DragAndDropMVVM.Controls
 
 
         #region Dependence Properties
+
         #region DoubleClickCommand
 
         #endregion
@@ -80,6 +81,14 @@ namespace DragAndDropMVVM.Controls
 
         #endregion
 
+        #endregion
+
+        #region Virtual Method
+
+        public virtual void ResetPosition(DragEventArgs e)
+        {
+
+        }
         #endregion
 
     }

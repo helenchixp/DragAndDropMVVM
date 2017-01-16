@@ -29,6 +29,7 @@ namespace DragAndDropMVVM.Controls
 
         #region Override Methods
 
+        #region OnApplyTemplate
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
@@ -40,7 +41,28 @@ namespace DragAndDropMVVM.Controls
                 Angle = Math.Atan2(Y1 - Y2, X1 - X2);
             }
         }
+        #endregion
 
+        #region ResetPosition [Custom Virtual Method]
+
+        //public override void ResetPosition(DragEventArgs e)
+        //{
+        //    if (OriginDiagram != null && TerminalDiagram != null)
+        //    {
+        //        var opoint = e.GetPosition(TerminalDiagram) - e.GetPosition(OriginDiagram) + OriginDiagram.CenterPosition;
+        //        var tpoint = TerminalDiagram.CenterPosition;
+
+        //        X1 = opoint.X;
+        //        Y1 = opoint.Y;
+        //        X2 = tpoint.X;
+        //        Y2 = tpoint.Y;
+
+        //        this.UpdateLayout();
+        //    }
+
+        //    base.ResetPosition(e);
+        //}
+        #endregion
         #endregion
 
         #region Dependence Properties

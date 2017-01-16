@@ -226,6 +226,8 @@ namespace DragAndDropMVVM.Demo.ViewModel
             var dragobj = ddobj.Item1 as IConnectionDiagramViewModel;
             var dropobj = ddobj.Item2 as IConnectionDiagramViewModel;
 
+            if (dragobj == dropobj) return false;
+
             if (dropobj == null || dragobj == null) return false;
 
             if (dragobj.ArrivalLinesViewModel != null)

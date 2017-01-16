@@ -282,5 +282,23 @@ namespace DragAndDropMVVM.Controls
 
         #endregion
 
+        #region Public Method
+
+        #region ResetLinesPosition
+        //public void ResetLinesPosition(DragEventArgs e)
+        //{
+        //    foreach(var dline in DepartureLines)
+        //    {
+        //        dline.ResetPosition(e);
+        //    }
+        //    foreach(var aline in ArrivalLines)
+        //    {
+        //        aline.ResetPosition(e);
+        //    }
+        //}
+        #endregion
+
+        #endregion
+
     }
 }

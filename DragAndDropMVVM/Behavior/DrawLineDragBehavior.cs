@@ -58,7 +58,11 @@ namespace DragAndDropMVVM.Behavior
 
             Point point = e.GetPosition(element as UIElement);
 
+
             Point startPoint = element.CenterPosition;// ?? new Point(0, 0);
+
+
+            if (!WPFUtil.IsCenterDragging(startPoint, point, 5)) return;
 
             if (!WPFUtil.IsDragging(startPoint, point)) return;
 
@@ -96,6 +100,7 @@ namespace DragAndDropMVVM.Behavior
 
         private void AssociatedObject_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
+
             var element = GetSenderDiagram(sender);
             if (element == null) return;
 
@@ -109,6 +114,8 @@ namespace DragAndDropMVVM.Behavior
 
         private void AssociatedObject_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            System.Diagnostics.Debug.WriteLine($"+++++++++++++++++++++++{nameof(DrawLineDragBehavior)}.{nameof(AssociatedObject_MouseLeftButtonDown)}");
+
             if (e.LeftButton != MouseButtonState.Pressed) return;
 
             var element = GetSenderDiagram(sender);

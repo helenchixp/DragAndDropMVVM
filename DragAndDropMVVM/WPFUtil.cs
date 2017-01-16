@@ -282,6 +282,23 @@ namespace DragAndDropMVVM
         }
         #endregion
 
+        #region IsCenterDragging
+        internal static bool IsCenterDragging(Point centerpoint, Point currentpoint, double rangedistance = 0.0)
+        {
+            if (rangedistance < SystemParameters.MinimumHorizontalDragDistance || rangedistance < SystemParameters.MinimumVerticalDragDistance)
+            {
+                if (Math.Abs(centerpoint.X - currentpoint.X) > SystemParameters.MinimumHorizontalDragDistance) return true;
+                if (Math.Abs(centerpoint.Y - currentpoint.Y) > SystemParameters.MinimumVerticalDragDistance) return true;
+            }
+            else
+            {
+                if (Math.Abs(centerpoint.X - currentpoint.X) < rangedistance) return true;
+                if (Math.Abs(centerpoint.Y - currentpoint.Y) < rangedistance) return true;
+            }
+            return false;
+        }
+        #endregion
+
         #region IsCorrectType
         internal static bool IsCorrectType(Type checktype, Type correcttype)
         {
