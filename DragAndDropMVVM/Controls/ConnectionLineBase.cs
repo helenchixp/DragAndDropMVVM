@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 
@@ -12,6 +13,23 @@ namespace DragAndDropMVVM.Controls
     public class ConnectionLineBase : Thumb
     {
         #region Override Method
+
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+
+            this.CommandBindings.Add(new CommandBinding(ApplicationCommands.Delete,
+                        (sender, e) =>
+                        {
+                            DeleteCommand.Execute(DataContext);
+                            DeleteLine();
+                        },
+                        (sender, e) =>
+                        {
+                            e.CanExecute = DeleteCommand?.CanExecute(DataContext) ?? false;
+                        }
+                        ));
+        }
 
         protected override void OnGotFocus(RoutedEventArgs e)
         {
@@ -30,6 +48,22 @@ namespace DragAndDropMVVM.Controls
 
             base.OnLostFocus(e);
         }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            if(e.Key == Key.Delete)
+            {
+                if (DeleteCommand?.CanExecute(DataContext) ?? false)
+                {
+                    DeleteCommand.Execute(DataContext);
+                    DeleteLine();
+                }
+            }
+
+            base.OnKeyDown(e);
+
+        }
+
         #endregion
 
         #region Property
@@ -44,6 +78,41 @@ namespace DragAndDropMVVM.Controls
         #region Dependence Properties
 
         #region DoubleClickCommand
+
+        #endregion
+
+
+        #region DeleteCommand
+
+        /// <summary>
+        /// The <see cref="DeleteCommand" /> dependency property's name.
+        /// </summary>
+        public const string DeleteCommandPropertyName = "DeleteCommand";
+
+        /// <summary>
+        /// Gets or sets the value of the <see cref="DeleteCommand" />
+        /// property. This is a dependency property.
+        /// </summary>
+        public ICommand DeleteCommand
+        {
+            get
+            {
+                return (ICommand)GetValue(DeleteCommandProperty);
+            }
+            set
+            {
+                SetValue(DeleteCommandProperty, value);
+            }
+        }
+
+        /// <summary>
+        /// Identifies the <see cref="DeleteCommand" /> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty DeleteCommandProperty = DependencyProperty.Register(
+            DeleteCommandPropertyName,
+            typeof(ICommand),
+            typeof(ConnectionLineBase),
+            new UIPropertyMetadata(null));
 
         #endregion
 
@@ -90,6 +159,25 @@ namespace DragAndDropMVVM.Controls
 
         }
         #endregion
+
+        #region Private Method
+        private void DeleteLine()
+        {
+            if (OriginDiagram != null && OriginDiagram.DepartureLines.Any())
+            {
+                OriginDiagram.DepartureLines.Remove(this);
+            }
+
+            if (TerminalDiagram != null && TerminalDiagram.ArrivalLines.Any())
+            {
+                TerminalDiagram.ArrivalLines.Remove(this);
+            }
+
+            WPFUtil.FindVisualParent<Canvas>(this).Children.Remove(this);
+        }
+
+        #endregion
+
 
     }
 }

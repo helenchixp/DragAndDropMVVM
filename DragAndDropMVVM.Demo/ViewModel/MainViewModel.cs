@@ -121,14 +121,6 @@ namespace DragAndDropMVVM.Demo.ViewModel
                     (parameter as YuriDiagramViewModel).IconType = (DraggedData as YuriModel).Index;
                 }
             }
-            ////System.Diagnostics.Debug.WriteLine($"The DropCommandParameter is {(parameter ?? "null").ToString()}");
-            //////DroppedItemSource.Add($"{(parameter ?? "null").ToString()}");
-            ////int idx = DroppedItemSource.Count;
-            ////DroppedItemSource.Add(new StampDiagramViewModel()
-            ////{
-            ////    Index = idx,
-            ////});
-
         }
 
         private bool CanExecuteDropCommand(object parameter)
@@ -188,7 +180,8 @@ namespace DragAndDropMVVM.Demo.ViewModel
 
         private void ExecuteDragLineCommand(object parameter)
         {
-            System.Diagnostics.Debug.WriteLine($"Drag Diagram ID:{(parameter as StampDiagramViewModel)?.Index}");
+
+
         }
 
         private bool CanExecuteDragLineCommand(object parameter)
@@ -215,17 +208,26 @@ namespace DragAndDropMVVM.Demo.ViewModel
 
         private void ExecuteDropLineCommand(object parameter)
         {
-            System.Diagnostics.Debug.WriteLine($"Drop Diagram ID:{(parameter as StampDiagramViewModel)?.Index}");
+            if (parameter == null || !(parameter is IConnectionLineViewModel)) return;
+
+            var linevm = (parameter as IConnectionLineViewModel);
+
+            linevm.OriginDiagramViewModel.DepartureLinesViewModel.Add(linevm);
+            linevm.TerminalDiagramViewModel.ArrivalLinesViewModel.Add(linevm);
         }
 
         private bool CanExecuteDropLineCommand(object parameter)
         {
-            var ddobj = parameter as Tuple<object, object>;
+            ////var ddobj = parameter as Tuple<object, object>;
 
-            if (ddobj == null) return false;
+            ////if (ddobj == null) return false;
 
-            var dragobj = ddobj.Item1 as IConnectionDiagramViewModel;
-            var dropobj = ddobj.Item2 as IConnectionDiagramViewModel;
+            ////var dragobj = ddobj.Item1 as IConnectionDiagramViewModel;
+            ////var dropobj = ddobj.Item2 as IConnectionDiagramViewModel;
+
+            if (parameter == null || !(parameter is IConnectionLineViewModel)) return false;
+            var dragobj = (parameter as IConnectionLineViewModel).OriginDiagramViewModel;
+            var dropobj = (parameter as IConnectionLineViewModel).TerminalDiagramViewModel;
 
             if (dragobj == dropobj) return false;
 
@@ -281,7 +283,12 @@ namespace DragAndDropMVVM.Demo.ViewModel
 
         private void ExecuteDeleteLineCommand(object parameter)
         {
+            if (parameter == null || !(parameter is IConnectionLineViewModel) ) return;
 
+            var linevm = parameter as IConnectionLineViewModel;
+
+            linevm.OriginDiagramViewModel.DepartureLinesViewModel.Remove(linevm);
+            linevm.TerminalDiagramViewModel.ArrivalLinesViewModel.Remove(linevm);
         }
 
         private bool CanExecuteDeleteLineCommand(object parameter)

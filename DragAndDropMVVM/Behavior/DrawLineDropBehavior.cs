@@ -53,10 +53,7 @@ namespace DragAndDropMVVM.Behavior
 
                     if (dropcommand != null)
                     {
-                        object parameter = GetDropLineCommandParameter(element);//(GetDropLineCommandParameter(element) ??
-                                                                                //(e.Data.GetDataPresent(DataFormats.Serializable) ? e.Data.GetData(DataFormats.Serializable) : null));
-                                                                                //??
-                                                                                //this.AssociatedObject.DataContext;
+                        object parameter = GetDropLineCommandParameter(element);
 
 
                         Point point = e.GetPosition(element);
@@ -70,7 +67,7 @@ namespace DragAndDropMVVM.Behavior
 
                         double x1, y1, x2, y2 = 0.0;
 
-                        if(origindiagram.ConnectorPositionType != ConnectorPositionType.Custom)
+                        if (origindiagram.ConnectorPositionType != ConnectorPositionType.Custom)
                         {
                             Point orpos = e.GetPosition(terminaldiagram) - e.GetPosition(origindiagram) + origindiagram.CenterPosition;
                             x1 = orpos.X;
@@ -82,7 +79,7 @@ namespace DragAndDropMVVM.Behavior
                             y1 = adn.GetLineStartEndPosition().Item2;
                         }
 
-                        if(terminaldiagram.ConnectorPositionType != ConnectorPositionType.Custom)
+                        if (terminaldiagram.ConnectorPositionType != ConnectorPositionType.Custom)
                         {
                             x2 = terminaldiagram.CenterPosition.X;
                             y2 = terminaldiagram.CenterPosition.Y;
@@ -142,7 +139,28 @@ namespace DragAndDropMVVM.Behavior
                         }
 
 
-                        if (dropcommand.CanExecute(new Tuple<object, object>(origindiagram.DataContext, terminaldiagram.DataContext)))
+
+                        //add the relation in viewmodel 
+                        IConnectionLineViewModel linevm = (conline as ConnectionLineBase)?.DataContext as IConnectionLineViewModel;
+
+                        if (linevm != null)
+                        {
+                            IConnectionDiagramViewModel originvm = origindiagram.DataContext as IConnectionDiagramViewModel;
+                            IConnectionDiagramViewModel terminalvm = terminaldiagram.DataContext as IConnectionDiagramViewModel;
+
+                            if (originvm != null)
+                            {
+                                linevm.OriginDiagramViewModel = originvm;
+                            }
+
+                            if (terminalvm != null)
+                            {
+                                linevm.TerminalDiagramViewModel = terminalvm;
+                            }
+                        }
+
+
+                        if (dropcommand.CanExecute(linevm))
                         {
 
                             Canvas.SetTop(conline, (double)element.GetValue(Canvas.TopProperty));
@@ -162,44 +180,15 @@ namespace DragAndDropMVVM.Behavior
                             droppedcanvas.Children.Add(conline);
 
 
-                            //add the relation in viewmodel 
-                            if (conline is ConnectionLineBase)
+
+
+                            if (linevm == null)
                             {
-                                IConnectionLineViewModel linevm = (conline as ConnectionLineBase).DataContext as IConnectionLineViewModel;
-
-                                if (linevm != null)
-                                {
-                                    IConnectionDiagramViewModel originvm = origindiagram.DataContext as IConnectionDiagramViewModel;
-                                    IConnectionDiagramViewModel terminalvm = terminaldiagram.DataContext as IConnectionDiagramViewModel;
-
-                                    if (originvm != null)
-                                    {
-                                        if (originvm.ArrivalLinesViewModel != null)
-                                        {
-                                            originvm.ArrivalLinesViewModel.Add(linevm);
-                                        }
-                                        linevm.OriginDiagramViewModel = originvm;
-                                    }
-
-                                    if (terminalvm != null)
-                                    {
-                                        //terminalvm.DragFromDiagramViewModel = originvm;
-                                        if (terminalvm.DepartureLinesViewModel != null)
-                                        {
-                                            terminalvm.DepartureLinesViewModel.Add(linevm);
-                                        }
-                                        linevm.TerminalDiagramViewModel = terminalvm;
-                                    }
-                                }
-                            }
-
-                            if (parameter == null)
-                            {
-                                dropcommand.Execute((conline as ConnectionLineBase).DataContext);
+                                dropcommand.Execute(parameter);
                             }
                             else
                             {
-                                dropcommand.Execute(parameter);
+                                dropcommand.Execute(linevm);
                             }
 
                         }

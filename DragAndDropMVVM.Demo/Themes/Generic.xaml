@@ -103,11 +103,12 @@
     </Style>
 
     <Style TargetType="{x:Type ctrl:YuriLine}">
-        <Setter Property="Tag" Value="{Binding DataContext, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"/>
+        <!--<Setter Property="Tag" Value="{Binding DataContext, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"/>-->
+        <Setter Property="DeleteCommand" Value="{Binding  RelativeSource={RelativeSource AncestorType=Window,Mode=FindAncestor}, Path=DataContext.DeleteLineCommand}"/>
         <Setter Property="ContextMenu">
             <Setter.Value>
                 <ContextMenu>
-                    <MenuItem Header="_Delete" Command="{Binding Path=PlacementTarget.Tag.DeleteLineCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" CommandParameter="{Binding}" />
+                    <MenuItem Header="_Delete Line" Command="ApplicationCommands.Delete"/>
                 </ContextMenu>
             </Setter.Value>
         </Setter>
