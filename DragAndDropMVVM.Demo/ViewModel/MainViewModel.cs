@@ -212,6 +212,7 @@ namespace DragAndDropMVVM.Demo.ViewModel
             }
         }
 
+
         private void ExecuteDropLineCommand(object parameter)
         {
             System.Diagnostics.Debug.WriteLine($"Drop Diagram ID:{(parameter as StampDiagramViewModel)?.Index}");
@@ -263,7 +264,67 @@ namespace DragAndDropMVVM.Demo.ViewModel
             set;
         }
 
+        private RelayCommand<object> _deleteLineCommand;
 
+        /// <summary>
+        /// Gets the DeleteLineCommand.
+        /// </summary>
+        public RelayCommand<object> DeleteLineCommand
+        {
+            get
+            {
+                return _deleteLineCommand ?? (_deleteLineCommand = new RelayCommand<object>(
+                    ExecuteDeleteLineCommand,
+                    CanExecuteDeleteLineCommand));
+            }
+        }
+
+        private void ExecuteDeleteLineCommand(object parameter)
+        {
+
+        }
+
+        private bool CanExecuteDeleteLineCommand(object parameter)
+        {
+            return true;
+        }
+
+
+
+        private RelayCommand<object> _deleteDiagramCommand;
+
+        /// <summary>
+        /// Gets the MyCommand.
+        /// </summary>
+        public RelayCommand<object> DeleteDiagramCommand
+        {
+            get
+            {
+                return _deleteDiagramCommand ?? (_deleteDiagramCommand = new RelayCommand<object>(
+                    ExecuteDeleteDiagramCommand,
+                    CanExecuteDeleteDiagramCommand));
+            }
+        }
+
+        private void ExecuteDeleteDiagramCommand(object parameter)
+        {
+
+        }
+
+        private bool CanExecuteDeleteDiagramCommand(object parameter)
+        {
+
+            if (parameter == null) return true;
+
+            if(parameter is YuriDiagramViewModel)
+            {
+                return (parameter as YuriDiagramViewModel).ArrivalLinesViewModel.Count == 0
+                     &&
+                      (parameter as YuriDiagramViewModel).DepartureLinesViewModel.Count == 0;
+            }
+
+            return true;
+        }
     }
 
 }

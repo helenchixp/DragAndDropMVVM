@@ -21,15 +21,7 @@ namespace DragAndDropMVVM.Controls
     {
         public ConnectionDiagramBase()
         {
-            ////Add the Behavior in code-behind
-            //BehaviorCollection bhcol= Interaction.GetBehaviors(this);
-            //bhcol.Add(new FrameworkElementDragBehavior());
-            //bhcol.Add(new DrawLineDragBehavior());
-
-            //if(IsDrawLineDropEnabled)
-            //{
-            //    bhcol.Add(new DrawLineDropBehavior());
-            //}
+         
         }
 
         #region override method
@@ -49,16 +41,27 @@ namespace DragAndDropMVVM.Controls
 
                 if (this.Content is UIElement)
                 {
-                    // (this.Content as UIElement).AllowDrop = true;
                     SetContentAllowDrop(this.Content as UIElement);
                 }
             }
 
+            this.CommandBindings.Add(new CommandBinding(ApplicationCommands.Delete, 
+                                    (sender, e) =>
+                                    {
+                                        DeleteCommand.Execute(DataContext);
+                                        DeleteDiagramAndLines();
+                                    },
+                                    (sender, e) =>
+                                    {
+                                        e.CanExecute = DeleteCommand?.CanExecute(DataContext) ?? false;
+                                    }
+                                    ));
+
         }
 
-        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        protected override void OnMouseDown(MouseButtonEventArgs e)
         {
-            base.OnMouseLeftButtonDown(e);
+            base.OnMouseDown(e);
 
             Focus();
         }
@@ -81,6 +84,36 @@ namespace DragAndDropMVVM.Controls
 
             base.OnLostFocus(e);
         }
+
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+
+            if (e.Key == Key.Delete)
+            {
+                if (DeleteCommand != null && DeleteCommand.CanExecute(DataContext))
+                {
+                    DeleteCommand.Execute(DataContext);
+                    DeleteDiagramAndLines();
+                }
+            }
+
+            base.OnKeyDown(e);
+        }
+
+        protected override void OnContextMenuOpening(ContextMenuEventArgs e)
+        {
+            base.OnContextMenuOpening(e);
+
+         
+
+        }
+
+        protected override void OnContextMenuClosing(ContextMenuEventArgs e)
+        {
+            base.OnContextMenuClosing(e);
+        }
+
         #endregion
 
         #region private method
@@ -111,6 +144,36 @@ namespace DragAndDropMVVM.Controls
             {
                 return;
             }
+        }
+
+
+        private void DeleteDiagramAndLines()
+        {
+            if (DepartureLines != null && DepartureLines.Any())
+            {
+                foreach(var dline in DepartureLines)
+                {
+                    dline.TerminalDiagram.ArrivalLines.Remove(dline);
+
+                    WPFUtil.FindVisualParent<Canvas>(dline).Children.Remove(dline);
+                }
+            }
+
+            if (ArrivalLines != null && ArrivalLines.Any())
+            {
+                foreach(var aline in ArrivalLines)
+                {
+                    aline.OriginDiagram.DepartureLines.Remove(aline);
+
+                    WPFUtil.FindVisualParent<Canvas>(aline).Children.Remove(aline);
+
+                }
+            }
+
+            this.ArrivalLines.Clear();
+            this.DepartureLines.Clear();
+
+            WPFUtil.FindVisualParent<Canvas>(this).Children.Remove(this);
         }
         #endregion
 
@@ -211,6 +274,50 @@ namespace DragAndDropMVVM.Controls
             typeof(ConnectionDiagramBase),
             new UIPropertyMetadata(ConnectorPositionType.Custom));
         #endregion
+
+        /// <summary>
+        /// The <see cref="DeleteCommand" /> dependency property's name.
+        /// </summary>
+        public const string DeleteCommandPropertyName = "DeleteCommand";
+
+        /// <summary>
+        /// Gets or sets the value of the <see cref="DeleteCommand" />
+        /// property. This is a dependency property.
+        /// </summary>
+        public ICommand DeleteCommand
+        {
+            get
+            {
+                return (ICommand)GetValue(DeleteCommandProperty);
+            }
+            set
+            {
+                SetValue(DeleteCommandProperty, value);
+            }
+        }
+
+        /// <summary>
+        /// Identifies the <see cref="DeleteCommand" /> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty DeleteCommandProperty = DependencyProperty.Register(
+            DeleteCommandPropertyName,
+            typeof(ICommand),
+            typeof(ConnectionDiagramBase),
+            new UIPropertyMetadata(null, (d, e) => {
+
+            }, 
+                (d, o) => {
+                    if (o is ICommand)
+                    {
+                        //(o as ICommand).CanExecuteChanged += (s, e) =>
+                        //{
+                        //    System.Diagnostics.Debug.WriteLine("00000000000000000000000");
+                        //};
+
+                    }
+
+                    return o; } 
+                ));
 
         #endregion
 

@@ -49,6 +49,13 @@
 
     <Style TargetType="{x:Type ctrl:YuriDiagram}">
         <Setter Property="ConnectorPositionType" Value="Center" />
+        <Setter Property="ContextMenu">
+            <Setter.Value>
+                <ContextMenu x:Name="contextMenu">
+                    <MenuItem Header="_Delete Me!" Command="ApplicationCommands.Delete" />
+                </ContextMenu>
+            </Setter.Value>
+        </Setter>
         <Setter Property="b:DrawLineDragBehavior.DragLineCommand" Value="{Binding  RelativeSource={RelativeSource AncestorType=Window,Mode=FindAncestor}, Path=DataContext.DragLineCommand}" />
         <Setter Property="b:DrawLineDragBehavior.DragLineCommandParameter" Value="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}" />
         <Setter Property="b:DrawLineDropBehavior.DropLineCommand" Value="{Binding  RelativeSource={RelativeSource AncestorType=Window,Mode=FindAncestor}, Path=DataContext.DropLineCommand}" />
@@ -57,6 +64,7 @@
         <Setter Property="b:DrawLineDropBehavior.DropLineControlType" Value="{x:Type ctrl:YuriLine}" />
         <Setter Property="b:FrameworkElementDragBehavior.DragCommand" Value="{Binding  RelativeSource={RelativeSource AncestorType=Window,Mode=FindAncestor}, Path=DataContext.DragCommand}" />
         <Setter Property="b:FrameworkElementDragBehavior.DragCommandParameter" Value="Test" />
+        <Setter Property="DeleteCommand" Value="{Binding  RelativeSource={RelativeSource AncestorType=Window,Mode=FindAncestor}, Path=DataContext.DeleteDiagramCommand}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ctrl:YuriDiagram}">
@@ -64,7 +72,6 @@
                             BorderBrush="Honeydew"
                             BorderThickness="2"
                             x:Name="PART_Border">
-
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
@@ -84,9 +91,26 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsFocused" Value="False">
+                <Setter Property="ContextMenu" Value="{x:Null}" />
+            </Trigger>
+            <Trigger Property="DeleteCommand" Value="{x:Null}">
+                <Setter Property="ContextMenu" Value="{x:Null}" />
+            </Trigger>
+        </Style.Triggers>
+        
     </Style>
 
     <Style TargetType="{x:Type ctrl:YuriLine}">
+        <Setter Property="Tag" Value="{Binding DataContext, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"/>
+        <Setter Property="ContextMenu">
+            <Setter.Value>
+                <ContextMenu>
+                    <MenuItem Header="_Delete" Command="{Binding Path=PlacementTarget.Tag.DeleteLineCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" CommandParameter="{Binding}" />
+                </ContextMenu>
+            </Setter.Value>
+        </Setter>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ctrl:YuriLine}">
