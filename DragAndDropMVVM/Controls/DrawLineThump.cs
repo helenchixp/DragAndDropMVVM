@@ -38,7 +38,7 @@ namespace DragAndDropMVVM.Controls
 
             if(_drawLine!=null)
             {
-                Angle = Math.Atan2(Y1 - Y2, X1 - X2);
+                Angle = Math.Atan2(Y1 - Y2, X1 - X2) * 180d / Math.PI;
             }
         }
         #endregion

@@ -208,7 +208,11 @@ namespace DragAndDropMVVM.Controls
             IsSelectedPropertyName,
             typeof(bool),
             typeof(ConnectionDiagramBase),
-            new UIPropertyMetadata(false));
+            new UIPropertyMetadata(false,
+                    (d,e) =>
+                    {
+                        //TODO:VMにIsSelectedを設定
+                    }));
         #endregion
 
         #region IsDrawLineDropEnabled

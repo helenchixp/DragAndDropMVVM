@@ -30,11 +30,22 @@
         </DataTemplate>
     </Window.Resources>
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" MinWidth="100"/>
             <ColumnDefinition Width="9*"/>
         </Grid.ColumnDefinitions>
-        <GroupBox Header="Drag Panel">
+        <Menu Grid.ColumnSpan="2">
+            <MenuItem Header="Export">
+                <MenuItem Header="JPG Image Output" Command="{Binding ExportImageCommand}" CommandParameter="{Binding ElementName=myDroppedCanvas}"/>
+            </MenuItem>
+        </Menu>
+        
+        
+        <GroupBox Header="Drag Panel" Grid.Row="1">
             <StackPanel Orientation="Vertical">
                
 
@@ -73,7 +84,8 @@
                 Height="20"
                 VerticalAlignment="Bottom"
                 Visibility="Collapsed"
-                Grid.Column="1" Panel.ZIndex="1">
+                Grid.Column="1"               
+                Panel.ZIndex="1">
             <Slider.LayoutTransform>
                 <ScaleTransform ScaleX="0.8" ScaleY="0.8" />
             </Slider.LayoutTransform>
@@ -81,8 +93,7 @@
         </Slider>
 
 
-        <StackPanel  Grid.Column="1" Width="{Binding ElementName=rectDropPanel, Path=Width}"
-                     Height="{Binding ElementName=rectDropPanel, Path=Height}"
+        <StackPanel  Grid.Column="1" Grid.Row="1"
                      VerticalAlignment="Top" >
             <!--<StackPanel.LayoutTransform>
                 <ScaleTransform ScaleX="{Binding ElementName=mySliderSize, Path=Value}" ScaleY="{Binding ElementName=mySliderSize, Path=Value}" />
@@ -108,23 +119,16 @@
                     </Style.Triggers>
                 </Style>
             </StackPanel.Resources>
-            <Canvas Panel.ZIndex="20" x:Name="myDroppedCanvas"
-                    HorizontalAlignment="{Binding ElementName=rectDropPanel, Path=HorizontalAlignment}"
-                    VerticalAlignment="{Binding ElementName=rectDropPanel, Path=VerticalAlignment}"
-                    Background="Yellow">
-
-                <!--<Canvas.LayoutTransform>
-                    <ScaleTransform ScaleX="{Binding ElementName=mySliderSize, Path=Value}" ScaleY="{Binding ElementName=mySliderSize, Path=Value}" />
-                </Canvas.LayoutTransform>-->
-            </Canvas>
 
 
 
-            <Rectangle x:Name="rectDropPanel"
-                       Width="Auto" Height="Auto" MinWidth="250" MinHeight="350" VerticalAlignment="Top"
-                       StrokeThickness="1"
-                       b:FrameworkElementDropBehavior.DropCommand="{Binding DropCommand}"
-                       b:FrameworkElementDropBehavior.DroppedCanvas="{Binding ElementName=myDroppedCanvas}">
+           <!--<Rectangle x:Name="rectDropPanel"
+                           Width="{Binding ElementName=myDroppedCanvas,Path=Width}"
+                           Height="{Binding ElementName=myDroppedCanvas,Path=Height}"
+                           VerticalAlignment="Top"
+                           StrokeThickness="1"
+                           b:FrameworkElementDropBehavior.DropCommand="{Binding DropCommand}"
+                           b:FrameworkElementDropBehavior.DroppedCanvas="{Binding ElementName=myDroppedCanvas}">
                 <i:Interaction.Behaviors>
                     <b:FrameworkElementDropBehavior />
                 </i:Interaction.Behaviors>
@@ -144,13 +148,24 @@
                                   Offset="1" />
                     </LinearGradientBrush>
                 </Rectangle.Stroke>
-            </Rectangle>
+            </Rectangle>-->
 
 
-            <!--<ListBox ItemsSource="{Binding DroppedItemSource}" ItemStringFormat="{}Index:{Index}">
+          
+            <Canvas Panel.ZIndex="0" x:Name="myDroppedCanvas"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Width="Auto" Height="Auto"
+                    MinWidth="450" MinHeight="350"
+                    b:FrameworkElementDropBehavior.DropCommand="{Binding DropCommand}"
+                    b:FrameworkElementDropBehavior.DroppedCanvas="{Binding RelativeSource={RelativeSource Self}}"
+                    Background="WhiteSmoke"
+                    AllowDrop="True">
+                <i:Interaction.Behaviors>
+                    <b:FrameworkElementDropBehavior />
+                </i:Interaction.Behaviors>
+            </Canvas>
 
-
-            </ListBox>-->
 
         </StackPanel>
 
