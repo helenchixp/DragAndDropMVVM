@@ -8,19 +8,13 @@
     Include this in binding statements for diagnostics:
     diagnostics:PresentationTraceSources.TraceLevel=High
     -->
-    
-    <SolidColorBrush
-        x:Key="selectionBorderColor"
-        Color="Blue"
-        />
-    
-    <SolidColorBrush
-        x:Key="selectionBorderBackgroundColor"
-        Color="Blue"
-        Opacity="0.25"
-        />
 
-    <!-- Default style and control-template for 'NodeItem'. -->
+        <ResourceDictionary.MergedDictionaries>
+            <ResourceDictionary Source="/DragAndDropMVVM;component/Styles/Colors.xaml" />
+        </ResourceDictionary.MergedDictionaries>
+        
+
+        <!-- Default style and control-template for 'NodeItem'. -->
     <Style TargetType="{x:Type local:DrawLineThump}"
         >
         <Style.Setters>
@@ -33,12 +27,12 @@
                               X2="{TemplateBinding X2}"
                               Y1="{TemplateBinding Y1}" 
                               Y2="{TemplateBinding Y2}"
-                              StrokeThickness="4" Stroke="Blue"/>
+                              StrokeThickness="4" Stroke="{DynamicResource AccentLineBrush}"/>
                             <ContentPresenter />
                         </Canvas>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsSelected" Value="True">
-                                <Setter Property="Stroke" Value="Red" TargetName="PART_DrawLine"/>
+                                <Setter Property="Stroke" Value="{DynamicResource IsSelectedBrush}" TargetName="PART_DrawLine"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>

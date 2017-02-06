@@ -19,22 +19,22 @@
                               X2="{TemplateBinding X2}"
                               Y1="{TemplateBinding Y1}" 
                               Y2="{TemplateBinding Y2}"
-                              StrokeThickness="4" Stroke="Gray"/>
+                              StrokeThickness="4" Stroke="{DynamicResource AccentLineBrush}"/>
                         <ContentPresenter />
                     </Canvas>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Stroke" Value="Red" TargetName="PART_DrawLine"/>
+                            <Setter Property="Stroke" Value="{DynamicResource IsSelectedLineBrush}" TargetName="PART_DrawLine"/>
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Cursor" Value="Hand"  TargetName="PART_DrawLine"/>
-                            <Setter Property="Stroke" Value="Pink" TargetName="PART_DrawLine"/>
+                            <Setter Property="Stroke" Value="{DynamicResource MouseOverLineBrush}" TargetName="PART_DrawLine"/>
                             <Setter Property="Effect" TargetName="PART_DrawLine">
                                 <Setter.Value>
                                     <DropShadowEffect BlurRadius="3"
                                       Direction="315"
                                       ShadowDepth="2"
-                                      Color="Pink" />
+                                      Color="{DynamicResource LineColor4}" />
                                 </Setter.Value>
                             </Setter>
                         </Trigger>
@@ -69,7 +69,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ctrl:YuriDiagram}">
                     <Border Background="{TemplateBinding Background}"
-                            BorderBrush="Honeydew"
+                            BorderBrush="{DynamicResource AccentDiagramBrush}"
                             BorderThickness="2"
                             x:Name="PART_Border">
                         <Grid>
@@ -85,7 +85,7 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsFocused" Value="True">
-                            <Setter Property="BorderBrush" Value="Red" TargetName="PART_Border"/>
+                            <Setter Property="BorderBrush" Value="{DynamicResource IsSelectedDiagramBrush}" TargetName="PART_Border"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -103,7 +103,6 @@
     </Style>
 
     <Style TargetType="{x:Type ctrl:YuriLine}">
-        <!--<Setter Property="Tag" Value="{Binding DataContext, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"/>-->
         <Setter Property="DeleteCommand" Value="{Binding  RelativeSource={RelativeSource AncestorType=Window,Mode=FindAncestor}, Path=DataContext.DeleteLineCommand}"/>
         <Setter Property="ContextMenu">
             <Setter.Value>
@@ -121,9 +120,9 @@
                               X2="{TemplateBinding X2}"
                               Y1="{TemplateBinding Y1}" 
                               Y2="{TemplateBinding Y2}"
-                              StrokeThickness="4" Stroke="Purple"/>
+                              StrokeThickness="4" Stroke="{DynamicResource AccentLineBrush}"/>
                         <Ellipse x:Name="PART_StartPoint" Width="16" Height="16"
-                                 Fill="Purple"
+                                 Fill="{DynamicResource AccentLineBrush}"
                                  Margin="-8"
                                  Canvas.Left="{TemplateBinding X1}"
                                  Canvas.Top="{TemplateBinding Y1}"/>
@@ -132,7 +131,7 @@
 
                         <Polygon x:Name="PART_EndPoint"
                                  Points="0,8 0,-8 -20,0"
-                                 Fill="Purple"
+                                 Fill="{DynamicResource AccentLineBrush}"
                                  Margin="0"
                                  Canvas.Left="{TemplateBinding X2}"
                                  Canvas.Top="{TemplateBinding Y2}">
@@ -144,32 +143,32 @@
                     </Canvas>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Stroke" Value="Blue" TargetName="PART_DrawLine"/>
-                            <Setter Property="Fill" Value="Blue" TargetName="PART_StartPoint"/>
-                            <Setter Property="Fill" Value="Blue" TargetName="PART_EndPoint"/>
+                            <Setter Property="Stroke" Value="{DynamicResource IsSelectedLineBrush}" TargetName="PART_DrawLine"/>
+                            <Setter Property="Fill" Value="{DynamicResource IsSelectedLineBrush}" TargetName="PART_StartPoint"/>
+                            <Setter Property="Fill" Value="{DynamicResource IsSelectedLineBrush}" TargetName="PART_EndPoint"/>
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Cursor" Value="Hand"  TargetName="PART_DrawLine"/>
-                            <Setter Property="Stroke" Value="Yellow" TargetName="PART_DrawLine"/>
+                            <Setter Property="Stroke" Value="{DynamicResource MouseOverLineBrush}" TargetName="PART_DrawLine"/>
                             <Setter Property="Effect" TargetName="PART_DrawLine">
                                 <Setter.Value>
                                     <DropShadowEffect BlurRadius="3"
                                       Direction="315"
                                       ShadowDepth="2"
-                                      Color="Pink" />
+                                      Color="{DynamicResource Gray10}" />
                                 </Setter.Value>
                             </Setter>
                             <Setter Property="Cursor" Value="Hand"  TargetName="PART_StartPoint"/>
-                            <Setter Property="Fill" Value="Yellow" TargetName="PART_StartPoint"/>
+                            <Setter Property="Fill" Value="{DynamicResource MouseOverLineBrush}" TargetName="PART_StartPoint"/>
                             <Setter Property="Effect" TargetName="PART_StartPoint">
                                 <Setter.Value>
                                     <DropShadowEffect BlurRadius="3"
                                       Direction="315"
                                       ShadowDepth="2"
-                                      Color="Pink" />
+                                      Color="{DynamicResource Gray10}" />
                                 </Setter.Value>
                             </Setter>
-                            <Setter Property="Fill" Value="Yellow" TargetName="PART_EndPoint"/>
+                            <Setter Property="Fill" Value="{DynamicResource MouseOverLineBrush}" TargetName="PART_EndPoint"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

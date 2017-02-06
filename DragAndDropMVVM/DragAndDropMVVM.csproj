@@ -73,6 +73,10 @@
     <Compile Include="ViewModel\IConnectionLineViewModel.cs" />
     <Compile Include="ViewModel\IDragged.cs" />
     <Compile Include="WPFUtil.cs" />
+    <Page Include="Styles\Colors.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
