@@ -35,9 +35,9 @@ namespace DragAndDropMVVM.Behavior
         {
             Rect adornedElementRect = new Rect(this.AdornedElement.DesiredSize);
 
-            SolidColorBrush renderBrush = new SolidColorBrush(Colors.Yellow);
+            SolidColorBrush renderBrush = (SolidColorBrush)Application.Current.Resources["AdornerDiagramBrush"];
             renderBrush.Opacity = 0.5;
-            Pen renderPen = new Pen(new SolidColorBrush(Colors.White), 1.5);
+            Pen renderPen = new Pen((SolidColorBrush)Application.Current.Resources["WhiteBrush"], 1.5);
             double renderRadius = 5.0;
 
             //TODO: want to draw the

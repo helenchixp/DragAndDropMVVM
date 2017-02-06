@@ -25,7 +25,7 @@ namespace DragAndDropMVVM.Behavior
             _startPoint = point;
             _line = new Line()
             {
-                Stroke = Brushes.Gray,
+                Stroke = (SolidColorBrush)Application.Current.Resources["AdornerLineBrush"],
                 StrokeThickness = 2,
                 StrokeDashArray = new DoubleCollection(new double[] { 1, 1, 1, 1, }), //破線のスタイル
                 X1 = point.X,
