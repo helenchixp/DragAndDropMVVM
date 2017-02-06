@@ -37,15 +37,26 @@ namespace DragAndDropMVVM.Behavior
 
             SolidColorBrush renderBrush = (SolidColorBrush)Application.Current.Resources["AdornerPanelBrush"];
             renderBrush.Opacity = 0.5;
-            Pen renderPen = new Pen((SolidColorBrush)Application.Current.Resources["WhiteBrush"], 1.5);
+            Pen renderPen = new Pen((SolidColorBrush)Application.Current.Resources["AdornerPanelBrush"], 1.5);
             double renderRadius = 5.0;
 
-            //TODO: want to draw the
-            // Draw a circle at each corner.
-            drawingContext.DrawEllipse(renderBrush, renderPen, adornedElementRect.TopLeft, renderRadius, renderRadius);
-            drawingContext.DrawEllipse(renderBrush, renderPen, adornedElementRect.TopRight, renderRadius, renderRadius);
-            drawingContext.DrawEllipse(renderBrush, renderPen, adornedElementRect.BottomLeft, renderRadius, renderRadius);
-            drawingContext.DrawEllipse(renderBrush, renderPen, adornedElementRect.BottomRight, renderRadius, renderRadius);
+            if (FrameworkElementAdornerType.DrawEllipse.Equals(FrameworkElementDropBehavior.GetAdornerType(this.AdornedElement)))
+            {
+                // Draw a circle at each corner.
+                drawingContext.DrawEllipse(renderBrush, renderPen, adornedElementRect.TopLeft, renderRadius, renderRadius);
+                drawingContext.DrawEllipse(renderBrush, renderPen, adornedElementRect.TopRight, renderRadius, renderRadius);
+                drawingContext.DrawEllipse(renderBrush, renderPen, adornedElementRect.BottomLeft, renderRadius, renderRadius);
+                drawingContext.DrawEllipse(renderBrush, renderPen, adornedElementRect.BottomRight, renderRadius, renderRadius);
+            }
+            else
+            {
+                renderPen.DashStyle = DashStyles.DashDot;
+                renderPen.Thickness = 6.0;
+                drawingContext.DrawLine(renderPen, adornedElementRect.TopLeft, adornedElementRect.TopRight);
+                drawingContext.DrawLine(renderPen, adornedElementRect.TopLeft, adornedElementRect.BottomLeft);
+                drawingContext.DrawLine(renderPen, adornedElementRect.TopRight, adornedElementRect.BottomRight);
+                drawingContext.DrawLine(renderPen, adornedElementRect.BottomLeft, adornedElementRect.BottomRight);
+            }
         }
 
     }

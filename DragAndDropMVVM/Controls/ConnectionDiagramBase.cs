@@ -329,6 +329,38 @@ namespace DragAndDropMVVM.Controls
                 ));
         #endregion
 
+        #region AdornerType
+        /// <summary>
+        /// The <see cref="AdornerType" /> dependency property's name.
+        /// </summary>
+        public const string AdornerTypePropertyName = "AdornerType";
+
+        /// <summary>
+        /// Gets or sets the value of the <see cref="AdornerType" />
+        /// property. This is a dependency property.
+        /// </summary>
+        public FrameworkElementAdornerType AdornerType
+        {
+            get
+            {
+                return (FrameworkElementAdornerType)GetValue(AdornerTypeProperty);
+            }
+            set
+            {
+                SetValue(AdornerTypeProperty, value);
+            }
+        }
+
+        /// <summary>
+        /// Identifies the <see cref="AdornerType" /> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty AdornerTypeProperty = DependencyProperty.Register(
+            AdornerTypePropertyName,
+            typeof(FrameworkElementAdornerType),
+            typeof(ConnectionDiagramBase),
+            new UIPropertyMetadata(FrameworkElementAdornerType.DrawEllipse));
+        #endregion
+
         #endregion
 
         #region Property

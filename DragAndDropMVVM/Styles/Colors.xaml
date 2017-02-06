@@ -33,7 +33,7 @@
     <Color x:Key="DiagramColor1">#C3878787</Color>
     <Color x:Key="DiagramColor2">#C3850095</Color>
     <Color x:Key="DiagramColor3">#CC870000</Color>
-    <Color x:Key="DiagramColor4">#CC950000</Color>
+    <Color x:Key="DiagramColor4">#CC959500</Color>
 
     
     <!-- General Brush -->

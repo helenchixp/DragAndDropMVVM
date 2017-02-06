@@ -163,6 +163,7 @@
                     MinWidth="450" MinHeight="350"
                     b:FrameworkElementDropBehavior.DropCommand="{Binding DropCommand}"
                     b:FrameworkElementDropBehavior.DroppedCanvas="{Binding RelativeSource={RelativeSource Self}}"
+                    b:FrameworkElementDropBehavior.AdornerType="DrawLine"
                     Background="WhiteSmoke"
                     AllowDrop="True">
                 <i:Interaction.Behaviors>
