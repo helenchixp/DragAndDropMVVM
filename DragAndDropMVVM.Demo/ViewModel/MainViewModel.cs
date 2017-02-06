@@ -6,6 +6,15 @@ using DragAndDropMVVM.ViewModel;
 using DragAndDropMVVM.Extensions;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using System.Xml.Serialization;
+using System.IO;
+using Microsoft.Win32;
+using System.Windows;
+using System.Text;
+using System.Windows.Controls;
+using DragAndDropMVVM.Controls;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DragAndDropMVVM.Demo.ViewModel
 {
@@ -362,6 +371,186 @@ namespace DragAndDropMVVM.Demo.ViewModel
             return true;
         }
 
+
+        private RelayCommand<object> _saveAsXMLCommand;
+
+        /// <summary>
+        /// Gets the SaveAsXMLCommand.
+        /// </summary>
+        public RelayCommand<object> SaveAsXMLCommand
+        {
+            get
+            {
+                return _saveAsXMLCommand ?? (_saveAsXMLCommand = new RelayCommand<object>(
+                    ExecuteSaveAsXMLCommand,
+                    CanExecuteSaveAsXMLCommand));
+            }
+        }
+
+        private void ExecuteSaveAsXMLCommand(object parameter)
+        {
+            if (parameter is System.Windows.Controls.Canvas)
+            {
+                SaveAsXML((parameter as System.Windows.Controls.Canvas));
+            }
+        }
+
+        private bool CanExecuteSaveAsXMLCommand(object parameter)
+        {
+            return true;
+        }
+
+        private RelayCommand<object> _loadXMLCommand;
+
+        /// <summary>
+        /// Gets the MyCommand.
+        /// </summary>
+        public RelayCommand<object> LoadXMLCommand
+        {
+            get
+            {
+                return _loadXMLCommand ?? (_loadXMLCommand = new RelayCommand<object>(
+                    ExecuteMyCommand,
+                    CanExecuteMyCommand));
+            }
+        }
+
+        private void ExecuteMyCommand(object parameter)
+        {
+            if (parameter is System.Windows.Controls.Canvas)
+            {
+                LoadXML((parameter as System.Windows.Controls.Canvas));
+            }
+        }
+
+        private bool CanExecuteMyCommand(object parameter)
+        {
+            return true;
+        }
+
+
+        #region 
+
+        #region SaveAsXML
+        public static void SaveAsXML(Canvas canvas)
+        {
+            if (canvas.Children == null || canvas.Children.Count == 0)
+                return;
+
+
+            ControlsLayout layout = new ControlsLayout();
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.FilterIndex = 1;
+
+            //Extend the image type
+            saveFileDialog.Filter = "XML File(.xml)|*.xml|All Files (*.*)|*.*";
+            bool? result = saveFileDialog.ShowDialog();
+            if (result == true)
+            {
+                var path = saveFileDialog.FileName;
+                int idxline, idxdiagram;
+                idxline = idxdiagram = 0;
+
+                Dictionary<int, ConnectionDiagramBase> tempdiagrams = new Dictionary<int, ConnectionDiagramBase>();
+
+
+                //create the layout object
+                foreach (var child in canvas.Children)
+                {
+                    if (child is ConnectionDiagramBase)
+                    {
+                        var diagl = ControlsLayout.CreateDiagramLayout(child as ConnectionDiagramBase, idxline++);
+                        tempdiagrams.Add(idxline, child as ConnectionDiagramBase);
+                        layout.Diagrams.Add(diagl);
+                    }
+                }
+
+
+                foreach (var child in canvas.Children)
+                {
+                    if (child is ConnectionLineBase)
+                    {
+                        var linec = child as ConnectionLineBase;
+                        var linel = ControlsLayout.CreateLineLayout(linec, idxdiagram++);
+                        if (linec.OriginDiagram != null)
+                        {
+                            linel.OriginDiagramID = tempdiagrams.FirstOrDefault(item => item.Value.Equals(linec.OriginDiagram)).Key;
+                        }
+                        if (linec.TerminalDiagram != null)
+                        {
+                            linel.TerminalDiagramID = tempdiagrams.FirstOrDefault(item => item.Value.Equals(linec.TerminalDiagram)).Key;
+                        }
+                        layout.Lines.Add(linel);
+                    }
+                }
+
+                XmlSerializer serializer = new XmlSerializer(typeof(ControlsLayout));
+
+                //ファイルを作る
+                FileStream fs = new FileStream(path, FileMode.Create);
+                //書き込み
+                serializer.Serialize(fs, layout);  //sclsはSampleClassのインスタンス名
+                                                   //ファイルを閉じる
+                fs.Close();
+            }
+        }
+
+        #endregion
+
+
+        #region LoadXML
+        public void LoadXML(Canvas canvas)
+        {
+            canvas.Children.Clear();
+
+            OpenFileDialog filedialog = new OpenFileDialog();
+            filedialog.Filter = "XML File(.xml)|*.xml|All Files (*.*)|*.*";
+
+            bool? result = filedialog.ShowDialog();
+
+            if (result == true)
+            {
+                var filepath = filedialog.FileName;
+                var fs = new StreamReader(filepath, new UTF8Encoding(false));
+
+                XmlSerializer serializer = new XmlSerializer(typeof(ControlsLayout));
+
+                try
+                {
+                    var layout = serializer.Deserialize(fs) as ControlsLayout;
+
+                    if (layout != null)
+                    {
+                        foreach (var diagram in layout.Diagrams)
+                        {
+                            //Activator.CreateComInstanceFrom()
+                        }
+
+                        foreach (var line in layout.Lines)
+                        {
+                            //Activator.CreateComInstanceFrom()
+                        }
+
+                        MessageBox.Show("You will load the xml in you project");
+
+                    }
+                }
+                catch
+                {
+
+                }
+                finally
+                {
+                    fs.Close();
+                }
+            }
+        }
+
+
+        #endregion
+
+        #endregion
     }
 
 }

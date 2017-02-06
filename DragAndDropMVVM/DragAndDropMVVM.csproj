@@ -67,7 +67,7 @@
     <Compile Include="Behavior\FrameworkElementDragBehavior.cs" />
     <Compile Include="Behavior\FrameworkElementDropBehavior.cs" />
     <Compile Include="Controls\ConnectionDiagramBase.cs" />
-    <Compile Include="Extensions\ImageExportExt.cs" />
+    <Compile Include="Extensions\ExtenstionsFunction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModel\IConnectionDiagramViewModel.cs" />
     <Compile Include="ViewModel\IConnectionLineViewModel.cs" />

@@ -79,6 +79,7 @@
     <Compile Include="Controls\StampLine.cs" />
     <Compile Include="Controls\YuriDiagram.cs" />
     <Compile Include="Controls\YuriLine.cs" />
+    <Compile Include="Model\ControlsLayout.cs" />
     <Compile Include="Model\MatsunoBrotherModel.cs" />
     <Compile Include="Model\YuriModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />

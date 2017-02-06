@@ -546,12 +546,18 @@ namespace DragAndDropMVVM.Behavior
             if (element == null) return;
             if (element.DepartureLines != null && element.DepartureLines.Any())
             {
-                foreach(var dline in element.DepartureLines)
+                foreach (var dline in element.DepartureLines)
                 {
-                    if(dline is DrawLineThump)
+                    if (dline is DrawLineThump)
                     {
                         (dline as DrawLineThump).X1 = (dline as DrawLineThump).X1 + point.X;
-                        (dline as DrawLineThump).Y1 = (dline as DrawLineThump).Y1+  point.Y;
+                        (dline as DrawLineThump).Y1 = (dline as DrawLineThump).Y1 + point.Y;
+
+                        var angle = Math.Atan2(
+                            (dline as DrawLineThump).Y1 - (dline as DrawLineThump).Y2,
+                            (dline as DrawLineThump).X1 - (dline as DrawLineThump).X2) * 180d / Math.PI;
+
+                        (dline as DrawLineThump).Angle = angle < 0 ? angle + 360 : angle;
                     }
                 }
 
@@ -565,6 +571,13 @@ namespace DragAndDropMVVM.Behavior
                     {
                         (aline as DrawLineThump).X2 = (aline as DrawLineThump).X2 + point.X;
                         (aline as DrawLineThump).Y2 = (aline as DrawLineThump).Y2 + point.Y;
+
+
+                        var angle = Math.Atan2(
+                            (aline as DrawLineThump).Y1 - (aline as DrawLineThump).Y2,
+                            (aline as DrawLineThump).X1 - (aline as DrawLineThump).X2) * 180d / Math.PI;
+
+                        (aline as DrawLineThump).Angle = angle < 0 ? angle + 360 : angle;
                     }
                 }
             }

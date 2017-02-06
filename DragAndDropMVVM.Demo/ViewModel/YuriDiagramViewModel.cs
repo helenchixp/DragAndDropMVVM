@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using DragAndDropMVVM.ViewModel;
 using GalaSoft.MvvmLight;
 
@@ -12,14 +13,6 @@ namespace DragAndDropMVVM.Demo.ViewModel
     public class YuriDiagramViewModel : ViewModelBase, IConnectionDiagramViewModel
     {
         public string DiagramID { get; set; }
-
-        [Obsolete]
-        public IConnectionDiagramViewModel DragFromDiagramViewModel
-        {
-            get;
-
-            set;
-        }
 
         public ObservableCollection<IConnectionLineViewModel> DepartureLinesViewModel
         {

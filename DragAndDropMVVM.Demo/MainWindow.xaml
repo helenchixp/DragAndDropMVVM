@@ -40,7 +40,11 @@
         </Grid.ColumnDefinitions>
         <Menu Grid.ColumnSpan="2">
             <MenuItem Header="Export">
-                <MenuItem Header="JPG Image Output" Command="{Binding ExportImageCommand}" CommandParameter="{Binding ElementName=myDroppedCanvas}"/>
+                <MenuItem Header="Export to Picture" Command="{Binding ExportImageCommand}" CommandParameter="{Binding ElementName=myDroppedCanvas}"/>
+            </MenuItem>
+            <MenuItem Header="Save and Load">
+                <MenuItem Header="Load from XML file" Command="{Binding LoadXMLCommand}" CommandParameter="{Binding ElementName=myDroppedCanvas}" />
+                <MenuItem Header="Save as XML file" Command="{Binding SaveAsXMLCommand}" CommandParameter="{Binding ElementName=myDroppedCanvas}" />
             </MenuItem>
         </Menu>
         

@@ -8,13 +8,15 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Xml.Serialization;
+using DragAndDropMVVM.Controls;
 using Microsoft.Win32;
 
 namespace DragAndDropMVVM.Extensions
 {
-    public static class ImageExportExt
+    public static class ExtenstionsFunction
     {
-
+        #region Export Image
         public static void ExportImage(this Canvas canvas)
         {
 
@@ -22,7 +24,7 @@ namespace DragAndDropMVVM.Extensions
             saveFileDialog.FilterIndex = 1;
 
             //Extend the image type
-            saveFileDialog.Filter = "Png Image(*.png)|*.png|Jpeg File(.jpg)|*.jpg|All Files (*.*)|*.*";
+            saveFileDialog.Filter = "Png Image(*.png)|*.png|Jpeg Image(.jpg)|*.jpg|All Files (*.*)|*.*";
             bool? result = saveFileDialog.ShowDialog();
             if (result == true)
             {
@@ -47,15 +49,15 @@ namespace DragAndDropMVVM.Extensions
 
                 // Default encoder is PNG
                 BitmapEncoder encoder = new PngBitmapEncoder(); ;
-                if(fileext.Length >= 2 && fileext[fileext.Length - 1] == "jpg")
+                if (fileext.Length >= 2 && fileext[fileext.Length - 1] == "jpg")
                 {
                     encoder = new JpegBitmapEncoder();
                 }
 
+
                 // Output FileStream 
                 using (var os = new FileStream(path, FileMode.Create))
                 {
-
                     // Create the Bitmap FileStream
                     encoder.Frames.Add(BitmapFrame.Create(renderBitmap));
                     encoder.Save(os);
@@ -63,5 +65,9 @@ namespace DragAndDropMVVM.Extensions
             }
 
         }
+
+        #endregion
+
+
     }
 }

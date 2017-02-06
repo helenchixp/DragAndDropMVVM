@@ -128,14 +128,16 @@
                                  Canvas.Left="{TemplateBinding X1}"
                                  Canvas.Top="{TemplateBinding Y1}"/>
 
+                        <Slider Value="{TemplateBinding Angle}" x:Name="slider" Maximum="360" Width="50" Visibility="Hidden"/>
+
                         <Polygon x:Name="PART_EndPoint"
-                                 Points="-5,11 11, -5 16,16"
+                                 Points="0,8 0,-8 -20,0"
                                  Fill="Purple"
-                                 Margin="-5"
+                                 Margin="0"
                                  Canvas.Left="{TemplateBinding X2}"
                                  Canvas.Top="{TemplateBinding Y2}">
                             <Polygon.RenderTransform>
-                                <RotateTransform Angle="{TemplateBinding Angle}" CenterX="{TemplateBinding X2}" CenterY="{TemplateBinding Y2}"/>
+                                <RotateTransform Angle="{Binding ElementName=slider, Path=Value}" CenterX="{TemplateBinding X2}" CenterY="{TemplateBinding Y2}"/>
                             </Polygon.RenderTransform>
                         </Polygon>
                         <ContentPresenter />

@@ -7,10 +7,11 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Xml.Serialization;
 
 namespace DragAndDropMVVM.Controls
 {
-    public class ConnectionLineBase : Thumb
+    public abstract class ConnectionLineBase : Thumb
     {
         #region Override Method
 

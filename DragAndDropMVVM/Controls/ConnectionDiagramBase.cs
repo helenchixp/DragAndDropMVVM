@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interactivity;
 using System.Windows.Media;
+using System.Xml.Serialization;
 using DragAndDropMVVM.Behavior;
 
 namespace DragAndDropMVVM.Controls
@@ -21,7 +22,7 @@ namespace DragAndDropMVVM.Controls
     {
         public ConnectionDiagramBase()
         {
-         
+
         }
 
         #region override method
@@ -45,7 +46,7 @@ namespace DragAndDropMVVM.Controls
                 }
             }
 
-            this.CommandBindings.Add(new CommandBinding(ApplicationCommands.Delete, 
+            this.CommandBindings.Add(new CommandBinding(ApplicationCommands.Delete,
                                     (sender, e) =>
                                     {
                                         DeleteCommand.Execute(DataContext);
@@ -105,7 +106,7 @@ namespace DragAndDropMVVM.Controls
         {
             base.OnContextMenuOpening(e);
 
-         
+
 
         }
 
@@ -124,7 +125,7 @@ namespace DragAndDropMVVM.Controls
 
             PropertyInfo propdrop = d.GetType().GetProperty("AllowDrop");
 
-            if(propdrop != null)
+            if (propdrop != null)
             {
                 propdrop.SetValue(d, true);
             }
@@ -151,7 +152,7 @@ namespace DragAndDropMVVM.Controls
         {
             if (DepartureLines != null && DepartureLines.Any())
             {
-                foreach(var dline in DepartureLines)
+                foreach (var dline in DepartureLines)
                 {
                     dline.TerminalDiagram.ArrivalLines.Remove(dline);
 
@@ -161,7 +162,7 @@ namespace DragAndDropMVVM.Controls
 
             if (ArrivalLines != null && ArrivalLines.Any())
             {
-                foreach(var aline in ArrivalLines)
+                foreach (var aline in ArrivalLines)
                 {
                     aline.OriginDiagram.DepartureLines.Remove(aline);
 
@@ -209,7 +210,7 @@ namespace DragAndDropMVVM.Controls
             typeof(bool),
             typeof(ConnectionDiagramBase),
             new UIPropertyMetadata(false,
-                    (d,e) =>
+                    (d, e) =>
                     {
                         //TODO:VMにIsSelectedを設定
                     }));
@@ -279,6 +280,7 @@ namespace DragAndDropMVVM.Controls
             new UIPropertyMetadata(ConnectorPositionType.Custom));
         #endregion
 
+        #region DeleteCommand
         /// <summary>
         /// The <see cref="DeleteCommand" /> dependency property's name.
         /// </summary>
@@ -307,10 +309,12 @@ namespace DragAndDropMVVM.Controls
             DeleteCommandPropertyName,
             typeof(ICommand),
             typeof(ConnectionDiagramBase),
-            new UIPropertyMetadata(null, (d, e) => {
+            new UIPropertyMetadata(null, (d, e) =>
+            {
 
-            }, 
-                (d, o) => {
+            },
+                (d, o) =>
+                {
                     if (o is ICommand)
                     {
                         //(o as ICommand).CanExecuteChanged += (s, e) =>
@@ -320,8 +324,10 @@ namespace DragAndDropMVVM.Controls
 
                     }
 
-                    return o; } 
+                    return o;
+                }
                 ));
+        #endregion
 
         #endregion
 
@@ -330,7 +336,6 @@ namespace DragAndDropMVVM.Controls
         public ObservableCollection<ConnectionLineBase> DepartureLines { get; internal set; } = new ObservableCollection<ConnectionLineBase>();
 
         public ObservableCollection<ConnectionLineBase> ArrivalLines { get; internal set; } = new ObservableCollection<ConnectionLineBase>();
-
 
 
         #region CenterPosition
