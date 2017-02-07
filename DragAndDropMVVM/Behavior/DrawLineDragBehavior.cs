@@ -59,9 +59,9 @@ namespace DragAndDropMVVM.Behavior
             Point point = e.GetPosition(element as UIElement);
 
 
-            Point startPoint = element.CenterPosition;// ?? new Point(0, 0);
+            Point startPoint = element.CenterPosition;
 
-
+            //TODO : change the draw line center position
             if (!WPFUtil.IsCenterDragging(startPoint, point, 10)) return;
 
             if (!WPFUtil.IsDragging(startPoint, point)) return;

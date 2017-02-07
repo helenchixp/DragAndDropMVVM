@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DragAndDropMVVM.Demo", "Dra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DragAndDropMVVM", "DragAndDropMVVM\DragAndDropMVVM.csproj", "{AF3E62DD-26B0-4E0B-A17E-1659D12887D8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.YuriOnIce.Relationship.MvvmLight", "Demo.YuriOnIce.Relationship\Demo.YuriOnIce.Relationship.MvvmLight.csproj", "{C4E5BDA7-E0A1-491E-8C09-A833BEB5E141}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{AF3E62DD-26B0-4E0B-A17E-1659D12887D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF3E62DD-26B0-4E0B-A17E-1659D12887D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF3E62DD-26B0-4E0B-A17E-1659D12887D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4E5BDA7-E0A1-491E-8C09-A833BEB5E141}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4E5BDA7-E0A1-491E-8C09-A833BEB5E141}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4E5BDA7-E0A1-491E-8C09-A833BEB5E141}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4E5BDA7-E0A1-491E-8C09-A833BEB5E141}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

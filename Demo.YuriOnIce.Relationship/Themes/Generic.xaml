@@ -1,0 +1,140 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Demo.YuriOnIce.Relationship.Controls"
+    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+    xmlns:b="clr-namespace:DragAndDropMVVM.Behavior;assembly=DragAndDropMVVM"
+    xmlns:ctrl="clr-namespace:Demo.YuriOnIce.Relationship.Controls"
+    >
+
+
+    <Style TargetType="{x:Type local:CharacterDiagram}">
+        <Setter Property="ConnectorPositionType" Value="Center" />
+        <Setter Property="ContextMenu">
+            <Setter.Value>
+                <ContextMenu x:Name="contextMenu">
+                    <MenuItem Header="_Delete Me!" Command="ApplicationCommands.Delete" />
+                </ContextMenu>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="b:DrawLineDragBehavior.DragLineCommand" Value="{Binding  RelativeSource={RelativeSource AncestorType=Window,Mode=FindAncestor}, Path=DataContext.DragLineCommand}" />
+        <Setter Property="b:DrawLineDragBehavior.DragLineCommandParameter" Value="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}" />
+        <Setter Property="b:DrawLineDropBehavior.DropLineCommand" Value="{Binding  RelativeSource={RelativeSource AncestorType=Window,Mode=FindAncestor}, Path=DataContext.DropLineCommand}" />
+        <Setter Property="b:DrawLineDropBehavior.DropLineCommandParameter" Value="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}" />
+        <Setter Property="b:DrawLineDropBehavior.DroppedLineCanvas" Value="{Binding ElementName=myDroppedCanvas}" />
+        <Setter Property="b:DrawLineDropBehavior.DropLineControlType" Value="{x:Type ctrl:RelationshipLine}" />
+        <Setter Property="b:FrameworkElementDragBehavior.DragCommand" Value="{Binding  RelativeSource={RelativeSource AncestorType=Window,Mode=FindAncestor}, Path=DataContext.DragCommand}" />
+        <Setter Property="b:FrameworkElementDragBehavior.DragCommandParameter" Value="Test" />
+        <Setter Property="DeleteCommand" Value="{Binding  RelativeSource={RelativeSource AncestorType=Window,Mode=FindAncestor}, Path=DataContext.DeleteDiagramCommand}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:CharacterDiagram}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{DynamicResource AccentDiagramBrush}"
+                            BorderThickness="2"
+                            x:Name="PART_Border">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Image Source="{Binding ImagePath}" Height="60" Width="60" ToolTip="{Binding Detail}" IsHitTestVisible="True">
+
+                            </Image>
+                            <TextBlock Text="{Binding Title}" Grid.Row="1" FontSize="12" IsHitTestVisible="True" HorizontalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter Property="BorderBrush" Value="{DynamicResource IsSelectedDiagramBrush}" TargetName="PART_Border"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsFocused" Value="False">
+                <Setter Property="ContextMenu" Value="{x:Null}" />
+            </Trigger>
+            <Trigger Property="DeleteCommand" Value="{x:Null}">
+                <Setter Property="ContextMenu" Value="{x:Null}" />
+            </Trigger>
+        </Style.Triggers>
+
+    </Style>
+
+    <Style TargetType="{x:Type local:RelationshipLine}">
+        <Setter Property="DeleteCommand" Value="{Binding  RelativeSource={RelativeSource AncestorType=Window,Mode=FindAncestor}, Path=DataContext.DeleteLineCommand}"/>
+        <Setter Property="ContextMenu">
+            <Setter.Value>
+                <ContextMenu>
+                    <MenuItem Header="_Delete Line" Command="ApplicationCommands.Delete"/>
+                </ContextMenu>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:RelationshipLine}">
+                    <Canvas>
+                        <Line x:Name="PART_DrawLine"
+                              X1="{TemplateBinding X1}" 
+                              X2="{TemplateBinding X2}"
+                              Y1="{TemplateBinding Y1}" 
+                              Y2="{TemplateBinding Y2}"
+                              StrokeThickness="2" Stroke="{DynamicResource AccentLineBrush}"/>
+                        <Ellipse x:Name="PART_StartPoint" Width="8" Height="8"
+                                 Fill="{DynamicResource AccentLineBrush}"
+                                 Margin="-4"
+                                 Canvas.Left="{TemplateBinding X1}"
+                                 Canvas.Top="{TemplateBinding Y1}"/>
+
+                        <Slider Value="{TemplateBinding Angle}" x:Name="slider" Maximum="360" Width="50" Visibility="Hidden"/>
+
+                        <Polygon x:Name="PART_EndPoint"
+                                 Points="0,4 0,-4 -10,0"
+                                 Fill="{DynamicResource AccentLineBrush}"
+                                 Margin="0"
+                                 Canvas.Left="{TemplateBinding X2}"
+                                 Canvas.Top="{TemplateBinding Y2}">
+                            <Polygon.RenderTransform>
+                                <RotateTransform Angle="{Binding ElementName=slider, Path=Value}" CenterX="{TemplateBinding X2}" CenterY="{TemplateBinding Y2}"/>
+                            </Polygon.RenderTransform>
+                        </Polygon>
+                        <ContentPresenter />
+                    </Canvas>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Stroke" Value="{DynamicResource IsSelectedLineBrush}" TargetName="PART_DrawLine"/>
+                            <Setter Property="Fill" Value="{DynamicResource IsSelectedLineBrush}" TargetName="PART_StartPoint"/>
+                            <Setter Property="Fill" Value="{DynamicResource IsSelectedLineBrush}" TargetName="PART_EndPoint"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Cursor" Value="Hand"  TargetName="PART_DrawLine"/>
+                            <Setter Property="Stroke" Value="{DynamicResource MouseOverLineBrush}" TargetName="PART_DrawLine"/>
+                            <Setter Property="Effect" TargetName="PART_DrawLine">
+                                <Setter.Value>
+                                    <DropShadowEffect BlurRadius="3"
+                                      Direction="315"
+                                      ShadowDepth="2"
+                                      Color="{DynamicResource Gray10}" />
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Cursor" Value="Hand"  TargetName="PART_StartPoint"/>
+                            <Setter Property="Fill" Value="{DynamicResource MouseOverLineBrush}" TargetName="PART_StartPoint"/>
+                            <Setter Property="Effect" TargetName="PART_StartPoint">
+                                <Setter.Value>
+                                    <DropShadowEffect BlurRadius="3"
+                                      Direction="315"
+                                      ShadowDepth="2"
+                                      Color="{DynamicResource Gray10}" />
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Fill" Value="{DynamicResource MouseOverLineBrush}" TargetName="PART_EndPoint"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
