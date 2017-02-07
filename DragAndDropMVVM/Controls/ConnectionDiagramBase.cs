@@ -376,7 +376,7 @@ namespace DragAndDropMVVM.Controls
         /// Gets or sets the value of the <see cref="CenterPosition" />
         /// property. This is a dependency property.
         /// </summary>
-        public Point CenterPosition
+        public virtual Point CenterPosition
         {
             get
             {

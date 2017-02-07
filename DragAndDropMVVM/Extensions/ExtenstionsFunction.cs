@@ -68,6 +68,5 @@ namespace DragAndDropMVVM.Extensions
 
         #endregion
 
-
     }
 }

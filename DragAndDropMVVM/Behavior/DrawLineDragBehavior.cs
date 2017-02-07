@@ -114,7 +114,6 @@ namespace DragAndDropMVVM.Behavior
 
         private void AssociatedObject_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine($"+++++++++++++++++++++++{nameof(DrawLineDragBehavior)}.{nameof(AssociatedObject_MouseLeftButtonDown)}");
 
             if (e.LeftButton != MouseButtonState.Pressed) return;
 

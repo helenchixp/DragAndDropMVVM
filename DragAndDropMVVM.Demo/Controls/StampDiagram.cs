@@ -26,7 +26,7 @@ namespace DragAndDropMVVM.Demo.Controls
 
 
             BehaviorCollection bhcol = Interaction.GetBehaviors(this);
-            bhcol.Add(new FrameworkElementDragBehavior());
+            //bhcol.Add(new FrameworkElementDragBehavior());
             bhcol.Add(new DrawLineDragBehavior());
 
             bhcol.Add(new DrawLineDropBehavior());

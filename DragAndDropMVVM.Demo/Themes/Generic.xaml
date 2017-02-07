@@ -7,8 +7,6 @@
     xmlns:b="clr-namespace:DragAndDropMVVM.Behavior;assembly=DragAndDropMVVM"
     >
 
-    
-
     <Style TargetType="{x:Type ctrl:StampLine}">
         <Setter Property="Template">
             <Setter.Value>

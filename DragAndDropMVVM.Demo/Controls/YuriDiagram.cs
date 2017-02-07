@@ -55,6 +55,11 @@ namespace DragAndDropMVVM.Demo.Controls
             DefaultStyleKeyProperty.OverrideMetadata(typeof(YuriDiagram), new FrameworkPropertyMetadata(typeof(YuriDiagram)));
         }
 
+        public YuriDiagram() : base()
+        {
+            DataContext = new YuriDiagramViewModel();
+        }
+
         protected override void OnInitialized(EventArgs e)
         {
             base.OnInitialized(e);

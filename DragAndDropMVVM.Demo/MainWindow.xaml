@@ -87,21 +87,18 @@
                 Width="200"
                 Height="20"
                 VerticalAlignment="Bottom"
-                Visibility="Collapsed"
+                Visibility="Hidden"
                 Grid.Column="1"               
                 Panel.ZIndex="1">
-            <Slider.LayoutTransform>
+            <!--<Slider.LayoutTransform>
                 <ScaleTransform ScaleX="0.8" ScaleY="0.8" />
-            </Slider.LayoutTransform>
+            </Slider.LayoutTransform>-->
 
         </Slider>
 
 
         <StackPanel  Grid.Column="1" Grid.Row="1"
                      VerticalAlignment="Top" >
-            <!--<StackPanel.LayoutTransform>
-                <ScaleTransform ScaleX="{Binding ElementName=mySliderSize, Path=Value}" ScaleY="{Binding ElementName=mySliderSize, Path=Value}" />
-            </StackPanel.LayoutTransform>-->
             <StackPanel.Resources>
                 <Style TargetType="{x:Type ctrl:StampDiagram}">
                     <Style.Setters>
@@ -166,6 +163,9 @@
                     b:FrameworkElementDropBehavior.AdornerType="DrawLine"
                     Background="WhiteSmoke"
                     AllowDrop="True">
+                <Canvas.LayoutTransform>
+                    <ScaleTransform ScaleX="{Binding ElementName=mySliderSize, Path=Value}" ScaleY="{Binding ElementName=mySliderSize, Path=Value}" />
+                </Canvas.LayoutTransform>
                 <i:Interaction.Behaviors>
                     <b:FrameworkElementDropBehavior />
                 </i:Interaction.Behaviors>
