@@ -1,9 +1,16 @@
 using System;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Windows.Controls;
+using System.Xml.Serialization;
 using Demo.YuriOnIce.Relationship.Model;
 using DragAndDropMVVM.ViewModel;
+using DragAndDropMVVM.Extensions;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using Microsoft.Win32;
 
 namespace Demo.YuriOnIce.Relationship.ViewModel
 {
@@ -38,24 +45,32 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
             PalletItems.Add(new DiagramModel()
             {
                 ImagePath = "/Demo.YuriOnIce.Relationship.MvvmLight;component/ImagesResource/Yuri.png",
-                Title = "Yuri",
-                Detail = "Apologize by Japanese Style",
+                Name = "Yuri",
+                Detail = "He has a glass heart.",
                 Index = 1,
             });
             PalletItems.Add(new DiagramModel()
             {
                 ImagePath = "/Demo.YuriOnIce.Relationship.MvvmLight;component/ImagesResource/Victory.png",
-                Title = "Victory",
-                Detail = "Amazing!!!",
+                Name = "Victory",
+                Detail = "He is Legend!!!",
                 Index = 2,
             });
             PalletItems.Add(new DiagramModel()
             {
-                ImagePath = "/Demo.YuriOnIce.Relationship.MvvmLight;component/ImagesResource/Maccachin.png",
-                Title = "Maccachin",
-                Detail = "Maccachin is dog.",
+                ImagePath = "/Demo.YuriOnIce.Relationship.MvvmLight;component/ImagesResource/Yurio.png",
+                Name = "Yurio",
+                Detail = "He is Tigger(Cat?).",
                 Index = 3,
             });
+            PalletItems.Add(new DiagramModel()
+            {
+                ImagePath = "/Demo.YuriOnIce.Relationship.MvvmLight;component/ImagesResource/Maccachin.png",
+                Name = "Maccachin",
+                Detail = "Maccachin is dog.",
+                Index = 4,
+            });
+            
         }
 
         #region IDragged Objects
@@ -70,6 +85,8 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
 
 
         #region PropertyChanged Properties
+
+        #region PalletItems
         /// <summary>
         /// The <see cref="PalletItems" /> property's name.
         /// </summary>
@@ -101,6 +118,78 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
                 RaisePropertyChanged(PalletItemsPropertyName, oldValue, value, true);
             }
         }
+        #endregion
+
+        #region Characters
+        /// <summary>
+        /// The <see cref="Characters" /> property's name.
+        /// </summary>
+        public const string CharactersPropertyName = "Characters";
+
+        private ObservableCollection<DiagramViewModel> _characters = new ObservableCollection<DiagramViewModel>();
+
+        /// <summary>
+        /// Sets and gets the Characters property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// This property's value is broadcasted by the MessengerInstance when it changes.
+        /// </summary>
+        public ObservableCollection<DiagramViewModel> Characters
+        {
+            get
+            {
+                return _characters;
+            }
+
+            set
+            {
+                if (_characters == value)
+                {
+                    return;
+                }
+
+                var oldValue = _characters;
+                _characters = value;
+                RaisePropertyChanged(CharactersPropertyName, oldValue, value, true);
+            }
+        }
+
+        #endregion
+
+        #region ErrorMessage
+
+        /// <summary>
+        /// The <see cref="ErrorMessage" /> property's name.
+        /// </summary>
+        public const string ErrorMessagePropertyName = "ErrorMessage";
+
+        private string _errorMessage = string.Empty;
+
+        /// <summary>
+        /// Sets and gets the ErrorMessage property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// This property's value is broadcasted by the MessengerInstance when it changes.
+        /// </summary>
+        public string ErrorMessage
+        {
+            get
+            {
+                return _errorMessage;
+            }
+
+            set
+            {
+                if (_errorMessage == value)
+                {
+                    return;
+                }
+
+                var oldValue = _errorMessage;
+                _errorMessage = value;
+                RaisePropertyChanged(ErrorMessagePropertyName, oldValue, value, true);
+            }
+        }
+        #endregion
+
         #endregion
 
 
@@ -161,16 +250,29 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
             {
                 if (DraggedData != null && DraggedData is DiagramModel)
                 {
-                    (parameter as DiagramViewModel).Title = (DraggedData as DiagramModel).Title;
+                    (parameter as DiagramViewModel).Name = (DraggedData as DiagramModel).Name;
                     (parameter as DiagramViewModel).Detail = (DraggedData as DiagramModel).Detail;
                     (parameter as DiagramViewModel).ImagePath = (DraggedData as DiagramModel).ImagePath;
                     (parameter as DiagramViewModel).Index = (DraggedData as DiagramModel).Index;
+
+                    Characters.Add(parameter as DiagramViewModel);
                 }
             }
         }
 
         private bool CanExecuteDropCommand(object parameter)
         {
+            if (DraggedData is DiagramModel)
+            {
+                bool isexist = Characters.Any(item => item.Index == (DraggedData as DiagramModel).Index);
+
+                if (isexist)
+                {
+                    ErrorMessage = $"{(DraggedData as DiagramModel).Name} is here!";
+                    return false;
+                }
+            }
+            ErrorMessage = string.Empty;
             return true;
         }
         #endregion
@@ -229,6 +331,8 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
             linevm.OriginDiagramViewModel.DepartureLinesViewModel.Add(linevm);
             linevm.TerminalDiagramViewModel.ArrivalLinesViewModel.Add(linevm);
 
+            (linevm as LineViewModel).Comment = $"testtttt ";
+
         }
 
         private bool CanExecuteDropLineCommand(object parameter)
@@ -241,9 +345,9 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
 
             if (dropobj == null || dragobj == null) return false;
 
-            if (dragobj.ArrivalLinesViewModel != null)
+            if (dragobj.DepartureLinesViewModel != null && dragobj.DepartureLinesViewModel.Any())
             {
-                foreach (var aline in dragobj.ArrivalLinesViewModel)
+                foreach (var aline in dragobj.DepartureLinesViewModel)
                 {
                     if (dropobj.Equals(aline.TerminalDiagramViewModel))
                     {
@@ -253,9 +357,9 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
                 }
             }
 
-            if (dropobj.DepartureLinesViewModel != null)
+            if (dropobj.ArrivalLinesViewModel != null && dropobj.ArrivalLinesViewModel.Any())
             {
-                foreach (var dline in dropobj.DepartureLinesViewModel)
+                foreach (var dline in dropobj.ArrivalLinesViewModel)
                 {
                     if (dragobj.Equals(dline.OriginDiagramViewModel))
                     {
@@ -266,7 +370,6 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
             return true;
         }
         #endregion
-
 
         #region DeleteLineCommand
 
@@ -302,7 +405,6 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
         }
         #endregion
 
-
         #region DeleteDiagramCommand
 
         private RelayCommand<object> _deleteDiagramCommand;
@@ -337,6 +439,185 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
             }
             return true;
         }
+        #endregion
+
+        #region SaveAsXMLCommand
+
+        private RelayCommand<object> _saveAsXMLCommand;
+
+        /// <summary>
+        /// Gets the SaveAsXMLCommand.
+        /// </summary>
+        public RelayCommand<object> SaveAsXMLCommand
+        {
+            get
+            {
+                return _saveAsXMLCommand ?? (_saveAsXMLCommand = new RelayCommand<object>(
+                    ExecuteSaveAsXMLCommand,
+                    CanExecuteSaveAsXMLCommand));
+            }
+        }
+
+        private void ExecuteSaveAsXMLCommand(object parameter)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.FilterIndex = 1;
+
+            //Extend the image type
+            saveFileDialog.Filter = "XML File(.xml)|*.xml|All Files (*.*)|*.*";
+            bool? result = saveFileDialog.ShowDialog();
+            if (result == true)
+            {
+                var path = saveFileDialog.FileName;
+
+                //Create Serialize Object
+                var map = new RelationshipMap()
+                {
+                    Width = 500,
+                    Height = 500,
+                    Header = "Relation Map!",
+                    Footer = "Copyright",
+                    Characters = new RelationshipMap.Character[Characters.Count],
+                };
+
+                int idx = 0;
+
+                foreach (var charater in Characters)
+                {
+                    map.Characters[idx] = new RelationshipMap.Character()
+                    {
+                        Name = Characters[idx].Name,
+                        ImagePath = Characters[idx].ImagePath,
+                        Detail = Characters[idx].Detail,
+                        Index = Characters[idx].Index,
+                        DiagramTypeName = typeof(Controls.CharacterDiagram).FullName,
+                        DiagramUUID = Characters[idx].DiagramUUID,
+                    };
+                    if (Characters[idx].DepartureLinesViewModel.Any())
+                    {
+                        map.Characters[idx].Connectors = new RelationshipMap.Connector[Characters[idx].DepartureLinesViewModel.Count];
+
+                        int lineidx = 0;
+                        foreach (var line in Characters[idx].DepartureLinesViewModel)
+                        {
+                            map.Characters[idx].Connectors[lineidx] = new RelationshipMap.Connector()
+                            {
+                                Comment = (line as LineViewModel)?.Comment,
+                                ToIndex = line.TerminalDiagramViewModel?.Index ?? -1,
+                                LineTypeName = typeof(Controls.RelationshipLine).FullName,
+                            };
+
+                            lineidx++;
+                        }
+                    }
+                    idx++;
+                }
+
+                if( parameter is Canvas)
+                {
+                    (parameter as Canvas).SetExportPosition(map.Characters);
+                }
+                
+
+                XmlSerializer serializer = new XmlSerializer(typeof(RelationshipMap));
+
+                //ファイルを作る
+                FileStream fs = new FileStream(path, FileMode.Create);
+                //書き込み
+                serializer.Serialize(fs, map);  //sclsはSampleClassのインスタンス名
+                                                   //ファイルを閉じる
+                fs.Close();
+
+
+            }
+
+        }
+
+        private bool CanExecuteSaveAsXMLCommand(object parameter)
+        {
+            return Characters.Any();
+        }
+
+        #endregion
+
+
+        #region LoadXMLCommand
+
+        private RelayCommand<object> _loadXMLCommand;
+
+        /// <summary>
+        /// Gets the LoadXMLCommand.
+        /// </summary>
+        public RelayCommand<object> LoadXMLCommand
+        {
+            get
+            {
+                return _loadXMLCommand ?? (_loadXMLCommand = new RelayCommand<object>(
+                    ExecuteLoadXMLCommand,
+                    CanExecuteLoadXMLCommand));
+            }
+        }
+
+        private void ExecuteLoadXMLCommand(object parameter)
+        {
+            if (!(parameter is System.Windows.Controls.Canvas))
+                return;
+
+            var canvas = (parameter as System.Windows.Controls.Canvas);
+
+
+
+            canvas.Children.Clear();
+
+            OpenFileDialog filedialog = new OpenFileDialog();
+            filedialog.Filter = "XML File(.xml)|*.xml|All Files (*.*)|*.*";
+
+            bool? result = filedialog.ShowDialog();
+
+            if (result == true)
+            {
+                var filepath = filedialog.FileName;
+                var fs = new StreamReader(filepath, new UTF8Encoding(false));
+
+                XmlSerializer serializer = new XmlSerializer(typeof(RelationshipMap));
+
+                try
+                {
+                    var layout = serializer.Deserialize(fs) as RelationshipMap;
+
+                    if (layout != null)
+                    {
+                        //foreach (var diagram in layout.Diagrams)
+                        //{
+                        //    //Activator.CreateComInstanceFrom()
+                        //}
+
+                        //foreach (var line in layout.Lines)
+                        //{
+                        //    //Activator.CreateComInstanceFrom()
+                        //}
+
+                     //   MessageBox.Show("You will load the xml in you project");
+
+                    }
+                }
+                catch
+                {
+
+                }
+                finally
+                {
+                    fs.Close();
+                }
+            }
+
+        }
+
+        private bool CanExecuteLoadXMLCommand(object parameter)
+        {
+            return true;
+        }
+
         #endregion
 
         #endregion

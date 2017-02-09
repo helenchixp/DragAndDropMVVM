@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Xml.Serialization;
+using DragAndDropMVVM.ViewModel;
 
 namespace DragAndDropMVVM.Controls
 {
@@ -82,7 +83,6 @@ namespace DragAndDropMVVM.Controls
 
         #endregion
 
-
         #region DeleteCommand
 
         /// <summary>
@@ -147,8 +147,61 @@ namespace DragAndDropMVVM.Controls
             IsSelectedPropertyName,
             typeof(bool),
             typeof(ConnectionLineBase),
-            new UIPropertyMetadata(false));
+            new UIPropertyMetadata(false,
+                (d, e) =>
+                {
+                    if ((d is ConnectionLineBase) &&
+                        (d as ConnectionLineBase).DataContext is IConnectionLineViewModel)
+                    {
+                        ((d as ConnectionLineBase).DataContext as IConnectionLineViewModel).IsSelected = (bool)e.NewValue;
+                    }
 
+                }));
+
+        #endregion
+
+        #region LineUUID
+
+        /// <summary>
+        /// The <see cref="LineUUID" /> dependency property's name.
+        /// </summary>
+        public const string LineUUIDPropertyName = "LineUUID";
+
+        /// <summary>
+        /// Gets or sets the value of the <see cref="LineUUID" />
+        /// property. This is a dependency property.
+        /// </summary>
+        public string LineUUID
+        {
+            get
+            {
+                return (string)GetValue(LineUUIDProperty);
+            }
+            set
+            {
+                SetValue(LineUUIDProperty, value);
+            }
+        }
+
+        /// <summary>
+        /// Identifies the <see cref="LineUUID" /> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty LineUUIDProperty = DependencyProperty.Register(
+            LineUUIDPropertyName,
+            typeof(string),
+            typeof(ConnectionLineBase),
+            new UIPropertyMetadata(string.Empty,
+                (d, e) =>
+                {
+                    if ((d is ConnectionLineBase) &&
+                        (d as ConnectionLineBase).DataContext is IConnectionLineViewModel)
+                    {
+                        ((d as ConnectionLineBase).DataContext as IConnectionLineViewModel).LineUUID = (string)e.NewValue;
+                    }
+
+
+                }
+                ));
         #endregion
 
         #endregion

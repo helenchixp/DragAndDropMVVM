@@ -16,8 +16,6 @@ namespace DragAndDropMVVM.Behavior
     public class FrameworkElementDropBehavior : Behavior<FrameworkElement>
     {
 
-
-      //  private Type _dataType = typeof(DraggingAdorner); //the type of the data that can be dropped into this control
         private DroppingAdorner _adorner;
 
         protected override void OnAttached()
@@ -130,7 +128,7 @@ namespace DragAndDropMVVM.Behavior
                                     Canvas.SetBottom(clnele, canvaspoint.Y);
                                     Canvas.SetTop(clnele, canvaspoint.Y);
 
-
+                                    (clnele as ConnectionDiagramBase).DiagramUUID = $"{clnele.GetType().Name}_{Guid.NewGuid().ToString()}";
 
                                     if (iscopy)
                                         droppedcanvas.Children.Add(clnele);

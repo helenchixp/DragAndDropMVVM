@@ -113,10 +113,10 @@ namespace DragAndDropMVVM.Behavior
                                 //if inherb
                                 if (conline is DrawLineThump)
                                 {
-                                    (conline as DrawLineThump).X1 = x1;//adn.GetLineStartEndPosition().Item1;
-                                    (conline as DrawLineThump).Y1 = y1;// adn.GetLineStartEndPosition().Item2;
-                                    (conline as DrawLineThump).X2 = x2;// adn.GetLineStartEndPosition().Item3;
-                                    (conline as DrawLineThump).Y2 = y2;// adn.GetLineStartEndPosition().Item4;
+                                    (conline as DrawLineThump).X1 = x1;
+                                    (conline as DrawLineThump).Y1 = y1;
+                                    (conline as DrawLineThump).X2 = x2;
+                                    (conline as DrawLineThump).Y2 = y2;
                                 }
                             }
                         }
@@ -129,16 +129,14 @@ namespace DragAndDropMVVM.Behavior
 
                             conline = new DrawLineThump()
                             {
-                                X1 = x1,// adn.GetLineStartEndPosition().Item1,
-                                Y1 = y1,//adn.GetLineStartEndPosition().Item2,
-                                X2 = x2,//adn.GetLineStartEndPosition().Item3,
-                                Y2 = y2,//adn.GetLineStartEndPosition().Item4,
+                                X1 = x1,
+                                Y1 = y1,
+                                X2 = x2,
+                                Y2 = y2,
                                 OriginDiagram = origindiagram,
                                 TerminalDiagram = terminaldiagram,
                             };
                         }
-
-
 
                         //add the relation in viewmodel 
                         IConnectionLineViewModel linevm = (conline as ConnectionLineBase)?.DataContext as IConnectionLineViewModel;
@@ -178,7 +176,7 @@ namespace DragAndDropMVVM.Behavior
                             }
 
                             droppedcanvas.Children.Add(conline);
-
+                            (conline as ConnectionLineBase).LineUUID = $"{conline.GetType().Name}_{Guid.NewGuid().ToString()}";
 
 
 

@@ -24,7 +24,7 @@
         <Setter Property="b:DrawLineDropBehavior.DroppedLineCanvas" Value="{Binding ElementName=myDroppedCanvas}" />
         <Setter Property="b:DrawLineDropBehavior.DropLineControlType" Value="{x:Type ctrl:RelationshipLine}" />
         <Setter Property="b:FrameworkElementDragBehavior.DragCommand" Value="{Binding  RelativeSource={RelativeSource AncestorType=Window,Mode=FindAncestor}, Path=DataContext.DragCommand}" />
-        <Setter Property="b:FrameworkElementDragBehavior.DragCommandParameter" Value="Test" />
+        <Setter Property="b:FrameworkElementDragBehavior.DragCommandParameter" Value="{Binding}" />
         <Setter Property="DeleteCommand" Value="{Binding  RelativeSource={RelativeSource AncestorType=Window,Mode=FindAncestor}, Path=DataContext.DeleteDiagramCommand}" />
         <Setter Property="Template">
             <Setter.Value>
@@ -41,7 +41,7 @@
                             <Image Source="{Binding ImagePath}" Height="60" Width="60" ToolTip="{Binding Detail}" IsHitTestVisible="True">
 
                             </Image>
-                            <TextBlock Text="{Binding Title}" Grid.Row="1" FontSize="12" IsHitTestVisible="True" HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding Name}" Grid.Row="1" FontSize="12" IsHitTestVisible="True" HorizontalAlignment="Center"/>
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
@@ -90,8 +90,15 @@
 
                         <Slider Value="{TemplateBinding Angle}" x:Name="slider" Maximum="360" Width="50" Visibility="Hidden"/>
 
+                        <TextBlock Text="{Binding Comment}" x:Name="PART_CommentText">
+                            <TextBlock.RenderTransform>
+                                <!--<RotateTransform Angle="{Binding ElementName=slider, Path=Value}" CenterX="{TemplateBinding X2}" CenterY="{TemplateBinding Y2}"/>-->
+                                <SkewTransform AngleX="0" AngleY="{Binding ElementName=slider, Path=Value}" />
+                            </TextBlock.RenderTransform>
+                        </TextBlock>
+
                         <Polygon x:Name="PART_EndPoint"
-                                 Points="0,4 0,-4 -10,0"
+                                 Points="-10,0 0,4 0,-4 "
                                  Fill="{DynamicResource AccentLineBrush}"
                                  Margin="0"
                                  Canvas.Left="{TemplateBinding X2}"
@@ -103,10 +110,18 @@
                         <ContentPresenter />
                     </Canvas>
                     <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding IsCompleted}" Value="True">
+                            <!--TODO Color-->
+                            <Setter Property="Stroke" Value="Pink" TargetName="PART_DrawLine"/>
+                            <Setter Property="Fill" Value="Pink" TargetName="PART_StartPoint"/>
+                            <Setter Property="Fill" Value="Pink" TargetName="PART_EndPoint"/>
+                        </DataTrigger>
                         <Trigger Property="IsSelected" Value="True">
                             <Setter Property="Stroke" Value="{DynamicResource IsSelectedLineBrush}" TargetName="PART_DrawLine"/>
                             <Setter Property="Fill" Value="{DynamicResource IsSelectedLineBrush}" TargetName="PART_StartPoint"/>
                             <Setter Property="Fill" Value="{DynamicResource IsSelectedLineBrush}" TargetName="PART_EndPoint"/>
+                            <!--<Setter Property="Visibility" Value="Visible" TargetName="PART_Comment" />-->
+                            <Setter Property="Visibility" Value="Collapsed" TargetName="PART_CommentText" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Cursor" Value="Hand"  TargetName="PART_DrawLine"/>
@@ -131,6 +146,8 @@
                             </Setter>
                             <Setter Property="Fill" Value="{DynamicResource MouseOverLineBrush}" TargetName="PART_EndPoint"/>
                         </Trigger>
+                   
+                        
                     </ControlTemplate.Triggers>
 
                 </ControlTemplate>

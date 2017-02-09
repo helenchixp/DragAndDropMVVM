@@ -21,7 +21,7 @@ namespace DragAndDropMVVM.Demo.ViewModel
         {
         }
 
-        public string DiagramID { get; set; }
+        public string DiagramUUID { get; set; }
 
 
         public IConnectionDiagramViewModel DragFromDiagramViewModel

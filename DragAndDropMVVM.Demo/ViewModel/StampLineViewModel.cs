@@ -18,7 +18,7 @@ namespace DragAndDropMVVM.Demo.ViewModel
             set;
         }
 
-        public string LineID
+        public string LineUUID
         {
             get;
 

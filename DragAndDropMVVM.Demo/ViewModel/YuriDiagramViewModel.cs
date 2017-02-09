@@ -12,7 +12,7 @@ namespace DragAndDropMVVM.Demo.ViewModel
 {
     public class YuriDiagramViewModel : ViewModelBase, IConnectionDiagramViewModel
     {
-        public string DiagramID { get; set; }
+        public string DiagramUUID { get; set; }
 
         public ObservableCollection<IConnectionLineViewModel> DepartureLinesViewModel
         {

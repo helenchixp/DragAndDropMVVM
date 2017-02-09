@@ -129,9 +129,6 @@ namespace DragAndDropMVVM.Behavior
 
             UIElement element = sender as UIElement;
 
-            System.Diagnostics.Debug.WriteLine($"{nameof(AssociatedObject_MouseLeftButtonUp)} _ {nameof(e.LeftButton)}:{e.LeftButton}");
-
-
             element.SetValue(FrameworkElementDragBehavior.StartPointProperty, null);
 
         }

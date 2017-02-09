@@ -12,6 +12,7 @@ using System.Windows.Interactivity;
 using System.Windows.Media;
 using System.Xml.Serialization;
 using DragAndDropMVVM.Behavior;
+using DragAndDropMVVM.ViewModel;
 
 namespace DragAndDropMVVM.Controls
 {
@@ -212,7 +213,11 @@ namespace DragAndDropMVVM.Controls
             new UIPropertyMetadata(false,
                     (d, e) =>
                     {
-                        //TODO:VMにIsSelectedを設定
+                        if((d is ConnectionDiagramBase) &&
+                            (d as ConnectionDiagramBase).DataContext is IConnectionDiagramViewModel)
+                        {
+                            ((d as ConnectionDiagramBase).DataContext as IConnectionDiagramViewModel).IsSelected = (bool)e.NewValue;
+                        }
                     }));
         #endregion
 
@@ -359,6 +364,48 @@ namespace DragAndDropMVVM.Controls
             typeof(FrameworkElementAdornerType),
             typeof(ConnectionDiagramBase),
             new UIPropertyMetadata(FrameworkElementAdornerType.DrawEllipse));
+        #endregion
+
+        #region DiagramUUID
+        /// <summary>
+        /// The <see cref="DiagramUUID" /> dependency property's name.
+        /// </summary>
+        public const string DiagramUUIDPropertyName = "DiagramUUID";
+
+        /// <summary>
+        /// Gets or sets the value of the <see cref="DiagramUUID" />
+        /// property. This is a dependency property.
+        /// </summary>
+        public string DiagramUUID
+        {
+            get
+            {
+                return (string)GetValue(DiagramUUIDProperty);
+            }
+            set
+            {
+                SetValue(DiagramUUIDProperty, value);
+            }
+        }
+
+        /// <summary>
+        /// Identifies the <see cref="DiagramUUID" /> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty DiagramUUIDProperty = DependencyProperty.Register(
+            DiagramUUIDPropertyName,
+            typeof(string),
+            typeof(ConnectionDiagramBase),
+            new UIPropertyMetadata(string.Empty,
+                (d, e) =>
+                {
+                    if ((d is ConnectionDiagramBase) &&
+                        (d as ConnectionDiagramBase).DataContext is IConnectionDiagramViewModel)
+                    {
+                        ((d as ConnectionDiagramBase).DataContext as IConnectionDiagramViewModel).DiagramUUID = (string) e.NewValue;
+                    }
+                }
+                ));
+
         #endregion
 
         #endregion

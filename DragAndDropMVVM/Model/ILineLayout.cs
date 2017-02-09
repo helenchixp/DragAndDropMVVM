@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Demo.YuriOnIce.Relationship.Model
+namespace DragAndDropMVVM.Model
 {
-    public class LineModel
+    public interface ILineLayout
     {
+        Type LineType { get; set; }
     }
 }

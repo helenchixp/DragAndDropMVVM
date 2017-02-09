@@ -21,7 +21,7 @@
                     <b:FrameworkElementDragBehavior/>
                 </i:Interaction.Behaviors>
                 <Image Source="{Binding ImagePath}" Height="50" Width="50" HorizontalAlignment="Center"/>
-                <TextBlock Text="{Binding Title}" HorizontalAlignment="Center"/>
+                <TextBlock Text="{Binding Name}" HorizontalAlignment="Center"/>
             </WrapPanel>
         </DataTemplate>
         
@@ -68,7 +68,7 @@
                 Width="200"
                 Height="20"
                 VerticalAlignment="Bottom"
-                Visibility="Collapsed"
+                Visibility="Visible"
                 Grid.Column="1"
                 Panel.ZIndex="1">
 
@@ -92,6 +92,15 @@
                 <b:FrameworkElementDropBehavior />
             </i:Interaction.Behaviors>
         </Canvas>
+
+        <WrapPanel Panel.ZIndex="2"
+                   Grid.Column="1"
+                   Grid.Row="1"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center">
+            <TextBlock Text="{Binding ErrorMessage}" Foreground="Red" FontWeight="Bold"/>
+
+        </WrapPanel>
 
 
 

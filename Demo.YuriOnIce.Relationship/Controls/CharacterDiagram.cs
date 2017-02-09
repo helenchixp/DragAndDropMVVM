@@ -70,5 +70,21 @@ namespace Demo.YuriOnIce.Relationship.Controls
             bhcol.Add(new DrawLineDragBehavior());
             bhcol.Add(new DrawLineDropBehavior());
         }
+
+
+        public override Point CenterPosition
+        {
+            get
+            {
+                if(ArrivalLines.Any() || DepartureLines.Any())
+                {
+
+                    return new Point(base.CenterPosition.X, base.CenterPosition.Y + 30);
+
+                }
+
+                return new Point(base.CenterPosition.X, base.CenterPosition.Y + 20); ;
+            }
+        }
     }
 }

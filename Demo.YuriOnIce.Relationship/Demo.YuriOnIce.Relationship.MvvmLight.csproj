@@ -79,6 +79,7 @@
     <Compile Include="Controls\RelationshipLine.cs" />
     <Compile Include="Model\DiagramModel.cs" />
     <Compile Include="Model\LineModel.cs" />
+    <Compile Include="Model\RelationshipMap.cs" />
     <Compile Include="ViewModel\DiagramViewModel.cs" />
     <Compile Include="ViewModel\LineViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
@@ -140,6 +141,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="ImagesResource\Victory.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ImagesResource\Yurio.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

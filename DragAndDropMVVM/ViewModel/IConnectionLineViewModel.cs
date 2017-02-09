@@ -8,7 +8,10 @@ namespace DragAndDropMVVM.ViewModel
 {
     public interface IConnectionLineViewModel
     {
-        string LineID { get; set; }
+        /// <summary>
+        /// This is Unique ID for Line
+        /// </summary>
+        string LineUUID { get; set; }
 
         bool IsSelected { get; set; }
 

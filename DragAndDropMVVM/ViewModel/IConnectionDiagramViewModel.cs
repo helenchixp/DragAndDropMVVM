@@ -9,7 +9,10 @@ namespace DragAndDropMVVM.ViewModel
 {
     public interface IConnectionDiagramViewModel
     {
-        string DiagramID { get; set; }
+        /// <summary>
+        /// This is Unique ID for Diagram
+        /// </summary>
+        string DiagramUUID { get; set; }
 
         ObservableCollection<IConnectionLineViewModel> DepartureLinesViewModel { get; set; }
 

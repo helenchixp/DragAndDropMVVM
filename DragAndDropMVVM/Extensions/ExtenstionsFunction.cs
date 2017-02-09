@@ -10,6 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Xml.Serialization;
 using DragAndDropMVVM.Controls;
+using DragAndDropMVVM.Model;
 using Microsoft.Win32;
 
 namespace DragAndDropMVVM.Extensions
@@ -67,6 +68,26 @@ namespace DragAndDropMVVM.Extensions
         }
 
         #endregion
+
+        public static void SetExportPosition(this Canvas canvas, IDiagramLayout[] diagrams)
+        {
+            if (diagrams == null || !diagrams.Any()) return;
+
+            foreach(var element in canvas.Children)
+            {
+                if(element is ConnectionDiagramBase)
+                {
+                    var diagram = diagrams.FirstOrDefault(dia => (element as ConnectionDiagramBase).DiagramUUID == dia.DiagramUUID);
+
+                    if(diagram != null)
+                    {
+                        diagram.X = Canvas.GetTop(element as ConnectionDiagramBase);
+                        diagram.Y = Canvas.GetLeft(element as ConnectionDiagramBase);
+                    }
+                }
+            }
+
+        }
 
     }
 }

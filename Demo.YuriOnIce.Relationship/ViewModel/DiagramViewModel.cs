@@ -27,7 +27,7 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
             set;
         } = new ObservableCollection<IConnectionLineViewModel>();
 
-        public string DiagramID
+        public string DiagramUUID
         {
             get;
 
@@ -85,34 +85,34 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
 
 
         /// <summary>
-        /// The <see cref="Title" /> property's name.
+        /// The <see cref="Name" /> property's name.
         /// </summary>
-        public const string TitlePropertyName = "Title";
+        public const string NamePropertyName = "Name";
 
-        private string _title = string.Empty;
+        private string _name = string.Empty;
 
         /// <summary>
-        /// Sets and gets the Title property.
+        /// Sets and gets the Name property.
         /// Changes to that property's value raise the PropertyChanged event. 
         /// This property's value is broadcasted by the MessengerInstance when it changes.
         /// </summary>
-        public string Title
+        public string Name
         {
             get
             {
-                return _title;
+                return _name;
             }
 
             set
             {
-                if (_title == value)
+                if (_name == value)
                 {
                     return;
                 }
 
-                var oldValue = _title;
-                _title = value;
-                RaisePropertyChanged(TitlePropertyName, oldValue, value, true);
+                var oldValue = _name;
+                _name = value;
+                RaisePropertyChanged(NamePropertyName, oldValue, value, true);
             }
         }
 

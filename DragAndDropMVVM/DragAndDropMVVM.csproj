@@ -71,7 +71,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModel\IConnectionDiagramViewModel.cs" />
     <Compile Include="ViewModel\IConnectionLineViewModel.cs" />
+    <Compile Include="Model\IDiagramLayout.cs" />
     <Compile Include="ViewModel\IDragged.cs" />
+    <Compile Include="Model\ILineLayout.cs" />
     <Compile Include="WPFUtil.cs" />
     <Page Include="Styles\Colors.xaml">
       <Generator>MSBuild:Compile</Generator>
