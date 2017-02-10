@@ -11,6 +11,7 @@ using System.Windows.Media.Imaging;
 using System.Xml.Serialization;
 using DragAndDropMVVM.Controls;
 using DragAndDropMVVM.Model;
+using DragAndDropMVVM.ViewModel;
 using Microsoft.Win32;
 
 namespace DragAndDropMVVM.Extensions
@@ -87,6 +88,121 @@ namespace DragAndDropMVVM.Extensions
                 }
             }
 
+        }
+
+
+        public static void LoadLayout(this Canvas canvas, IDiagramLayout[] diagrams)
+        {
+
+            if (diagrams == null || !diagrams.Any()) return;
+            canvas.Children.Clear();
+
+            Dictionary<string, ILineLayout[]> uuidLines = new Dictionary<string, ILineLayout[]>();
+
+            foreach(var diagram in diagrams)
+            {
+                var clnele = Activator.CreateInstance(diagram.DiagramType) as UIElement;
+
+                Canvas.SetRight(clnele, diagram.X);
+                Canvas.SetLeft(clnele, diagram.X);
+                Canvas.SetBottom(clnele, diagram.Y);
+                Canvas.SetTop(clnele, diagram.Y);
+
+                clnele.SetValue(ConnectionDiagramBase.DiagramUUIDProperty, diagram.DiagramUUID);
+
+                if(clnele is ContentControl)
+                {
+                    (clnele as ContentControl).DataContext = diagram.DataContext;
+                }
+
+                //add the line by Diagram UUID after finish all diagrams
+                uuidLines.Add(diagram.DiagramUUID, diagram.DepartureLines);
+
+
+                canvas.Children.Add(clnele);
+            }
+
+            
+
+            foreach (var dialines in uuidLines)
+            {
+                ConnectionDiagramBase origindiagram = GetDiagramByUUID(canvas, dialines.Key);
+                if (origindiagram != null && dialines.Value != null)
+                {
+                    foreach (var defline in dialines.Value)
+                    {
+                        var terminaldiagram = GetDiagramByUUID(canvas, defline.TerminalDiagramUUID);
+
+                        dynamic conline;
+
+                        if (terminaldiagram != null)
+                        {
+                            conline = Activator.CreateInstance(defline.LineType);
+                            if (conline is ConnectionLineBase)
+                            {
+
+                                (conline as ConnectionLineBase).OriginDiagram = origindiagram;
+                                (conline as ConnectionLineBase).TerminalDiagram = terminaldiagram;
+                                (conline as ConnectionLineBase).DataContext = defline.DataContext;
+                                (conline as ConnectionLineBase).LineUUID = string.IsNullOrWhiteSpace(defline.LineUUID) ? $"{conline.GetType().Name}_{Guid.NewGuid().ToString()}" : defline.LineUUID;
+                                //if inherb
+                                if (conline is ILinePosition)
+                                {
+                                    (conline as ILinePosition).X1 = (double)origindiagram.GetValue(Canvas.LeftProperty) - (double)terminaldiagram.GetValue(Canvas.LeftProperty) + origindiagram.CenterPosition.X;
+                                    (conline as ILinePosition).Y1 = (double)origindiagram.GetValue(Canvas.TopProperty) - (double)terminaldiagram.GetValue(Canvas.TopProperty) + origindiagram.CenterPosition.Y; ;
+                                    (conline as ILinePosition).X2 = terminaldiagram.CenterPosition.X;
+                                    (conline as ILinePosition).Y2 = terminaldiagram.CenterPosition.Y;
+
+                                    Canvas.SetTop(conline, (double)terminaldiagram.GetValue(Canvas.TopProperty));
+                                    Canvas.SetLeft(conline, (double)terminaldiagram.GetValue(Canvas.LeftProperty));
+
+                                }
+
+                                origindiagram.DepartureLines.Add(conline);
+                                terminaldiagram.ArrivalLines.Add(conline);
+
+                            }
+
+                            canvas.Children.Add(conline);
+                        }
+                    }
+                }
+            }
+
+            //////foreach (var child in canvas.Children)
+            //////{
+            //////    if (!(child is ConnectionDiagramBase)) continue;
+
+            //////    var origindiagram = child as ConnectionDiagramBase;
+
+            //////    foreach (var child2 in canvas.Children)
+            //////    {
+            //////        if (!(child2 is ConnectionDiagramBase)) continue;
+
+            //////        var terminaldiagram = child2 as ConnectionDiagramBase;
+
+
+
+            //////    }
+            //////}
+
+        }
+
+        private static ConnectionDiagramBase GetDiagramByUUID(Canvas canvas , string uuid)
+        {
+            ConnectionDiagramBase result = null;
+            foreach (var child in canvas.Children)
+            {
+                if (!(child is ConnectionDiagramBase)) continue;
+
+                if((child as ConnectionDiagramBase).DiagramUUID == uuid)
+                {
+                    result = (child as ConnectionDiagramBase);
+                    break;
+                }
+            }
+
+            return result;
         }
 
     }

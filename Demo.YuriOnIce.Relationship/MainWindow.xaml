@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:Demo.YuriOnIce.Relationship.MvvmLight"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:b="clr-namespace:DragAndDropMVVM.Behavior;assembly=DragAndDropMVVM"
+        xmlns:ext="clr-namespace:DragAndDropMVVM.Extensions;assembly=DragAndDropMVVM"
         xmlns:ctrl="clr-namespace:Demo.YuriOnIce.Relationship.Controls"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         DataContext="{Binding Source={StaticResource Locator}, Path=Main}"
@@ -83,6 +84,7 @@
                 MinWidth="450" MinHeight="325"
                 b:FrameworkElementDropBehavior.DropCommand="{Binding DropCommand}"
                 b:FrameworkElementDropBehavior.DroppedCanvas="{Binding RelativeSource={RelativeSource Self}}"
+                ext:LayoutAssist.LayoutDataContext="{Binding LayoutRelationshipMap}"
                 Background="WhiteSmoke"
                 AllowDrop="True">
             <Canvas.LayoutTransform>

@@ -111,12 +111,12 @@ namespace DragAndDropMVVM.Behavior
                                 (conline as ConnectionLineBase).TerminalDiagram = terminaldiagram;
 
                                 //if inherb
-                                if (conline is DrawLineThump)
+                                if (conline is ILinePosition)
                                 {
-                                    (conline as DrawLineThump).X1 = x1;
-                                    (conline as DrawLineThump).Y1 = y1;
-                                    (conline as DrawLineThump).X2 = x2;
-                                    (conline as DrawLineThump).Y2 = y2;
+                                    (conline as ILinePosition).X1 = x1;
+                                    (conline as ILinePosition).Y1 = y1;
+                                    (conline as ILinePosition).X2 = x2;
+                                    (conline as ILinePosition).Y2 = y2;
                                 }
                             }
                         }

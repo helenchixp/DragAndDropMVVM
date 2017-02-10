@@ -9,5 +9,13 @@ namespace DragAndDropMVVM.Model
     public interface ILineLayout
     {
         Type LineType { get; set; }
+
+        string TerminalDiagramUUID { get; set; }
+
+        string LineUUID { get; set; }
+
+        object DataContext { get; set; }
     }
+
+ 
 }

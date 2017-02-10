@@ -11,7 +11,7 @@ using System.Windows.Shapes;
 
 namespace DragAndDropMVVM.Controls
 {
-    public class DrawLineThump : ConnectionLineBase
+    public class DrawLineThump : ConnectionLineBase, ILinePosition
     {
         private Line _drawLine;
 

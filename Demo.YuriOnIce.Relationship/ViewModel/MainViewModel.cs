@@ -11,6 +11,7 @@ using DragAndDropMVVM.Extensions;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Win32;
+using Demo.YuriOnIce.Relationship.Controls;
 
 namespace Demo.YuriOnIce.Relationship.ViewModel
 {
@@ -188,6 +189,42 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
                 RaisePropertyChanged(ErrorMessagePropertyName, oldValue, value, true);
             }
         }
+        #endregion
+
+        #region LayoutRelationshipMap
+
+        /// <summary>
+        /// The <see cref="LayoutRelationshipMap" /> property's name.
+        /// </summary>
+        public const string LayoutRelationshipMapPropertyName = "LayoutRelationshipMap";
+
+        private RelationshipMap _layoutRelationshipMap = null;
+
+        /// <summary>
+        /// Sets and gets the LayoutRelationshipMap property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// This property's value is broadcasted by the MessengerInstance when it changes.
+        /// </summary>
+        public RelationshipMap LayoutRelationshipMap
+        {
+            get
+            {
+                return _layoutRelationshipMap;
+            }
+
+            set
+            {
+                if (_layoutRelationshipMap == value)
+                {
+                    return;
+                }
+
+                var oldValue = _layoutRelationshipMap;
+                _layoutRelationshipMap = value;
+                RaisePropertyChanged(LayoutRelationshipMapPropertyName, oldValue, value, true);
+            }
+        }
+
         #endregion
 
         #endregion
@@ -460,6 +497,8 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
 
         private void ExecuteSaveAsXMLCommand(object parameter)
         {
+            if (!Characters.Any()) return;
+
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.FilterIndex = 1;
 
@@ -504,6 +543,7 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
                             {
                                 Comment = (line as LineViewModel)?.Comment,
                                 ToIndex = line.TerminalDiagramViewModel?.Index ?? -1,
+                                TerminalDiagramUUID = line.TerminalDiagramViewModel?.DiagramUUID,
                                 LineTypeName = typeof(Controls.RelationshipLine).FullName,
                             };
 
@@ -515,6 +555,7 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
 
                 if( parameter is Canvas)
                 {
+                    LayoutRelationshipMap = map;
                     (parameter as Canvas).SetExportPosition(map.Characters);
                 }
                 
@@ -535,7 +576,7 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
 
         private bool CanExecuteSaveAsXMLCommand(object parameter)
         {
-            return Characters.Any();
+            return true;
         }
 
         #endregion
@@ -560,14 +601,14 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
 
         private void ExecuteLoadXMLCommand(object parameter)
         {
-            if (!(parameter is System.Windows.Controls.Canvas))
-                return;
+            //if (!(parameter is System.Windows.Controls.Canvas))
+            //    return;
 
-            var canvas = (parameter as System.Windows.Controls.Canvas);
+            //var canvas = (parameter as System.Windows.Controls.Canvas);
 
 
 
-            canvas.Children.Clear();
+            //canvas.Children.Clear();
 
             OpenFileDialog filedialog = new OpenFileDialog();
             filedialog.Filter = "XML File(.xml)|*.xml|All Files (*.*)|*.*";
@@ -587,23 +628,48 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
 
                     if (layout != null)
                     {
-                        //foreach (var diagram in layout.Diagrams)
+
+                        //Create the collection in viewmodel
+                        Characters.Clear();
+                        foreach(var character in layout.Characters)
+                        {
+                            character.DataContext = new DiagramViewModel()
+                            {
+                                Index = character.Index,
+                                Name = character.Name,
+                                Detail = character.Detail,
+                                ImagePath = character.ImagePath,
+                                DiagramUUID = character.DiagramUUID,
+                            };
+
+                            Characters.Add((DiagramViewModel)character.DataContext);
+                        }
+
+
+                        //// show layout in view
+                        //canvas.LoadLayout(layout.Characters);
+
+                        //// set the datacontext for view
+                        //foreach(var child in canvas.Children)
                         //{
-                        //    //Activator.CreateComInstanceFrom()
+
+                        //    if (child is CharacterDiagram)
+                        //    {
+                        //        var vm = Characters.FirstOrDefault(d => d.DiagramUUID == (child as CharacterDiagram).DiagramUUID);
+
+                        //        if (vm != null)
+                        //        {
+                        //            (child as CharacterDiagram).DataContext = vm;
+                        //        }
+                        //    }
                         //}
 
-                        //foreach (var line in layout.Lines)
-                        //{
-                        //    //Activator.CreateComInstanceFrom()
-                        //}
-
-                     //   MessageBox.Show("You will load the xml in you project");
-
+                        LayoutRelationshipMap = layout;
                     }
                 }
                 catch
                 {
-
+                    throw;
                 }
                 finally
                 {

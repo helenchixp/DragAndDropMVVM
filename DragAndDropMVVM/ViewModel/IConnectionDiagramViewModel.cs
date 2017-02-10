@@ -15,7 +15,7 @@ namespace DragAndDropMVVM.ViewModel
         string DiagramUUID { get; set; }
 
         ObservableCollection<IConnectionLineViewModel> DepartureLinesViewModel { get; set; }
-
+       
         ObservableCollection<IConnectionLineViewModel> ArrivalLinesViewModel { get; set; }
 
         bool IsSelected { get; set; }

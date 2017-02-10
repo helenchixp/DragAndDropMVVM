@@ -5,11 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using DragAndDropMVVM.Model;
+using DragAndDropMVVM.ViewModel;
 
 namespace Demo.YuriOnIce.Relationship.Model
 {
     [Serializable]
-    public class RelationshipMap
+    public class RelationshipMap : IMapLayout
     {
         [XmlAttribute]
         public int Width { get; set; }
@@ -19,6 +20,24 @@ namespace Demo.YuriOnIce.Relationship.Model
         public string Header { get; set; }
         [XmlElement]
         public string Footer { get; set; }
+        [XmlIgnore]
+        public IDiagramLayout[] Diagrams
+        {
+            get
+
+            {
+                if (Characters != null && Characters.Any())
+                {
+                    return Characters.Cast<IDiagramLayout>().ToArray();
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        //[XmlIgnore]
+        //public bool IsSync { get; set; }
 
         [XmlElement]
         public Character[] Characters { get; set; }
@@ -91,6 +110,9 @@ namespace Demo.YuriOnIce.Relationship.Model
 
             [XmlElement]
             public string DiagramUUID { get; set; }
+
+            [XmlIgnore]
+            public object DataContext { get; set; }
             #endregion
 
             [XmlAttribute]
@@ -136,6 +158,15 @@ namespace Demo.YuriOnIce.Relationship.Model
 
                 }
             }
+
+            [XmlElement]
+            public string TerminalDiagramUUID { get; set; }
+
+            [XmlIgnore]
+            public string LineUUID { get; set; }
+
+            [XmlIgnore]
+            public object DataContext { get; set; }
             #endregion
 
             [XmlAttribute]
