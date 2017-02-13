@@ -74,6 +74,24 @@ namespace DragAndDropMVVM.Controls
 
         public ConnectionDiagramBase TerminalDiagram { get; internal set; }
 
+
+        #region LineUUID
+
+
+        /// <summary>
+        /// Gets or sets the value of the <see cref="LineUUID" />
+        /// property. This is a dependency property.
+        /// </summary>
+        public virtual string LineUUID
+        {
+            get;
+            set;
+        }
+
+
+        #endregion
+
+
         #endregion
 
 
@@ -160,49 +178,6 @@ namespace DragAndDropMVVM.Controls
 
         #endregion
 
-        #region LineUUID
-
-        /// <summary>
-        /// The <see cref="LineUUID" /> dependency property's name.
-        /// </summary>
-        public const string LineUUIDPropertyName = "LineUUID";
-
-        /// <summary>
-        /// Gets or sets the value of the <see cref="LineUUID" />
-        /// property. This is a dependency property.
-        /// </summary>
-        public string LineUUID
-        {
-            get
-            {
-                return (string)GetValue(LineUUIDProperty);
-            }
-            set
-            {
-                SetValue(LineUUIDProperty, value);
-            }
-        }
-
-        /// <summary>
-        /// Identifies the <see cref="LineUUID" /> dependency property.
-        /// </summary>
-        public static readonly DependencyProperty LineUUIDProperty = DependencyProperty.Register(
-            LineUUIDPropertyName,
-            typeof(string),
-            typeof(ConnectionLineBase),
-            new UIPropertyMetadata(string.Empty,
-                (d, e) =>
-                {
-                    if ((d is ConnectionLineBase) &&
-                        (d as ConnectionLineBase).DataContext is IConnectionLineViewModel)
-                    {
-                        ((d as ConnectionLineBase).DataContext as IConnectionLineViewModel).LineUUID = (string)e.NewValue;
-                    }
-
-
-                }
-                ));
-        #endregion
 
         #endregion
 

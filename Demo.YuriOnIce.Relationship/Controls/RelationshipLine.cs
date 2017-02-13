@@ -57,5 +57,19 @@ namespace Demo.YuriOnIce.Relationship.Controls
         {
             DataContext = new LineViewModel();
         }
+
+        public override string LineUUID
+        {
+            get
+            {
+                LineViewModel vm = DataContext as LineViewModel;
+                return $"{vm.OriginDiagramViewModel?.Index}_{vm.TerminalDiagramViewModel?.Index}";
+            }
+
+            set
+            {
+                //Can't set the UUID
+            }
+        }
     }
 }

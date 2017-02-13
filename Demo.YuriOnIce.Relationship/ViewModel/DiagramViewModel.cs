@@ -27,12 +27,6 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
             set;
         } = new ObservableCollection<IConnectionLineViewModel>();
 
-        public string DiagramUUID
-        {
-            get;
-
-            set;
-        }
 
         public int Index
         {

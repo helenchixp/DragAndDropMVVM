@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -82,8 +81,9 @@ namespace DragAndDropMVVM.Extensions
 
                     if(diagram != null)
                     {
-                        diagram.X = Canvas.GetTop(element as ConnectionDiagramBase);
-                        diagram.Y = Canvas.GetLeft(element as ConnectionDiagramBase);
+                        diagram.X = Canvas.GetLeft(element as ConnectionDiagramBase);
+                        diagram.Y = Canvas.GetTop(element as ConnectionDiagramBase);
+                        diagram.DiagramUUID = (element as ConnectionDiagramBase).DiagramUUID;
                     }
                 }
             }
@@ -99,18 +99,12 @@ namespace DragAndDropMVVM.Extensions
 
             Dictionary<string, ILineLayout[]> uuidLines = new Dictionary<string, ILineLayout[]>();
 
-            foreach(var diagram in diagrams)
+            foreach (var diagram in diagrams)
             {
                 var clnele = Activator.CreateInstance(diagram.DiagramType) as UIElement;
+                //clnele.SetValue(ConnectionDiagramBase.DiagramUUIDProperty, diagram.DiagramUUID);
 
-                Canvas.SetRight(clnele, diagram.X);
-                Canvas.SetLeft(clnele, diagram.X);
-                Canvas.SetBottom(clnele, diagram.Y);
-                Canvas.SetTop(clnele, diagram.Y);
-
-                clnele.SetValue(ConnectionDiagramBase.DiagramUUIDProperty, diagram.DiagramUUID);
-
-                if(clnele is ContentControl)
+                if (clnele is ContentControl)
                 {
                     (clnele as ContentControl).DataContext = diagram.DataContext;
                 }
@@ -118,11 +112,22 @@ namespace DragAndDropMVVM.Extensions
                 //add the line by Diagram UUID after finish all diagrams
                 uuidLines.Add(diagram.DiagramUUID, diagram.DepartureLines);
 
+                Application.Current.Dispatcher.Invoke(() =>
+                {
 
-                canvas.Children.Add(clnele);
+                    Canvas.SetRight(clnele, diagram.X);
+                    Canvas.SetLeft(clnele, diagram.X);
+                    Canvas.SetBottom(clnele, diagram.Y);
+                    Canvas.SetTop(clnele, diagram.Y);
+
+
+                    canvas.Children.Add(clnele);
+                });
             }
 
-            
+            //update the canvas.
+            canvas.UpdateLayout();
+
 
             foreach (var dialines in uuidLines)
             {
@@ -153,17 +158,20 @@ namespace DragAndDropMVVM.Extensions
                                     (conline as ILinePosition).X2 = terminaldiagram.CenterPosition.X;
                                     (conline as ILinePosition).Y2 = terminaldiagram.CenterPosition.Y;
 
-                                    Canvas.SetTop(conline, (double)terminaldiagram.GetValue(Canvas.TopProperty));
-                                    Canvas.SetLeft(conline, (double)terminaldiagram.GetValue(Canvas.LeftProperty));
-
                                 }
 
                                 origindiagram.DepartureLines.Add(conline);
                                 terminaldiagram.ArrivalLines.Add(conline);
 
                             }
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
 
-                            canvas.Children.Add(conline);
+                                Canvas.SetTop(conline, (double)terminaldiagram.GetValue(Canvas.TopProperty));
+                                Canvas.SetLeft(conline, (double)terminaldiagram.GetValue(Canvas.LeftProperty));
+
+                                canvas.Children.Add(conline);
+                            });
                         }
                     }
                 }

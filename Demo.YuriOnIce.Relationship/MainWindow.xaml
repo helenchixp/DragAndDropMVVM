@@ -38,12 +38,17 @@
             <ColumnDefinition Width="9*"/>
         </Grid.ColumnDefinitions>
         <Menu Grid.ColumnSpan="2">
-            <MenuItem Header="Export">
-                <MenuItem Header="Export to Picture" Command="{Binding ExportImageCommand}" CommandParameter="{Binding ElementName=myDroppedCanvas}"/>
+            <MenuItem Header="Action">
+                <MenuItem Header="Clear" Command="{Binding ClearCommand}" CommandParameter="{Binding ElementName=myDroppedCanvas}"/>
+                <Separator />
+                <MenuItem Header="Undo"  IsEnabled="False" />
+                <MenuItem Header="Redo" IsEnabled="False"/>
             </MenuItem>
             <MenuItem Header="Save and Load">
                 <MenuItem Header="Load from XML file" Command="{Binding LoadXMLCommand}" CommandParameter="{Binding ElementName=myDroppedCanvas}" />
                 <MenuItem Header="Save as XML file" Command="{Binding SaveAsXMLCommand}" CommandParameter="{Binding ElementName=myDroppedCanvas}" />
+                <Separator />
+                <MenuItem Header="Export to Picture" Command="{Binding ExportImageCommand}" CommandParameter="{Binding ElementName=myDroppedCanvas}"/>
             </MenuItem>
         </Menu>
 

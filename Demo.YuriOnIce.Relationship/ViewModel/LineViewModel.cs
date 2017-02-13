@@ -28,9 +28,36 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
         public IConnectionDiagramViewModel OriginDiagramViewModel
         {
             get;
-
             set;
         }
+
+        //TODO 再検討
+        //private DiagramViewModel _originDiagramViewModel = null;
+
+        //public IConnectionDiagramViewModel OriginDiagramViewModel
+        //{
+        //    get
+        //    {
+        //        return _originDiagramViewModel;
+        //    }
+
+        //    set
+        //    {
+        //        if (_originDiagramViewModel == value)
+        //        {
+        //            return;
+        //        }
+        //        _originDiagramViewModel = value as DiagramViewModel;
+
+        //        if (_originDiagramViewModel != null)
+        //        {
+        //            if (_originDiagramViewModel.DepartureLinesViewModel.Contains(this))
+        //                return;
+        //            else
+        //                _originDiagramViewModel.DepartureLinesViewModel.Add(this);
+        //        }
+        //    }
+        //}
 
         public IConnectionDiagramViewModel TerminalDiagramViewModel
         {
@@ -39,6 +66,12 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
             set;
         }
 
+
+        public string TerminalDiagramUUID
+        {
+            get;
+            set;
+        }
         #endregion
 
         #region Property Changes

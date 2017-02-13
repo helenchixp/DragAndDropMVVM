@@ -478,6 +478,37 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
         }
         #endregion
 
+        #region ExportImageCommand
+        private RelayCommand<object> _exportImageCommand;
+
+        /// <summary>
+        /// Gets the ExportImageCommand.
+        /// </summary>
+        public RelayCommand<object> ExportImageCommand
+        {
+            get
+            {
+                return _exportImageCommand ?? (_exportImageCommand = new RelayCommand<object>(
+                    ExecuteExportImageCommand,
+                    CanExecuteExportImageCommand));
+            }
+        }
+
+        private void ExecuteExportImageCommand(object parameter)
+        {
+            if (parameter is System.Windows.Controls.Canvas)
+            {
+                (parameter as System.Windows.Controls.Canvas).ExportImage();
+            }
+        }
+
+        private bool CanExecuteExportImageCommand(object parameter)
+        {
+            return true;
+        }
+
+        #endregion
+
         #region SaveAsXMLCommand
 
         private RelayCommand<object> _saveAsXMLCommand;
@@ -530,7 +561,6 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
                         Detail = Characters[idx].Detail,
                         Index = Characters[idx].Index,
                         DiagramTypeName = typeof(Controls.CharacterDiagram).FullName,
-                        DiagramUUID = Characters[idx].DiagramUUID,
                     };
                     if (Characters[idx].DepartureLinesViewModel.Any())
                     {
@@ -543,7 +573,6 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
                             {
                                 Comment = (line as LineViewModel)?.Comment,
                                 ToIndex = line.TerminalDiagramViewModel?.Index ?? -1,
-                                TerminalDiagramUUID = line.TerminalDiagramViewModel?.DiagramUUID,
                                 LineTypeName = typeof(Controls.RelationshipLine).FullName,
                             };
 
@@ -555,7 +584,7 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
 
                 if( parameter is Canvas)
                 {
-                    LayoutRelationshipMap = map;
+                   // LayoutRelationshipMap = map;
                     (parameter as Canvas).SetExportPosition(map.Characters);
                 }
                 
@@ -580,8 +609,7 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
         }
 
         #endregion
-
-
+        
         #region LoadXMLCommand
 
         private RelayCommand<object> _loadXMLCommand;
@@ -631,38 +659,29 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
 
                         //Create the collection in viewmodel
                         Characters.Clear();
-                        foreach(var character in layout.Characters)
+                        foreach (var character in layout.Characters)
                         {
-                            character.DataContext = new DiagramViewModel()
-                            {
-                                Index = character.Index,
-                                Name = character.Name,
-                                Detail = character.Detail,
-                                ImagePath = character.ImagePath,
-                                DiagramUUID = character.DiagramUUID,
-                            };
-
                             Characters.Add((DiagramViewModel)character.DataContext);
                         }
 
+                        //set the line TerminalDiagramViewModel
+                        foreach (var charvm in Characters)
+                        {
+                            foreach (var depatureline in charvm.DepartureLinesViewModel)
+                            {
 
-                        //// show layout in view
-                        //canvas.LoadLayout(layout.Characters);
+                                depatureline.TerminalDiagramViewModel = (from tervm in Characters
+                                                                         where tervm.Index.ToString() == ((LineViewModel)depatureline).TerminalDiagramUUID
+                                                                         select tervm).FirstOrDefault();
 
-                        //// set the datacontext for view
-                        //foreach(var child in canvas.Children)
-                        //{
+                                if (depatureline.TerminalDiagramViewModel != null)
+                                    depatureline.TerminalDiagramViewModel.ArrivalLinesViewModel.Add(depatureline);
 
-                        //    if (child is CharacterDiagram)
-                        //    {
-                        //        var vm = Characters.FirstOrDefault(d => d.DiagramUUID == (child as CharacterDiagram).DiagramUUID);
+                            }
+                        }
 
-                        //        if (vm != null)
-                        //        {
-                        //            (child as CharacterDiagram).DataContext = vm;
-                        //        }
-                        //    }
-                        //}
+                        
+
 
                         LayoutRelationshipMap = layout;
                     }
@@ -685,6 +704,38 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
         }
 
         #endregion
+
+
+        #region ClearCommand
+        private RelayCommand<object> _clearCommand;
+
+        /// <summary>
+        /// Gets the ClearCommand.
+        /// </summary>
+        public RelayCommand<object> ClearCommand
+        {
+            get
+            {
+                return _clearCommand ?? (_clearCommand = new RelayCommand<object>(
+                    ExecuteClearCommand,
+                    CanExecuteClearCommand));
+            }
+        }
+
+        private void ExecuteClearCommand(object parameter)
+        {
+            if (!(parameter is System.Windows.Controls.Canvas))
+                return;
+
+            var canvas = (parameter as System.Windows.Controls.Canvas);
+            canvas.Children.Clear();
+        }
+
+        private bool CanExecuteClearCommand(object parameter)
+        {
+            return true;
+        }
+        #endregion 
 
         #endregion
 

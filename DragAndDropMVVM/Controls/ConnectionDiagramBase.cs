@@ -366,47 +366,6 @@ namespace DragAndDropMVVM.Controls
             new UIPropertyMetadata(FrameworkElementAdornerType.DrawEllipse));
         #endregion
 
-        #region DiagramUUID
-        /// <summary>
-        /// The <see cref="DiagramUUID" /> dependency property's name.
-        /// </summary>
-        public const string DiagramUUIDPropertyName = "DiagramUUID";
-
-        /// <summary>
-        /// Gets or sets the value of the <see cref="DiagramUUID" />
-        /// property. This is a dependency property.
-        /// </summary>
-        public string DiagramUUID
-        {
-            get
-            {
-                return (string)GetValue(DiagramUUIDProperty);
-            }
-            set
-            {
-                SetValue(DiagramUUIDProperty, value);
-            }
-        }
-
-        /// <summary>
-        /// Identifies the <see cref="DiagramUUID" /> dependency property.
-        /// </summary>
-        public static readonly DependencyProperty DiagramUUIDProperty = DependencyProperty.Register(
-            DiagramUUIDPropertyName,
-            typeof(string),
-            typeof(ConnectionDiagramBase),
-            new UIPropertyMetadata(string.Empty,
-                (d, e) =>
-                {
-                    if ((d is ConnectionDiagramBase) &&
-                        (d as ConnectionDiagramBase).DataContext is IConnectionDiagramViewModel)
-                    {
-                        ((d as ConnectionDiagramBase).DataContext as IConnectionDiagramViewModel).DiagramUUID = (string) e.NewValue;
-                    }
-                }
-                ));
-
-        #endregion
 
         #endregion
 
@@ -416,6 +375,19 @@ namespace DragAndDropMVVM.Controls
 
         public ObservableCollection<ConnectionLineBase> ArrivalLines { get; internal set; } = new ObservableCollection<ConnectionLineBase>();
 
+        #region DiagramUUID
+        /// <summary>
+        /// Gets or sets the value of the <see cref="DiagramUUID" />
+        /// property. This is a dependency property.
+        /// </summary>
+        public virtual string DiagramUUID
+        {
+            get;
+            set;
+        }
+
+   
+        #endregion
 
         #region CenterPosition
 

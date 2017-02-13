@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using Demo.YuriOnIce.Relationship.ViewModel;
 using DragAndDropMVVM.Model;
 using DragAndDropMVVM.ViewModel;
 
@@ -108,11 +110,54 @@ namespace Demo.YuriOnIce.Relationship.Model
                 }
             }
 
-            [XmlElement]
-            public string DiagramUUID { get; set; }
+            [XmlIgnore]
+            public string DiagramUUID
+            {
+                get
+                {
+                    return Index.ToString();
+                }
+                set { }
+            }
+
+            DiagramViewModel _dataContext = null;
 
             [XmlIgnore]
-            public object DataContext { get; set; }
+            public object DataContext
+            {
+                get
+                {
+                    if (_dataContext == null)
+                    {
+                        _dataContext = new DiagramViewModel()
+                        {
+                            Index = Index,
+                            Name = Name,
+                            Detail = Detail,
+                            ImagePath = ImagePath,
+                        };
+                        if (Connectors != null && Connectors.Any())
+                        {
+                            _dataContext.DepartureLinesViewModel = new ObservableCollection<IConnectionLineViewModel>(
+                                from line in Connectors
+                                select new LineViewModel()
+                                {
+                                    Comment = line.Comment,
+                                    OriginDiagramViewModel = _dataContext,
+                                    TerminalDiagramUUID = line.TerminalDiagramUUID,
+                                }
+                            );
+                        }
+
+                    }
+                    return _dataContext;
+                }
+
+                set
+                {
+                    _dataContext = value as DiagramViewModel;
+                }
+            }
             #endregion
 
             [XmlAttribute]
@@ -159,14 +204,42 @@ namespace Demo.YuriOnIce.Relationship.Model
                 }
             }
 
-            [XmlElement]
-            public string TerminalDiagramUUID { get; set; }
-
             [XmlIgnore]
+            public string TerminalDiagramUUID
+            {
+                get
+                {
+                    return ToIndex.ToString();
+                }
+                set { }
+            }
+
+            [XmlAttribute]
             public string LineUUID { get; set; }
 
+            private LineViewModel _dataContext = null;
+
             [XmlIgnore]
-            public object DataContext { get; set; }
+            public object DataContext
+            {
+                get
+                {
+                    if (_dataContext == null)
+                    {
+                        _dataContext = new LineViewModel()
+                        {
+                            Comment = Comment,
+                            LineUUID = LineUUID,
+                        };
+                    }
+                    return _dataContext;
+                }
+
+                set
+                {
+                    _dataContext = value as LineViewModel;
+                }
+            }
             #endregion
 
             [XmlAttribute]

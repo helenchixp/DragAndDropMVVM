@@ -86,5 +86,18 @@ namespace Demo.YuriOnIce.Relationship.Controls
                 return new Point(base.CenterPosition.X, base.CenterPosition.Y + 20); ;
             }
         }
+
+        public override string DiagramUUID
+        {
+            get
+            {
+                return ((DiagramViewModel)DataContext).Index.ToString();
+            }
+
+            set
+            {
+               // Can't set the UUID
+            }
+        }
     }
 }
