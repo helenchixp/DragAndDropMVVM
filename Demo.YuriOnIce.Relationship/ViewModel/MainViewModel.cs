@@ -461,7 +461,7 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
 
         private void ExecuteDeleteDiagramCommand(object parameter)
         {
-
+            Characters.Remove(parameter as DiagramViewModel);
         }
 
         private bool CanExecuteDeleteDiagramCommand(object parameter)
@@ -598,7 +598,7 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
                                                    //ƒtƒ@ƒCƒ‹‚ð•Â‚¶‚é
                 fs.Close();
 
-
+                System.Diagnostics.Debug.WriteLine(LayoutRelationshipMap);
             }
 
         }
@@ -629,14 +629,8 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
 
         private void ExecuteLoadXMLCommand(object parameter)
         {
-            //if (!(parameter is System.Windows.Controls.Canvas))
-            //    return;
-
-            //var canvas = (parameter as System.Windows.Controls.Canvas);
 
 
-
-            //canvas.Children.Clear();
 
             OpenFileDialog filedialog = new OpenFileDialog();
             filedialog.Filter = "XML File(.xml)|*.xml|All Files (*.*)|*.*";
@@ -661,22 +655,46 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
                         Characters.Clear();
                         foreach (var character in layout.Characters)
                         {
-                            Characters.Add((DiagramViewModel)character.DataContext);
+                            var charvm = (DiagramViewModel)character.DataContext;
+
+                            if (character.Connectors != null && character.Connectors.Any())
+                            {
+                                charvm.DepartureLinesViewModel = new ObservableCollection<IConnectionLineViewModel>(
+                                    from line in character.Connectors
+                                    select new LineViewModel()
+                                    {
+                                        Comment = line.Comment,
+                                        LineUUID = line.LineUUID,
+                                        TerminalDiagramUUID = line.TerminalDiagramUUID,
+                                    });
+                            }
+                            Characters.Add(charvm);
                         }
 
                         //set the line TerminalDiagramViewModel
                         foreach (var charvm in Characters)
                         {
+                            var layoutchar = layout.Characters.FirstOrDefault(diagram => diagram.DiagramUUID == ((DiagramViewModel)charvm).Index.ToString());
+
                             foreach (var depatureline in charvm.DepartureLinesViewModel)
                             {
 
                                 depatureline.TerminalDiagramViewModel = (from tervm in Characters
                                                                          where tervm.Index.ToString() == ((LineViewModel)depatureline).TerminalDiagramUUID
                                                                          select tervm).FirstOrDefault();
+                                depatureline.OriginDiagramViewModel = charvm;
 
                                 if (depatureline.TerminalDiagramViewModel != null)
                                     depatureline.TerminalDiagramViewModel.ArrivalLinesViewModel.Add(depatureline);
 
+                                if (layoutchar.Connectors != null && layoutchar.Connectors.Any())
+                                {
+                                    var layoutline = layoutchar.Connectors.FirstOrDefault(line => line.LineUUID == depatureline.LineUUID);
+                                    if (layoutline != null)
+                                    {
+                                        layoutline.DataContext = depatureline;
+                                    }
+                                }
                             }
                         }
 

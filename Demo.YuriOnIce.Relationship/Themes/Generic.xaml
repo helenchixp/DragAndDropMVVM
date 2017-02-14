@@ -5,6 +5,7 @@
     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
     xmlns:b="clr-namespace:DragAndDropMVVM.Behavior;assembly=DragAndDropMVVM"
     xmlns:ctrl="clr-namespace:Demo.YuriOnIce.Relationship.Controls"
+    xmlns:ext="clr-namespace:DragAndDropMVVM.Extensions;assembly=DragAndDropMVVM"
     >
 
 
@@ -29,24 +30,29 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:CharacterDiagram}">
-                    <Border Background="{TemplateBinding Background}"
+                    <!--<Border Background="{TemplateBinding Background}"
                             BorderBrush="{DynamicResource AccentDiagramBrush}"
                             BorderThickness="2"
-                            x:Name="PART_Border">
+                            x:Name="PART_Border">-->
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <Image Source="{Binding ImagePath}" Height="60" Width="60" ToolTip="{Binding Detail}" IsHitTestVisible="True">
-
+                                <Image.Clip>
+                                    <EllipseGeometry RadiusX="30" RadiusY="30" Center="30,30" />
+                                </Image.Clip>
                             </Image>
+                        <Ellipse  Height="60" Width="60" Stroke="{DynamicResource AccentDiagramBrush}" StrokeThickness="2" x:Name="PART_Border">
+                        </Ellipse>
                             <TextBlock Text="{Binding Name}" Grid.Row="1" FontSize="12" IsHitTestVisible="True" HorizontalAlignment="Center"/>
                         </Grid>
-                    </Border>
+                    <!--</Border>-->
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsFocused" Value="True">
-                            <Setter Property="BorderBrush" Value="{DynamicResource IsSelectedDiagramBrush}" TargetName="PART_Border"/>
+                            <!--<Setter Property="BorderBrush" Value="{DynamicResource IsSelectedDiagramBrush}" TargetName="PART_Border"/>-->
+                            <Setter Property="Stroke" Value="{DynamicResource IsSelectedDiagramBrush}" TargetName="PART_Border"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

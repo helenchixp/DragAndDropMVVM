@@ -91,7 +91,7 @@ namespace DragAndDropMVVM.Extensions
         }
 
 
-        public static void LoadLayout(this Canvas canvas, IDiagramLayout[] diagrams)
+        internal static void LoadLayout(this Canvas canvas, IDiagramLayout[] diagrams)
         {
 
             if (diagrams == null || !diagrams.Any()) return;

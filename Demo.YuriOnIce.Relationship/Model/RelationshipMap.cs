@@ -138,15 +138,15 @@ namespace Demo.YuriOnIce.Relationship.Model
                         };
                         if (Connectors != null && Connectors.Any())
                         {
-                            _dataContext.DepartureLinesViewModel = new ObservableCollection<IConnectionLineViewModel>(
-                                from line in Connectors
-                                select new LineViewModel()
-                                {
-                                    Comment = line.Comment,
-                                    OriginDiagramViewModel = _dataContext,
-                                    TerminalDiagramUUID = line.TerminalDiagramUUID,
-                                }
-                            );
+                            //_dataContext.DepartureLinesViewModel = new ObservableCollection<IConnectionLineViewModel>(
+                            //    from line in Connectors
+                            //    select new LineViewModel()
+                            //    {
+                            //        Comment = line.Comment,
+                            //        OriginDiagramViewModel = _dataContext,
+                            //        TerminalDiagramUUID = line.TerminalDiagramUUID,
+                            //    }
+                            //);
                         }
 
                     }
