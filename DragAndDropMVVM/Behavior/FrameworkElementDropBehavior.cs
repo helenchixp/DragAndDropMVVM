@@ -62,7 +62,7 @@ namespace DragAndDropMVVM.Behavior
 
                     if (this.AssociatedObject.DataContext is IDragged)
                     {
-                        (this.AssociatedObject.DataContext as IDragged).DraggedData = (e.Data.GetDataPresent(DataFormats.Serializable) ? e.Data.GetData(DataFormats.Serializable) : null);
+                        (this.AssociatedObject.DataContext as IDragged).DraggedDataContext = (e.Data.GetDataPresent(DataFormats.Serializable) ? e.Data.GetData(DataFormats.Serializable) : null);
                     }
 
                     if (dropcommand.CanExecute(parameter))
@@ -123,15 +123,31 @@ namespace DragAndDropMVVM.Behavior
                                     SetConnectionLinePosition(clnele as ConnectionDiagramBase, (Point)(canvaspoint - oldpoint));
 
 
-                                    Canvas.SetRight(clnele, canvaspoint.X);
+                                  //  Canvas.SetRight(clnele, canvaspoint.X);
                                     Canvas.SetLeft(clnele, canvaspoint.X);
-                                    Canvas.SetBottom(clnele, canvaspoint.Y);
+                                   // Canvas.SetBottom(clnele, canvaspoint.Y);
                                     Canvas.SetTop(clnele, canvaspoint.Y);
 
                                     (clnele as ConnectionDiagramBase).DiagramUUID = $"{clnele.GetType().Name}_{Guid.NewGuid().ToString()}";
 
                                     if (iscopy)
+                                    {
+                                        //Extensions.LayoutAssist.UndoRedoList.Push((obj) => {
+                                        //    if (obj != clnele) return;
+                                        //    droppedcanvas.Children.Remove(clnele);
+                                        //});
                                         droppedcanvas.Children.Add(clnele);
+                                    }
+                                    else
+                                    {
+                                        //Extensions.LayoutAssist.UndoRedoList.Push((obj) =>
+                                        //{
+                                        //    if (obj != clnele) return;
+
+                                        //    Canvas.SetLeft(clnele, oldpoint.X);
+                                        //    Canvas.SetTop(clnele, oldpoint.Y);
+                                        //});
+                                    }
 
                                     if (parameter != null)
                                     {
@@ -151,7 +167,7 @@ namespace DragAndDropMVVM.Behavior
 
                     if (this.AssociatedObject.DataContext is IDragged)
                     {
-                        (this.AssociatedObject.DataContext as IDragged).DraggedData = null;
+                        (this.AssociatedObject.DataContext as IDragged).DraggedDataContext = null;
                     }
                 }
 

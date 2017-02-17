@@ -109,7 +109,7 @@ namespace DragAndDropMVVM.Extensions
                     (clnele as ContentControl).DataContext = diagram.DataContext;
                 }
 
-                //add the line by Diagram UUID after finish all diagrams
+                //add the line by Diagram ActionComment after finish all diagrams
                 uuidLines.Add(diagram.DiagramUUID, diagram.DepartureLines);
 
                 Application.Current.Dispatcher.Invoke(() =>

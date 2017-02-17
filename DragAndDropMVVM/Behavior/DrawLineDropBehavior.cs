@@ -175,7 +175,11 @@ namespace DragAndDropMVVM.Behavior
                                 terminaldiagram.ArrivalLines.Add(conline);
                             }
 
+                            //Extensions.LayoutAssist.UndoRedoList.Push((obj) => droppedcanvas.Children.Remove(conline));
+                        
+
                             droppedcanvas.Children.Add(conline);
+
                             (conline as ConnectionLineBase).LineUUID = $"{conline.GetType().Name}_{Guid.NewGuid().ToString()}";
 
 

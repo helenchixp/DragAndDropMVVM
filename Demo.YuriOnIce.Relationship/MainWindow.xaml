@@ -25,9 +25,11 @@
                 <TextBlock Text="{Binding Name}" HorizontalAlignment="Center"/>
             </WrapPanel>
         </DataTemplate>
-        
-        
+
+
     </Window.Resources>
+
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -41,8 +43,8 @@
             <MenuItem Header="Action">
                 <MenuItem Header="Clear" Command="{Binding ClearCommand}" CommandParameter="{Binding ElementName=myDroppedCanvas}"/>
                 <Separator />
-                <MenuItem Header="Undo"  IsEnabled="False" />
-                <MenuItem Header="Redo" IsEnabled="False"/>
+                <MenuItem Header="Undo"  Command="ApplicationCommands.Undo" />
+                <MenuItem Header="Redo"  Command="ApplicationCommands.Redo"/>
             </MenuItem>
             <MenuItem Header="Save and Load">
                 <MenuItem Header="Load from XML file" Command="{Binding LoadXMLCommand}" CommandParameter="{Binding ElementName=myDroppedCanvas}" />
@@ -80,25 +82,36 @@
 
 
         </Slider>
-        <Canvas Panel.ZIndex="0" x:Name="myDroppedCanvas"
-                Grid.Column="1"
-                Grid.Row="1"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                Width="Auto" Height="Auto"
-                MinWidth="450" MinHeight="325"
+        <ctrl:PanelCanvas Panel.ZIndex="0" x:Name="myDroppedCanvas"
+                            Grid.Column="1"
+                            Grid.Row="1"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            Width="Auto" Height="Auto"
+                            MinWidth="450" MinHeight="325"
+                          FocusManager.IsFocusScope="True"
                 b:FrameworkElementDropBehavior.DropCommand="{Binding DropCommand}"
                 b:FrameworkElementDropBehavior.DroppedCanvas="{Binding RelativeSource={RelativeSource Self}}"
                 ext:LayoutAssist.LayoutDataContext="{Binding LayoutRelationshipMap}"
+              UndoCommand="{Binding UndoCommand}"
                 Background="WhiteSmoke"
                 AllowDrop="True">
-            <Canvas.LayoutTransform>
+            <ctrl:PanelCanvas.LayoutTransform>
                 <ScaleTransform ScaleX="{Binding ElementName=mySliderSize, Path=Value}" ScaleY="{Binding ElementName=mySliderSize, Path=Value}" />
-            </Canvas.LayoutTransform>
+            </ctrl:PanelCanvas.LayoutTransform>
             <i:Interaction.Behaviors>
                 <b:FrameworkElementDropBehavior />
             </i:Interaction.Behaviors>
-        </Canvas>
+            <ctrl:PanelCanvas.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Clear" Command="{Binding ClearCommand}" CommandParameter="{Binding ElementName=myDroppedCanvas}"/>
+                    <Separator />
+                    <MenuItem Header="Undo"  Command="ApplicationCommands.Undo" CommandTarget="{Binding Path=PlacementTarget,RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                    <MenuItem Header="Redo"  Command="ApplicationCommands.Redo"  CommandTarget="{Binding Path=PlacementTarget,RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                </ContextMenu>
+            </ctrl:PanelCanvas.ContextMenu>
+            
+        </ctrl:PanelCanvas>
 
         <WrapPanel Panel.ZIndex="2"
                    Grid.Column="1"
@@ -108,8 +121,6 @@
             <TextBlock Text="{Binding ErrorMessage}" Foreground="Red" FontWeight="Bold"/>
 
         </WrapPanel>
-
-
 
     </Grid>
 </Window>

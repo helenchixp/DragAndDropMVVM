@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using DragAndDropMVVM.Model;
 
 namespace DragAndDropMVVM.Extensions
@@ -12,11 +13,14 @@ namespace DragAndDropMVVM.Extensions
     public class LayoutAssist
     {
 
+
         #region Attached Property
 
+        #region LayoutDataContext
+
         /// <summary>
-            /// The LayoutDataContext attached property's name.
-            /// </summary>
+        /// The LayoutDataContext attached property's name.
+        /// </summary>
         public const string LayoutDataContextPropertyName = "LayoutDataContext";
 
         /// <summary>
@@ -66,6 +70,7 @@ namespace DragAndDropMVVM.Extensions
                    // (e.NewValue as IMapLayout).GetDiagramsPosition = ()=>(d as Canvas).SetExportPosition((e.NewValue as IMapLayout).Diagrams);
 
                 }));
+        #endregion
 
         #endregion
 

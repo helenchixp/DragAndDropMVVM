@@ -75,7 +75,7 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
         }
 
         #region IDragged Objects
-        public object DraggedData
+        public object DraggedDataContext
         {
             get;
 
@@ -285,12 +285,12 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
 
             if (parameter is DiagramViewModel)
             {
-                if (DraggedData != null && DraggedData is DiagramModel)
+                if (DraggedDataContext != null && DraggedDataContext is DiagramModel)
                 {
-                    (parameter as DiagramViewModel).Name = (DraggedData as DiagramModel).Name;
-                    (parameter as DiagramViewModel).Detail = (DraggedData as DiagramModel).Detail;
-                    (parameter as DiagramViewModel).ImagePath = (DraggedData as DiagramModel).ImagePath;
-                    (parameter as DiagramViewModel).Index = (DraggedData as DiagramModel).Index;
+                    (parameter as DiagramViewModel).Name = (DraggedDataContext as DiagramModel).Name;
+                    (parameter as DiagramViewModel).Detail = (DraggedDataContext as DiagramModel).Detail;
+                    (parameter as DiagramViewModel).ImagePath = (DraggedDataContext as DiagramModel).ImagePath;
+                    (parameter as DiagramViewModel).Index = (DraggedDataContext as DiagramModel).Index;
 
                     Characters.Add(parameter as DiagramViewModel);
                 }
@@ -299,13 +299,13 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
 
         private bool CanExecuteDropCommand(object parameter)
         {
-            if (DraggedData is DiagramModel)
+            if (DraggedDataContext is DiagramModel)
             {
-                bool isexist = Characters.Any(item => item.Index == (DraggedData as DiagramModel).Index);
+                bool isexist = Characters.Any(item => item.Index == (DraggedDataContext as DiagramModel).Index);
 
                 if (isexist)
                 {
-                    ErrorMessage = $"{(DraggedData as DiagramModel).Name} is here!";
+                    ErrorMessage = $"{(DraggedDataContext as DiagramModel).Name} is here!";
                     return false;
                 }
             }
@@ -753,7 +753,64 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
         {
             return true;
         }
-        #endregion 
+        #endregion
+
+        #region UndoCommand
+        //private RelayCommand _undoCommand;
+
+        ///// <summary>
+        ///// Gets the UndoCommand.
+        ///// </summary>
+        //public RelayCommand UndoCommand
+        //{
+        //    get
+        //    {
+        //        return _undoCommand
+        //            ?? (_undoCommand = new RelayCommand(
+        //            () =>
+        //            {
+        //                System.Diagnostics.Debug.WriteLine("___");
+        //            }));
+        //    }
+        //}
+        private RelayCommand<object> _undoCommand;
+
+        /// <summary>
+        /// Gets the UndoCommand.
+        /// </summary>
+        public RelayCommand<object> UndoCommand
+        {
+            get
+            {
+                return _undoCommand ?? (_undoCommand = new RelayCommand<object>(
+                    ExecuteUndoCommand,
+                    CanExecuteUndoCommand));
+            }
+        }
+
+        private void ExecuteUndoCommand(object parameter)
+        {
+            System.Diagnostics.Debug.WriteLine("___");
+
+            ////if(parameter is DiagramViewModel)
+            ////{
+            ////    this.Characters.Remove(parameter as DiagramViewModel);
+            ////}
+            ////else if(parameter is LineViewModel)
+            ////{
+            ////    var linevm = (parameter as LineViewModel);
+            ////    linevm.OriginDiagramViewModel.DepartureLinesViewModel.Add(linevm);
+            ////    linevm.TerminalDiagramViewModel.ArrivalLinesViewModel.Add(linevm);
+            ////}
+
+        }
+
+        private bool CanExecuteUndoCommand(object parameter)
+        {
+            return true;
+        }
+
+        #endregion
 
         #endregion
 

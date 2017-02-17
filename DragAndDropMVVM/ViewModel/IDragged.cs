@@ -8,6 +8,6 @@ namespace DragAndDropMVVM.ViewModel
 {
     public interface IDragged
     {
-        object DraggedData { get; set; }
+        object DraggedDataContext { get; set; }
     }
 }

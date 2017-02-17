@@ -12,7 +12,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Demo.YuriOnIce.Relationship.ViewModel;
 using DragAndDropMVVM.Controls;
 
 namespace Demo.YuriOnIce.Relationship.Controls
@@ -43,33 +42,20 @@ namespace Demo.YuriOnIce.Relationship.Controls
     /// 手順 2)
     /// コントロールを XAML ファイルで使用します。
     ///
-    ///     <MyNamespace:RelationshipLine/>
+    ///     <MyNamespace:PanelCanvas/>
     ///
     /// </summary>
-    public class RelationshipLine : DrawLineThump
+    public class PanelCanvas : ExtensionCanvasBase
     {
-        static RelationshipLine()
+        static PanelCanvas()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(RelationshipLine), new FrameworkPropertyMetadata(typeof(RelationshipLine)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(PanelCanvas), new FrameworkPropertyMetadata(typeof(PanelCanvas)));
         }
 
-        public RelationshipLine() : base()
+        public override void OnApplyTemplate()
         {
-            DataContext = new LineViewModel();
+            base.OnApplyTemplate();
         }
 
-        public override string LineUUID
-        {
-            get
-            {
-                LineViewModel vm = DataContext as LineViewModel;
-                return $"{vm.OriginDiagramViewModel?.Index}_{vm.TerminalDiagramViewModel?.Index}";
-            }
-
-            set
-            {
-                //Can't set the ActionComment
-            }
-        }
     }
 }

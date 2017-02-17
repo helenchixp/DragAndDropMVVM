@@ -123,12 +123,12 @@ namespace DragAndDropMVVM.Demo.ViewModel
 
             if (parameter is YuriDiagramViewModel)
             {
-                if (DraggedData != null && DraggedData is YuriModel)
+                if (DraggedDataContext != null && DraggedDataContext is YuriModel)
                 {
-                    (parameter as YuriDiagramViewModel).Title = (DraggedData as YuriModel).Title;
-                    (parameter as YuriDiagramViewModel).Detail = (DraggedData as YuriModel).Detail;
-                    (parameter as YuriDiagramViewModel).ImagePath = (DraggedData as YuriModel).ImagePath;
-                    (parameter as YuriDiagramViewModel).IconType = (DraggedData as YuriModel).Index;
+                    (parameter as YuriDiagramViewModel).Title = (DraggedDataContext as YuriModel).Title;
+                    (parameter as YuriDiagramViewModel).Detail = (DraggedDataContext as YuriModel).Detail;
+                    (parameter as YuriDiagramViewModel).ImagePath = (DraggedDataContext as YuriModel).ImagePath;
+                    (parameter as YuriDiagramViewModel).IconType = (DraggedDataContext as YuriModel).Index;
                 }
             }
         }
@@ -269,7 +269,7 @@ namespace DragAndDropMVVM.Demo.ViewModel
             return true;
         }
 
-        public object DraggedData
+        public object DraggedDataContext
         {
             get;
 

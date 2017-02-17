@@ -96,7 +96,7 @@ namespace Demo.YuriOnIce.Relationship.Controls
 
             set
             {
-               // Can't set the UUID
+               // Can't set the ActionComment
             }
         }
     }

@@ -76,6 +76,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Controls\CharacterDiagram.cs" />
+    <Compile Include="Controls\PanelCanvas.cs" />
     <Compile Include="Controls\RelationshipLine.cs" />
     <Compile Include="Model\DiagramModel.cs" />
     <Compile Include="Model\LineModel.cs" />
