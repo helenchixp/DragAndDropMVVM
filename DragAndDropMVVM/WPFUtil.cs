@@ -239,7 +239,6 @@ namespace DragAndDropMVVM
                             obj2 = GetUIElementSimpleClone(value) as UIElement;
 
                             property.SetValue(cloneObj, obj2, null);
-                          //  System.Diagnostics.Debug.WriteLine($"(UIElement)property.Name : {property.Name}");
                         }
                     }
                     // For a normal property, its value doesn't need to be
@@ -247,7 +246,6 @@ namespace DragAndDropMVVM
                     else if (property.CanWrite)
                     {
                         property.SetValue(cloneObj, value, null);
-                       // System.Diagnostics.Debug.WriteLine($"cloneObj Type:{cloneObj.GetType().Name} property.Name : {property.Name}");
                     }
                 }
             }

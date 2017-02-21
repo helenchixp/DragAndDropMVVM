@@ -12,6 +12,8 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Win32;
 using Demo.YuriOnIce.Relationship.Controls;
+using System.Collections.Generic;
+using DragAndDropMVVM;
 
 namespace Demo.YuriOnIce.Relationship.ViewModel
 {
@@ -34,14 +36,6 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
         /// </summary>
         public MainViewModel()
         {
-            ////if (IsInDesignMode)
-            ////{
-            ////    // Code runs in Blend --> create design time data.
-            ////}
-            ////else
-            ////{
-            ////    // Code runs "for real"
-            ////}
 
             PalletItems.Add(new DiagramModel()
             {
@@ -84,6 +78,16 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
 
         #endregion
 
+
+        #region UndoRedo Properties
+
+        protected Stack<UndoRedoManager> UndoStack { get; } = new Stack<UndoRedoManager>();
+
+        protected Stack<UndoRedoManager> RedoStack { get; } = new Stack<UndoRedoManager>();
+
+        protected bool _isUndoHandle = false;
+
+        #endregion
 
         #region PropertyChanged Properties
 
@@ -230,7 +234,6 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
         #endregion
 
 
-
         #region Commands
 
         #region DragCommand
@@ -292,10 +295,41 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
                     (parameter as DiagramViewModel).ImagePath = (DraggedDataContext as DiagramModel).ImagePath;
                     (parameter as DiagramViewModel).Index = (DraggedDataContext as DiagramModel).Index;
 
-                    Characters.Add(parameter as DiagramViewModel);
                 }
+
+                var redomemo = new Action<object>((obj) =>
+                {
+                    if (!Characters.Any(item => item.Index == (parameter as DiagramViewModel).Index))
+                        Characters.Add(parameter as DiagramViewModel);
+                });
+
+                var undomemo = new Action<object>((obj) => ExecuteDeleteDiagramCommand(parameter));
+
+                if (!_isUndoHandle)
+                {
+                    UndoStack.Push(new UndoRedoManager()
+                    {
+                        ActionComment = $"add the {(DraggedDataContext as DiagramModel)}",
+                        RedoAction = redomemo,
+                        UndoAction = undomemo,
+                    });
+                }
+                else
+                {
+                    RedoStack.Push(new UndoRedoManager()
+                    {
+                        ActionComment = $"add the {(DraggedDataContext as DiagramModel)}",
+                        RedoAction = undomemo,
+                        UndoAction = redomemo,
+                    });
+
+                    _isUndoHandle = false;
+                }
+
+                redomemo(null);
             }
         }
+       
 
         private bool CanExecuteDropCommand(object parameter)
         {
@@ -365,18 +399,64 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
 
             var linevm = (parameter as IConnectionLineViewModel);
 
-            linevm.OriginDiagramViewModel.DepartureLinesViewModel.Add(linevm);
-            linevm.TerminalDiagramViewModel.ArrivalLinesViewModel.Add(linevm);
+            if(DraggedDataContext!=null && DraggedDataContext is Tuple<object, object>)
+            {
+                var originvm = (DraggedDataContext as Tuple<object, object>).Item1 as IConnectionDiagramViewModel;
+                var terminalvm = (DraggedDataContext as Tuple<object, object>).Item2 as IConnectionDiagramViewModel;
 
-            (linevm as LineViewModel).Comment = $"testtttt ";
+                if (originvm != null)
+                {
+                    linevm.OriginDiagramViewModel = originvm;
+                }
+
+                if (terminalvm != null)
+                {
+                    linevm.TerminalDiagramViewModel = terminalvm;
+                }
+            }
+
+            var redomemo = new Action<object>((obj) =>
+            {
+
+                linevm.OriginDiagramViewModel.DepartureLinesViewModel.Add(linevm);
+                linevm.TerminalDiagramViewModel.ArrivalLinesViewModel.Add(linevm);
+                (linevm as LineViewModel).Comment = $"testtttt ";
+
+            });
+
+            var undomemo = new Action<object>((obj) => ExecuteDeleteLineCommand(linevm));
+            if (!_isUndoHandle)
+            {
+                UndoStack.Push(new UndoRedoManager()
+                {
+                    ActionComment = $"add the line of {(linevm as LineViewModel).Comment}",
+                    RedoAction = redomemo,
+                    UndoAction = undomemo,
+                });
+            }
+            else
+            {
+                RedoStack.Push(new UndoRedoManager()
+                {
+                    ActionComment = $"undo add the line of {(linevm as LineViewModel).Comment}",
+                    RedoAction = undomemo,
+                    UndoAction = redomemo,
+                });
+                _isUndoHandle = false;
+            }
+            redomemo(null);
 
         }
 
         private bool CanExecuteDropLineCommand(object parameter)
         {
             if (parameter == null || !(parameter is IConnectionLineViewModel)) return false;
-            var dragobj = (parameter as IConnectionLineViewModel).OriginDiagramViewModel;
-            var dropobj = (parameter as IConnectionLineViewModel).TerminalDiagramViewModel;
+
+            if (DraggedDataContext == null && !(DraggedDataContext is Tuple<object, object>)) return false;
+
+
+            var dragobj = (DraggedDataContext as Tuple<object, object>).Item1 as IConnectionDiagramViewModel;
+            var dropobj = (DraggedDataContext as Tuple<object, object>).Item2 as IConnectionDiagramViewModel;
 
             if (dragobj == dropobj) return false;
 
@@ -431,9 +511,35 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
             if (parameter == null || !(parameter is IConnectionLineViewModel)) return;
 
             var linevm = parameter as IConnectionLineViewModel;
+            var redomemo = new Action<object>((obj) =>
+            {
+                linevm.OriginDiagramViewModel.DepartureLinesViewModel.Remove(linevm);
+                linevm.TerminalDiagramViewModel.ArrivalLinesViewModel.Remove(linevm);
+            });
+            var undomemo = new Action<object>((obj) => ExecuteDropLineCommand(linevm));
 
-            linevm.OriginDiagramViewModel.DepartureLinesViewModel.Remove(linevm);
-            linevm.TerminalDiagramViewModel.ArrivalLinesViewModel.Remove(linevm);
+            if (!_isUndoHandle)
+            {
+                UndoStack.Push(new UndoRedoManager()
+                {
+                    ActionComment = $"delete line {(parameter as LineViewModel).Comment}. ",
+                    RedoAction = redomemo,
+                    UndoAction = undomemo,
+                });
+            }
+            else
+            {
+                RedoStack.Push(new UndoRedoManager()
+                {
+                    ActionComment = $"undo delete line {(parameter as LineViewModel).Comment}. ",
+                    RedoAction = undomemo,
+                    UndoAction = redomemo,
+                });
+
+                _isUndoHandle = false;
+            }
+
+            redomemo(null);
         }
 
         private bool CanExecuteDeleteLineCommand(object parameter)
@@ -461,7 +567,33 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
 
         private void ExecuteDeleteDiagramCommand(object parameter)
         {
-            Characters.Remove(parameter as DiagramViewModel);
+            var redomemo = new Action<object>((obj) =>  Characters.Remove(parameter as DiagramViewModel));
+
+            var undomemo = new Action<object>((obj) => ExecuteDropCommand(parameter));
+
+            if (!_isUndoHandle)
+            {
+
+                UndoStack.Push(new UndoRedoManager()
+                {
+                    ActionComment = $"delete diagram of {(parameter as DiagramViewModel).Name} . ",
+                    RedoAction = redomemo,
+                    UndoAction = undomemo,
+                });
+            }
+            else
+            {
+                RedoStack.Push(new UndoRedoManager()
+                {
+                    ActionComment = $"undo delete diagram of {(parameter as DiagramViewModel).Name} . ",
+                    RedoAction = undomemo,
+                    UndoAction = redomemo,
+                });
+
+                _isUndoHandle = false;
+            }
+
+            redomemo(null);
         }
 
         private bool CanExecuteDeleteDiagramCommand(object parameter)
@@ -756,23 +888,7 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
         #endregion
 
         #region UndoCommand
-        //private RelayCommand _undoCommand;
 
-        ///// <summary>
-        ///// Gets the UndoCommand.
-        ///// </summary>
-        //public RelayCommand UndoCommand
-        //{
-        //    get
-        //    {
-        //        return _undoCommand
-        //            ?? (_undoCommand = new RelayCommand(
-        //            () =>
-        //            {
-        //                System.Diagnostics.Debug.WriteLine("___");
-        //            }));
-        //    }
-        //}
         private RelayCommand<object> _undoCommand;
 
         /// <summary>
@@ -790,26 +906,48 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
 
         private void ExecuteUndoCommand(object parameter)
         {
-            System.Diagnostics.Debug.WriteLine("___");
+            var undo = UndoStack.Pop();
+            _isUndoHandle = true;
 
-            ////if(parameter is DiagramViewModel)
-            ////{
-            ////    this.Characters.Remove(parameter as DiagramViewModel);
-            ////}
-            ////else if(parameter is LineViewModel)
-            ////{
-            ////    var linevm = (parameter as LineViewModel);
-            ////    linevm.OriginDiagramViewModel.DepartureLinesViewModel.Add(linevm);
-            ////    linevm.TerminalDiagramViewModel.ArrivalLinesViewModel.Add(linevm);
-            ////}
-
+            undo.UndoAction(undo);
         }
 
         private bool CanExecuteUndoCommand(object parameter)
         {
-            return true;
+            return UndoStack.Any();
         }
 
+        #endregion
+
+        #region RedoCommand
+
+        private RelayCommand<object> _redoCommand;
+
+        /// <summary>
+        /// Gets the RedoCommand.
+        /// </summary>
+        public RelayCommand<object> RedoCommand
+        {
+            get
+            {
+                return _redoCommand ?? (_redoCommand = new RelayCommand<object>(
+                    ExecuteRedoCommand,
+                    CanExecuteRedoCommand));
+            }
+        }
+
+        private void ExecuteRedoCommand(object parameter)
+        {
+            var redo = RedoStack.Pop();
+            _isUndoHandle = false;
+
+            redo.RedoAction(redo);
+        }
+
+        private bool CanExecuteRedoCommand(object parameter)
+        {
+            return true;
+        }
         #endregion
 
         #endregion

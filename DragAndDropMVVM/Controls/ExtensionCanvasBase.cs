@@ -140,9 +140,15 @@ namespace DragAndDropMVVM.Controls
                                 {
                                     var undo = UndoStack.Pop();
                                     _isUndoHandle = true;
-                                    System.Diagnostics.Debug.WriteLine("undo" + undo.ActionComment);
+                                    if (!(UndoCommand?.CanExecute(null) ?? true))
+                                    {
+                                        return;
+                                    }
+                                    else
+                                    {
+                                        UndoCommand?.Execute(null);
+                                    }
                                     undo.UndoAction(undo);
-
                                 },
                                 (sender, ce) =>
                                 {
@@ -154,7 +160,14 @@ namespace DragAndDropMVVM.Controls
                                 {
                                     var redo = RedoStack.Pop();
                                     _isUndoHandle = false;
-                                    System.Diagnostics.Debug.WriteLine("redo" + redo.ActionComment);
+                                    if (!(RedoCommand?.CanExecute(null) ?? true))
+                                    {
+                                        return;
+                                    }
+                                    else
+                                    {
+                                        RedoCommand?.Execute(null);
+                                    }
                                     redo.RedoAction(redo);
 
                                 },
@@ -187,8 +200,21 @@ namespace DragAndDropMVVM.Controls
             }
             else
             {
-                //Children.Remove(visualAdded as UIElement);
+                Children.Remove(visualAdded as UIElement);
             }
+        }
+
+        void AddElementAction(object element)
+        {
+            var visualAdded = element as UIElement;
+
+            if (visualAdded is ConnectionLineBase)
+            {
+                var conline = (visualAdded as ConnectionLineBase);
+                conline.OriginDiagram?.DepartureLines.Add(conline);
+                conline.TerminalDiagram?.ArrivalLines.Add(conline);
+            }
+            Children.Add(visualAdded as UIElement);
         }
 
         protected override void OnVisualChildrenChanged(DependencyObject visualAdded, DependencyObject visualRemoved)
@@ -196,7 +222,7 @@ namespace DragAndDropMVVM.Controls
             if (visualAdded != null)
             {
                 Action<object> delact = (o) => DeleteElementAction(visualAdded );
-                Action <object> addact = (o) => Children.Add(visualAdded as UIElement);
+                Action <object> addact = (o) => AddElementAction(visualAdded);
                 if (_isUndoHandle)
                 {
                     RedoStack.Push(new UndoRedoManager()
@@ -220,8 +246,8 @@ namespace DragAndDropMVVM.Controls
             }
             else if (visualRemoved != null)
             {
-                Action<object> actadd = (o) => Children.Add(visualRemoved as UIElement);
-                //  Action<object> actdel = (o) => Children.Remove(visualRemoved as UIElement);
+                Action<object> actadd = (o) => AddElementAction(visualRemoved);
+
                 Action<object> actdel = (o) => DeleteElementAction(visualAdded);
                 if (_isUndoHandle)
                 {
@@ -272,8 +298,6 @@ namespace DragAndDropMVVM.Controls
                 Action<object> undoact = (ele) =>
                 {
 
-                    //  Point oldpoint = new Point(Canvas.GetLeft(element), Canvas.GetTop(element));
-
                     var oldleft = Canvas.GetLeft(element);
                     var oldtop = Canvas.GetTop(element);
 
@@ -282,8 +306,6 @@ namespace DragAndDropMVVM.Controls
 
                     if (element is ConnectionDiagramBase)
                     {
-                        System.Diagnostics.Debug.WriteLine($"++++++Undo+++++++++++++++++lefttop:{left},{top}  older:{oldleft},{oldtop}    point:{point}");
-
                         Behavior.FrameworkElementDropBehavior.SetConnectionLinePosition(element as ConnectionDiagramBase, new Point(left - oldleft, top - oldtop));
                     }
 
@@ -292,7 +314,6 @@ namespace DragAndDropMVVM.Controls
 
                 Action<object> redoact = (ele) =>
                  {
-                     //Point oldpoint = new Point(Canvas.GetLeft(dragelement), Canvas.GetTop(dragelement));
                      var oldleft = Canvas.GetLeft(element);
                      var oldtop = Canvas.GetTop(element);
 
@@ -301,7 +322,6 @@ namespace DragAndDropMVVM.Controls
                      SetTop(element, aftertop);
                      if (element is ConnectionDiagramBase)
                      {
-                         System.Diagnostics.Debug.WriteLine($"+++++Redo++++++++++++++++++lefttop:{left},{top}  afterleft:{oldleft},{oldtop}   point:{point}");
                          Behavior.FrameworkElementDropBehavior.SetConnectionLinePosition(element as ConnectionDiagramBase, new Point(afterleft - oldleft, aftertop - oldtop));
                      }
 

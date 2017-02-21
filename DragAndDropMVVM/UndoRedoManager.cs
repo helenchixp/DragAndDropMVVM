@@ -10,7 +10,7 @@ namespace DragAndDropMVVM
     public class UndoRedoManager
     {
         public string ActionComment { get; set; }
-        internal Action<object> UndoAction { get; set; }
-        internal Action<object> RedoAction { get; set; }
+        public Action<object> UndoAction { get; set; }
+        public Action<object> RedoAction { get; set; }
     }
 }

@@ -89,7 +89,7 @@ namespace DragAndDropMVVM.Demo.ViewModel
 
         private void ExecuteDragCommand(object parameter)
         {
-         //   System.Diagnostics.Debug.WriteLine($"The DragCommandParameter is {(parameter ?? "null").ToString()}");
+
         }
 
         private bool CanExecuteDragCommand(object parameter)

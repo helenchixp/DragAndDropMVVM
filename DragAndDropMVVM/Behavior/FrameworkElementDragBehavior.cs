@@ -94,8 +94,6 @@ namespace DragAndDropMVVM.Behavior
             
             SetDragAdorner(element, null);
 
-            //System.Diagnostics.Debug.WriteLine($"{nameof(AssociatedObject_MouseMove)} Current Point : X:{point.X} Y:{point.Y}  and Start Point X:{startPoint.X} Y:{startPoint.Y}");
-
         }
 
 
@@ -148,7 +146,7 @@ namespace DragAndDropMVVM.Behavior
 
         private void AssociatedObject_GiveFeedback(object sender, GiveFeedbackEventArgs e)
         {
-           // System.Diagnostics.Debug.WriteLine($"------------------{nameof(AssociatedObject_GiveFeedback)}--------------------");
+
         }
 
 

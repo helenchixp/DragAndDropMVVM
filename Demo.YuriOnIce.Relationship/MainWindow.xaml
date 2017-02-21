@@ -83,19 +83,20 @@
 
         </Slider>
         <ctrl:PanelCanvas Panel.ZIndex="0" x:Name="myDroppedCanvas"
-                            Grid.Column="1"
-                            Grid.Row="1"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Width="Auto" Height="Auto"
-                            MinWidth="450" MinHeight="325"
+                          Grid.Column="1"
+                          Grid.Row="1"
+                          HorizontalAlignment="Left"
+                          VerticalAlignment="Top"
+                          Width="Auto" Height="Auto"
+                          MinWidth="450" MinHeight="325"
                           FocusManager.IsFocusScope="True"
-                b:FrameworkElementDropBehavior.DropCommand="{Binding DropCommand}"
-                b:FrameworkElementDropBehavior.DroppedCanvas="{Binding RelativeSource={RelativeSource Self}}"
-                ext:LayoutAssist.LayoutDataContext="{Binding LayoutRelationshipMap}"
-              UndoCommand="{Binding UndoCommand}"
-                Background="WhiteSmoke"
-                AllowDrop="True">
+                          b:FrameworkElementDropBehavior.DropCommand="{Binding DropCommand}"
+                          b:FrameworkElementDropBehavior.DroppedCanvas="{Binding RelativeSource={RelativeSource Self}}"
+                          ext:LayoutAssist.LayoutDataContext="{Binding LayoutRelationshipMap}"
+                          UndoCommand="{Binding UndoCommand}"
+                          RedoCommand="{Binding RedoCommand}" 
+                          Background="WhiteSmoke"
+                          AllowDrop="True">
             <ctrl:PanelCanvas.LayoutTransform>
                 <ScaleTransform ScaleX="{Binding ElementName=mySliderSize, Path=Value}" ScaleY="{Binding ElementName=mySliderSize, Path=Value}" />
             </ctrl:PanelCanvas.LayoutTransform>

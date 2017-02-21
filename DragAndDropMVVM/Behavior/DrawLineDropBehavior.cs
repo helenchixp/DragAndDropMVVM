@@ -65,6 +65,11 @@ namespace DragAndDropMVVM.Behavior
                         ConnectionDiagramBase origindiagram = e.Data.GetData(typeof(ConnectionDiagramBase)) as ConnectionDiagramBase;
                         ConnectionDiagramBase terminaldiagram = element as ConnectionDiagramBase;
 
+                        if(droppedcanvas.DataContext is IDragged)
+                        {
+                            (droppedcanvas.DataContext as IDragged).DraggedDataContext = new Tuple<object, object>(origindiagram.DataContext, terminaldiagram.DataContext);
+                        }
+
                         double x1, y1, x2, y2 = 0.0;
 
                         if (origindiagram.ConnectorPositionType != ConnectorPositionType.Custom)
@@ -138,25 +143,32 @@ namespace DragAndDropMVVM.Behavior
                             };
                         }
 
-                        //add the relation in viewmodel 
-                        IConnectionLineViewModel linevm = (conline as ConnectionLineBase)?.DataContext as IConnectionLineViewModel;
 
-                        if (linevm != null)
-                        {
-                            IConnectionDiagramViewModel originvm = origindiagram.DataContext as IConnectionDiagramViewModel;
-                            IConnectionDiagramViewModel terminalvm = terminaldiagram.DataContext as IConnectionDiagramViewModel;
+                        //:::::::::::::::::::::::TODO
+                        //TODO add the relation in viewmodel 
+                        //:::::::::::::::::::::::TODO
+                        //IConnectionLineViewModel linevm = (conline as ConnectionLineBase)?.DataContext as IConnectionLineViewModel;
 
-                            if (originvm != null)
-                            {
-                                linevm.OriginDiagramViewModel = originvm;
-                            }
+                        //if (linevm != null)
+                        //{
+                        //    IConnectionDiagramViewModel originvm = origindiagram.DataContext as IConnectionDiagramViewModel;
+                        //    IConnectionDiagramViewModel terminalvm = terminaldiagram.DataContext as IConnectionDiagramViewModel;
 
-                            if (terminalvm != null)
-                            {
-                                linevm.TerminalDiagramViewModel = terminalvm;
-                            }
-                        }
+                        //    if (originvm != null)
+                        //    {
+                        //        linevm.OriginDiagramViewModel = originvm;
+                        //    }
 
+                        //    if (terminalvm != null)
+                        //    {
+                        //        linevm.TerminalDiagramViewModel = terminalvm;
+                        //    }
+                        //}
+
+                        //     droppedcanvas.DataContext
+
+                        //**::::::::::::::::::::::::::::::::::::::::::
+                        var linevm = (conline as ConnectionLineBase)?.DataContext;
 
                         if (dropcommand.CanExecute(linevm))
                         {
@@ -174,9 +186,6 @@ namespace DragAndDropMVVM.Behavior
                             {
                                 terminaldiagram.ArrivalLines.Add(conline);
                             }
-
-                            //Extensions.LayoutAssist.UndoRedoList.Push((obj) => droppedcanvas.Children.Remove(conline));
-                        
 
                             droppedcanvas.Children.Add(conline);
 

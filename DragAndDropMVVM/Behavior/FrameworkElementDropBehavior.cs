@@ -70,8 +70,6 @@ namespace DragAndDropMVVM.Behavior
 
                         Point point = e.GetPosition(element);
 
-                        ////System.Diagnostics.Debug.WriteLine($"{nameof(AssociatedObject_Drop)} Current Point : X:{point.X} Y:{point.Y}");
-
                         ////TODO: Add the 
                         Canvas droppedcanvas = GetDroppedCanvas(element);
 
@@ -90,7 +88,7 @@ namespace DragAndDropMVVM.Behavior
                             if (e.Data.GetDataPresent(typeof(DraggingAdorner)))
                             {
                                 var adn = e.Data.GetData(typeof(DraggingAdorner)) as DraggingAdorner;
-                                //System.Diagnostics.Debug.WriteLine($"{nameof(DraggingAdorner)} Current Point : X:{adn.Position.X} Y:{adn.Position.Y}");
+
                                 UIElement clnele = null;
 
                                 bool iscopy = false;
@@ -119,9 +117,6 @@ namespace DragAndDropMVVM.Behavior
                                     Point canvaspoint = (Point)(point - adn.CenterPoint);
 
                                     Point oldpoint = new Point(Canvas.GetLeft(dragelement), Canvas.GetTop(dragelement));
-
-                                    System.Diagnostics.Debug.WriteLine($"+++++++++++++++++++++++canvaspoint:{canvaspoint.ToString()}  oldpoint:{oldpoint.ToString()}");
-
 
                                     SetConnectionLinePosition(clnele as ConnectionDiagramBase, (Point)(canvaspoint - oldpoint));
 
