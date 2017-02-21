@@ -66,8 +66,8 @@
     <Compile Include="Enum.cs" />
     <Compile Include="Behavior\Adorner\DraggingAdorner.cs" />
     <Compile Include="Behavior\Adorner\DroppingAdorner.cs" />
-    <Compile Include="Behavior\FrameworkElementDragBehavior.cs" />
-    <Compile Include="Behavior\FrameworkElementDropBehavior.cs" />
+    <Compile Include="Behavior\DiagramElementDragBehavior.cs" />
+    <Compile Include="Behavior\DiagramElementDropBehavior.cs" />
     <Compile Include="Controls\ConnectionDiagramBase.cs" />
     <Compile Include="Extensions\ExtenstionsFunction.cs" />
     <Compile Include="Extensions\LayoutAssist.cs" />

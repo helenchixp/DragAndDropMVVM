@@ -67,7 +67,7 @@ namespace DragAndDropMVVM.Demo.Controls
             DataContext = new YuriDiagramViewModel();
 
             BehaviorCollection bhcol = Interaction.GetBehaviors(this);
-            bhcol.Add(new FrameworkElementDragBehavior());
+            bhcol.Add(new DiagramElementDragBehavior());
             bhcol.Add(new DrawLineDragBehavior());
             bhcol.Add(new DrawLineDropBehavior());
         }

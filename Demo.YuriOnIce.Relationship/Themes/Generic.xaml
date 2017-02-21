@@ -24,8 +24,8 @@
         <Setter Property="b:DrawLineDropBehavior.DropLineCommandParameter" Value="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}" />
         <Setter Property="b:DrawLineDropBehavior.DroppedLineCanvas" Value="{Binding ElementName=myDroppedCanvas}" />
         <Setter Property="b:DrawLineDropBehavior.DropLineControlType" Value="{x:Type ctrl:RelationshipLine}" />
-        <Setter Property="b:FrameworkElementDragBehavior.DragCommand" Value="{Binding  RelativeSource={RelativeSource AncestorType=Window,Mode=FindAncestor}, Path=DataContext.DragCommand}" />
-        <Setter Property="b:FrameworkElementDragBehavior.DragCommandParameter" Value="{Binding}" />
+        <Setter Property="b:DiagramElementDragBehavior.DragCommand" Value="{Binding  RelativeSource={RelativeSource AncestorType=Window,Mode=FindAncestor}, Path=DataContext.DragCommand}" />
+        <Setter Property="b:DiagramElementDragBehavior.DragCommandParameter" Value="{Binding}" />
         <Setter Property="DeleteCommand" Value="{Binding  RelativeSource={RelativeSource AncestorType=Window,Mode=FindAncestor}, Path=DataContext.DeleteDiagramCommand}" />
         <Setter Property="Template">
             <Setter.Value>

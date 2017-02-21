@@ -306,7 +306,7 @@ namespace DragAndDropMVVM.Controls
 
                     if (element is ConnectionDiagramBase)
                     {
-                        Behavior.FrameworkElementDropBehavior.SetConnectionLinePosition(element as ConnectionDiagramBase, new Point(left - oldleft, top - oldtop));
+                        Behavior.DiagramElementDropBehavior.SetConnectionLinePosition(element as ConnectionDiagramBase, new Point(left - oldleft, top - oldtop));
                     }
 
                     RedoStack.Push(ele as UndoRedoManager);
@@ -322,7 +322,7 @@ namespace DragAndDropMVVM.Controls
                      SetTop(element, aftertop);
                      if (element is ConnectionDiagramBase)
                      {
-                         Behavior.FrameworkElementDropBehavior.SetConnectionLinePosition(element as ConnectionDiagramBase, new Point(afterleft - oldleft, aftertop - oldtop));
+                         Behavior.DiagramElementDropBehavior.SetConnectionLinePosition(element as ConnectionDiagramBase, new Point(afterleft - oldleft, aftertop - oldtop));
                      }
 
                      UndoStack.Push(ele as UndoRedoManager);

@@ -18,11 +18,11 @@
 
         <DataTemplate x:Key="YuriPalletTemplate">
             <WrapPanel Orientation="Vertical" 
-                   b:FrameworkElementDropBehavior.DroppedControlType="{x:Type ctrl:YuriDiagram}"
-                   b:FrameworkElementDragBehavior.DragCommand="{Binding  RelativeSource={RelativeSource AncestorType=Window,Mode=FindAncestor}, Path=DataContext.DragCommand}"
-                   b:FrameworkElementDragBehavior.DragCommandParameter="{Binding}">
+                   b:DiagramElementDropBehavior.DroppedControlType="{x:Type ctrl:YuriDiagram}"
+                   b:DiagramElementDragBehavior.DragCommand="{Binding  RelativeSource={RelativeSource AncestorType=Window,Mode=FindAncestor}, Path=DataContext.DragCommand}"
+                   b:DiagramElementDragBehavior.DragCommandParameter="{Binding}">
                 <i:Interaction.Behaviors>
-                    <b:FrameworkElementDragBehavior/>
+                    <b:DiagramElementDragBehavior/>
                 </i:Interaction.Behaviors>
                 <Image Source="{Binding ImagePath}" Height="50" Width="50" HorizontalAlignment="Center"/>
                 <TextBlock Text="{Binding Title}" HorizontalAlignment="Center"/>
@@ -55,12 +55,12 @@
 
                 <WrapPanel Orientation="Vertical" 
                            HorizontalAlignment="Center"
-                           b:FrameworkElementDropBehavior.DroppedControlType="{x:Type ctrl:StampDiagram}"
-                           b:FrameworkElementDropBehavior.IsDuplication="True"
-                           b:FrameworkElementDragBehavior.DragCommand="{Binding DragCommand}"
-                           b:FrameworkElementDragBehavior.DragCommandParameter="{Binding ElementName=imgText, Path=Text}">
+                           b:DiagramElementDropBehavior.DroppedControlType="{x:Type ctrl:StampDiagram}"
+                           b:DiagramElementDropBehavior.IsDuplication="True"
+                           b:DiagramElementDragBehavior.DragCommand="{Binding DragCommand}"
+                           b:DiagramElementDragBehavior.DragCommandParameter="{Binding ElementName=imgText, Path=Text}">
                     <i:Interaction.Behaviors>
-                        <b:FrameworkElementDragBehavior/>
+                        <b:DiagramElementDragBehavior/>
                     </i:Interaction.Behaviors>
                     <Image Source="ImagesResource/yuri_icon.png" Height="50" Width="50" HorizontalAlignment="Center">
                     </Image>
@@ -109,8 +109,8 @@
                         <Setter Property="IsDrawLineDropEnabled" Value="True" />
                         <Setter Property="b:DrawLineDropBehavior.DroppedLineCanvas" Value="{Binding ElementName=myDroppedCanvas}" />
                         <Setter Property="b:DrawLineDropBehavior.DropLineControlType" Value="{x:Type ctrl:StampLine}" />
-                        <Setter Property="b:FrameworkElementDragBehavior.DragCommand" Value="{Binding  RelativeSource={RelativeSource AncestorType=Window,Mode=FindAncestor}, Path=DataContext.DragCommand}" />
-                        <Setter Property="b:FrameworkElementDragBehavior.DragCommandParameter" Value="Test" />
+                        <Setter Property="b:DiagramElementDragBehavior.DragCommand" Value="{Binding  RelativeSource={RelativeSource AncestorType=Window,Mode=FindAncestor}, Path=DataContext.DragCommand}" />
+                        <Setter Property="b:DiagramElementDragBehavior.DragCommandParameter" Value="Test" />
                         <!--<Setter Property="ConnectorPositionType" Value="Center" />-->
                     </Style.Setters>
                     <Style.Triggers>
@@ -158,16 +158,16 @@
                     VerticalAlignment="Top"
                     Width="Auto" Height="Auto"
                     MinWidth="450" MinHeight="350"
-                    b:FrameworkElementDropBehavior.DropCommand="{Binding DropCommand}"
-                    b:FrameworkElementDropBehavior.DroppedCanvas="{Binding RelativeSource={RelativeSource Self}}"
-                    b:FrameworkElementDropBehavior.AdornerType="DrawLine"
+                    b:DiagramElementDropBehavior.DropCommand="{Binding DropCommand}"
+                    b:DiagramElementDropBehavior.DroppedCanvas="{Binding RelativeSource={RelativeSource Self}}"
+                    b:DiagramElementDropBehavior.AdornerType="DrawLine"
                     Background="WhiteSmoke"
                     AllowDrop="True">
                 <Canvas.LayoutTransform>
                     <ScaleTransform ScaleX="{Binding ElementName=mySliderSize, Path=Value}" ScaleY="{Binding ElementName=mySliderSize, Path=Value}" />
                 </Canvas.LayoutTransform>
                 <i:Interaction.Behaviors>
-                    <b:FrameworkElementDropBehavior />
+                    <b:DiagramElementDropBehavior />
                 </i:Interaction.Behaviors>
             </Canvas>
 

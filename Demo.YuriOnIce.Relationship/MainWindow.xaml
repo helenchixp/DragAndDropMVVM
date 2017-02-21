@@ -15,11 +15,11 @@
     <Window.Resources>
         <DataTemplate x:Key="PalletTemplate">
             <WrapPanel Orientation="Vertical" 
-                   b:FrameworkElementDropBehavior.DroppedControlType="{x:Type ctrl:CharacterDiagram}"
-                   b:FrameworkElementDragBehavior.DragCommand="{Binding  RelativeSource={RelativeSource AncestorType=Window,Mode=FindAncestor}, Path=DataContext.DragCommand}"
-                   b:FrameworkElementDragBehavior.DragCommandParameter="{Binding}">
+                   b:DiagramElementDropBehavior.DroppedControlType="{x:Type ctrl:CharacterDiagram}"
+                   b:DiagramElementDragBehavior.DragCommand="{Binding  RelativeSource={RelativeSource AncestorType=Window,Mode=FindAncestor}, Path=DataContext.DragCommand}"
+                   b:DiagramElementDragBehavior.DragCommandParameter="{Binding}">
                 <i:Interaction.Behaviors>
-                    <b:FrameworkElementDragBehavior/>
+                    <b:DiagramElementDragBehavior/>
                 </i:Interaction.Behaviors>
                 <Image Source="{Binding ImagePath}" Height="50" Width="50" HorizontalAlignment="Center"/>
                 <TextBlock Text="{Binding Name}" HorizontalAlignment="Center"/>
@@ -90,8 +90,8 @@
                           Width="Auto" Height="Auto"
                           MinWidth="450" MinHeight="325"
                           FocusManager.IsFocusScope="True"
-                          b:FrameworkElementDropBehavior.DropCommand="{Binding DropCommand}"
-                          b:FrameworkElementDropBehavior.DroppedCanvas="{Binding RelativeSource={RelativeSource Self}}"
+                          b:DiagramElementDropBehavior.DropCommand="{Binding DropCommand}"
+                          b:DiagramElementDropBehavior.DroppedCanvas="{Binding RelativeSource={RelativeSource Self}}"
                           ext:LayoutAssist.LayoutDataContext="{Binding LayoutRelationshipMap}"
                           UndoCommand="{Binding UndoCommand}"
                           RedoCommand="{Binding RedoCommand}" 
@@ -101,7 +101,7 @@
                 <ScaleTransform ScaleX="{Binding ElementName=mySliderSize, Path=Value}" ScaleY="{Binding ElementName=mySliderSize, Path=Value}" />
             </ctrl:PanelCanvas.LayoutTransform>
             <i:Interaction.Behaviors>
-                <b:FrameworkElementDropBehavior />
+                <b:DiagramElementDropBehavior />
             </i:Interaction.Behaviors>
             <ctrl:PanelCanvas.ContextMenu>
                 <ContextMenu>

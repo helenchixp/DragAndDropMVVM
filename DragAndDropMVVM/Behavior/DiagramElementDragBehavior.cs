@@ -13,7 +13,7 @@ namespace DragAndDropMVVM.Behavior
     /// <summary>
     /// 
     /// </summary>
-    public class FrameworkElementDragBehavior : Behavior<FrameworkElement>
+    public class DiagramElementDragBehavior : Behavior<FrameworkElement>
     {
         private bool _isMouseClicked = false;
 
@@ -127,7 +127,7 @@ namespace DragAndDropMVVM.Behavior
 
             UIElement element = sender as UIElement;
 
-            element.SetValue(FrameworkElementDragBehavior.StartPointProperty, null);
+            element.SetValue(DiagramElementDragBehavior.StartPointProperty, null);
 
         }
 
@@ -155,11 +155,11 @@ namespace DragAndDropMVVM.Behavior
 
         #region Dependency Property
 
-        private static readonly DependencyProperty StartPointProperty = DependencyProperty.RegisterAttached("StartPoint", typeof(Point?), typeof(FrameworkElementDragBehavior), new PropertyMetadata(null));
+        private static readonly DependencyProperty StartPointProperty = DependencyProperty.RegisterAttached("StartPoint", typeof(Point?), typeof(DiagramElementDragBehavior), new PropertyMetadata(null));
 
 
         #region DragAdorner
-        private static readonly DependencyProperty DragAdornerProperty = DependencyProperty.RegisterAttached("DragAdorner", typeof(DraggingAdorner), typeof(FrameworkElementDragBehavior), new PropertyMetadata(null));
+        private static readonly DependencyProperty DragAdornerProperty = DependencyProperty.RegisterAttached("DragAdorner", typeof(DraggingAdorner), typeof(DiagramElementDragBehavior), new PropertyMetadata(null));
 
         public static DraggingAdorner GetDragAdorner(DependencyObject obj)
         {
@@ -209,7 +209,7 @@ namespace DragAndDropMVVM.Behavior
         public static readonly DependencyProperty DragCommandProperty = DependencyProperty.RegisterAttached(
             DragCommandPropertyName,
             typeof(ICommand),
-            typeof(FrameworkElementDragBehavior),
+            typeof(DiagramElementDragBehavior),
             new UIPropertyMetadata(null));
         #endregion
 
@@ -249,7 +249,7 @@ namespace DragAndDropMVVM.Behavior
         public static readonly DependencyProperty DragCommandParameterProperty = DependencyProperty.RegisterAttached(
             DragCommandParameterPropertyName,
             typeof(object),
-            typeof(FrameworkElementDragBehavior),
+            typeof(DiagramElementDragBehavior),
             new UIPropertyMetadata(null));
 
         #endregion

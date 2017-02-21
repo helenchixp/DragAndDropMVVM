@@ -13,7 +13,7 @@ using DragAndDropMVVM.ViewModel;
 
 namespace DragAndDropMVVM.Behavior
 {
-    public class FrameworkElementDropBehavior : Behavior<FrameworkElement>
+    public class DiagramElementDropBehavior : Behavior<FrameworkElement>
     {
 
         private DroppingAdorner _adorner;
@@ -260,7 +260,7 @@ namespace DragAndDropMVVM.Behavior
         public static readonly DependencyProperty IsFixedPositionProperty = DependencyProperty.RegisterAttached(
             IsFixedPositionPropertyName,
             typeof(bool),
-            typeof(FrameworkElementDropBehavior),
+            typeof(DiagramElementDropBehavior),
             new UIPropertyMetadata(false));
 
         #endregion
@@ -302,7 +302,7 @@ namespace DragAndDropMVVM.Behavior
         public static readonly DependencyProperty AdornerTypeProperty = DependencyProperty.RegisterAttached(
             AdornerTypePropertyName,
             typeof(FrameworkElementAdornerType),
-            typeof(FrameworkElementDropBehavior),
+            typeof(DiagramElementDropBehavior),
             new UIPropertyMetadata(FrameworkElementAdornerType.DrawEllipse));
 
 
@@ -345,7 +345,7 @@ namespace DragAndDropMVVM.Behavior
         public static readonly DependencyProperty DropCommandProperty = DependencyProperty.RegisterAttached(
             DropCommandPropertyName,
             typeof(ICommand),
-            typeof(FrameworkElementDropBehavior),
+            typeof(DiagramElementDropBehavior),
             new UIPropertyMetadata(null));
         #endregion
 
@@ -386,7 +386,7 @@ namespace DragAndDropMVVM.Behavior
         public static readonly DependencyProperty DropCommandParameterProperty = DependencyProperty.RegisterAttached(
             DropCommandParameterPropertyName,
             typeof(object),
-            typeof(FrameworkElementDropBehavior),
+            typeof(DiagramElementDropBehavior),
             new UIPropertyMetadata(null));
         #endregion
 
@@ -426,7 +426,7 @@ namespace DragAndDropMVVM.Behavior
         public static readonly DependencyProperty DroppedCanvasProperty = DependencyProperty.RegisterAttached(
             DroppedCanvasPropertyName,
             typeof(Canvas),
-            typeof(FrameworkElementDropBehavior),
+            typeof(DiagramElementDropBehavior),
             new UIPropertyMetadata(null));
         #endregion
 
@@ -466,7 +466,7 @@ namespace DragAndDropMVVM.Behavior
         public static readonly DependencyProperty DroppedControlTypeProperty = DependencyProperty.RegisterAttached(
             DroppedControlTypePropertyName,
             typeof(Type),
-            typeof(FrameworkElementDropBehavior),
+            typeof(DiagramElementDropBehavior),
             new UIPropertyMetadata(null));
         #endregion
 
@@ -508,7 +508,7 @@ namespace DragAndDropMVVM.Behavior
         public static readonly DependencyProperty IsDuplicationProperty = DependencyProperty.RegisterAttached(
             IsDuplicationPropertyName,
             typeof(bool),
-            typeof(FrameworkElementDropBehavior),
+            typeof(DiagramElementDropBehavior),
             new UIPropertyMetadata(false));
 
         #endregion

@@ -143,30 +143,6 @@ namespace DragAndDropMVVM.Behavior
                             };
                         }
 
-
-                        //:::::::::::::::::::::::TODO
-                        //TODO add the relation in viewmodel 
-                        //:::::::::::::::::::::::TODO
-                        //IConnectionLineViewModel linevm = (conline as ConnectionLineBase)?.DataContext as IConnectionLineViewModel;
-
-                        //if (linevm != null)
-                        //{
-                        //    IConnectionDiagramViewModel originvm = origindiagram.DataContext as IConnectionDiagramViewModel;
-                        //    IConnectionDiagramViewModel terminalvm = terminaldiagram.DataContext as IConnectionDiagramViewModel;
-
-                        //    if (originvm != null)
-                        //    {
-                        //        linevm.OriginDiagramViewModel = originvm;
-                        //    }
-
-                        //    if (terminalvm != null)
-                        //    {
-                        //        linevm.TerminalDiagramViewModel = terminalvm;
-                        //    }
-                        //}
-
-                        //     droppedcanvas.DataContext
-
                         //**::::::::::::::::::::::::::::::::::::::::::
                         var linevm = (conline as ConnectionLineBase)?.DataContext;
 
@@ -202,6 +178,11 @@ namespace DragAndDropMVVM.Behavior
                                 dropcommand.Execute(linevm);
                             }
 
+                        }
+
+                        if (droppedcanvas.DataContext is IDragged)
+                        {
+                            (droppedcanvas.DataContext as IDragged).DraggedDataContext = null;
                         }
                     }
 
