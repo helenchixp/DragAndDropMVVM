@@ -22,7 +22,15 @@ namespace DragAndDropMVVM.Behavior
 
         internal void Update()
         {
-            this.adornerLayer.Update(this.AdornedElement);
+            if (this.adornerLayer.GetAdorners(this.AdornedElement) != null)
+            {
+                this.adornerLayer.Update(this.AdornedElement);
+            }
+            else
+            {
+                this.adornerLayer = AdornerLayer.GetAdornerLayer(this.AdornedElement);
+                this.adornerLayer.Add(this);
+            }
             this.Visibility = System.Windows.Visibility.Visible;
         }
 

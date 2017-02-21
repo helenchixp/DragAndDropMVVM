@@ -120,33 +120,24 @@ namespace DragAndDropMVVM.Behavior
 
                                     Point oldpoint = new Point(Canvas.GetLeft(dragelement), Canvas.GetTop(dragelement));
 
+                                    System.Diagnostics.Debug.WriteLine($"+++++++++++++++++++++++canvaspoint:{canvaspoint.ToString()}  oldpoint:{oldpoint.ToString()}");
+
+
                                     SetConnectionLinePosition(clnele as ConnectionDiagramBase, (Point)(canvaspoint - oldpoint));
 
 
-                                  //  Canvas.SetRight(clnele, canvaspoint.X);
                                     Canvas.SetLeft(clnele, canvaspoint.X);
-                                   // Canvas.SetBottom(clnele, canvaspoint.Y);
                                     Canvas.SetTop(clnele, canvaspoint.Y);
 
                                     (clnele as ConnectionDiagramBase).DiagramUUID = $"{clnele.GetType().Name}_{Guid.NewGuid().ToString()}";
 
                                     if (iscopy)
                                     {
-                                        //Extensions.LayoutAssist.UndoRedoList.Push((obj) => {
-                                        //    if (obj != clnele) return;
-                                        //    droppedcanvas.Children.Remove(clnele);
-                                        //});
                                         droppedcanvas.Children.Add(clnele);
                                     }
                                     else
                                     {
-                                        //Extensions.LayoutAssist.UndoRedoList.Push((obj) =>
-                                        //{
-                                        //    if (obj != clnele) return;
-
-                                        //    Canvas.SetLeft(clnele, oldpoint.X);
-                                        //    Canvas.SetTop(clnele, oldpoint.Y);
-                                        //});
+                                        //???
                                     }
 
                                     if (parameter != null)
@@ -555,8 +546,9 @@ namespace DragAndDropMVVM.Behavior
             return newobj as ContentControl;
         }
 
-        private void SetConnectionLinePosition(ConnectionDiagramBase element, Point point)
+        internal static void SetConnectionLinePosition(ConnectionDiagramBase element, Point point)
         {
+
             if (element == null) return;
             if (element.DepartureLines != null && element.DepartureLines.Any())
             {

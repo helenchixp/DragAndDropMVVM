@@ -168,12 +168,35 @@ namespace DragAndDropMVVM.Controls
         #endregion
 
         #region OnVisualChildrenChanged
+
+
+        void DeleteElementAction(object element) 
+        {
+            var visualAdded = element as UIElement;
+            if(visualAdded  == null)
+            {
+                return;
+            }
+            else if (visualAdded is ConnectionLineBase)
+            {
+                (visualAdded as ConnectionLineBase).DeleteLine();
+            }
+            else if (visualAdded is ConnectionDiagramBase)
+            {
+                (visualAdded as ConnectionDiagramBase).DeleteDiagramAndLines();
+            }
+            else
+            {
+                //Children.Remove(visualAdded as UIElement);
+            }
+        }
+
         protected override void OnVisualChildrenChanged(DependencyObject visualAdded, DependencyObject visualRemoved)
         {
             if (visualAdded != null)
             {
-                Action<object> delact = (o) => Children.Remove(visualAdded as UIElement);
-                Action<object> addact = (o) => Children.Add(visualAdded as UIElement);
+                Action<object> delact = (o) => DeleteElementAction(visualAdded );
+                Action <object> addact = (o) => Children.Add(visualAdded as UIElement);
                 if (_isUndoHandle)
                 {
                     RedoStack.Push(new UndoRedoManager()
@@ -198,7 +221,8 @@ namespace DragAndDropMVVM.Controls
             else if (visualRemoved != null)
             {
                 Action<object> actadd = (o) => Children.Add(visualRemoved as UIElement);
-                Action<object> actdel = (o) => Children.Remove(visualRemoved as UIElement);
+                //  Action<object> actdel = (o) => Children.Remove(visualRemoved as UIElement);
+                Action<object> actdel = (o) => DeleteElementAction(visualAdded);
                 if (_isUndoHandle)
                 {
                     RedoStack.Push(new UndoRedoManager()
@@ -243,20 +267,43 @@ namespace DragAndDropMVVM.Controls
                 double afterleft = e.GetPosition(this).X - (element as ConnectionDiagramBase)?.CenterPosition.X ?? 0;
                 double aftertop = e.GetPosition(this).Y - (element as ConnectionDiagramBase)?.CenterPosition.Y ?? 0;
 
+                var point = e.GetPosition(this);
                 //it is move effect
                 Action<object> undoact = (ele) =>
                 {
 
+                    //  Point oldpoint = new Point(Canvas.GetLeft(element), Canvas.GetTop(element));
+
+                    var oldleft = Canvas.GetLeft(element);
+                    var oldtop = Canvas.GetTop(element);
+
                     SetLeft(element, left);
                     SetTop(element, top);
+
+                    if (element is ConnectionDiagramBase)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"++++++Undo+++++++++++++++++lefttop:{left},{top}  older:{oldleft},{oldtop}    point:{point}");
+
+                        Behavior.FrameworkElementDropBehavior.SetConnectionLinePosition(element as ConnectionDiagramBase, new Point(left - oldleft, top - oldtop));
+                    }
 
                     RedoStack.Push(ele as UndoRedoManager);
                 };
 
                 Action<object> redoact = (ele) =>
                  {
+                     //Point oldpoint = new Point(Canvas.GetLeft(dragelement), Canvas.GetTop(dragelement));
+                     var oldleft = Canvas.GetLeft(element);
+                     var oldtop = Canvas.GetTop(element);
+
+
                      SetLeft(element, afterleft);
                      SetTop(element, aftertop);
+                     if (element is ConnectionDiagramBase)
+                     {
+                         System.Diagnostics.Debug.WriteLine($"+++++Redo++++++++++++++++++lefttop:{left},{top}  afterleft:{oldleft},{oldtop}   point:{point}");
+                         Behavior.FrameworkElementDropBehavior.SetConnectionLinePosition(element as ConnectionDiagramBase, new Point(afterleft - oldleft, aftertop - oldtop));
+                     }
 
                      UndoStack.Push(ele as UndoRedoManager);
                  };

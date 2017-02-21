@@ -149,7 +149,7 @@ namespace DragAndDropMVVM.Controls
         }
 
 
-        private void DeleteDiagramAndLines()
+        internal void DeleteDiagramAndLines()
         {
             if (DepartureLines != null && DepartureLines.Any())
             {
@@ -314,24 +314,7 @@ namespace DragAndDropMVVM.Controls
             DeleteCommandPropertyName,
             typeof(ICommand),
             typeof(ConnectionDiagramBase),
-            new UIPropertyMetadata(null, (d, e) =>
-            {
-
-            },
-                (d, o) =>
-                {
-                    if (o is ICommand)
-                    {
-                        //(o as ICommand).CanExecuteChanged += (s, e) =>
-                        //{
-                        //    System.Diagnostics.Debug.WriteLine("00000000000000000000000");
-                        //};
-
-                    }
-
-                    return o;
-                }
-                ));
+            new UIPropertyMetadata(null));
         #endregion
 
         #region AdornerType

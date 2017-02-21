@@ -190,7 +190,7 @@ namespace DragAndDropMVVM.Controls
         #endregion
 
         #region Private Method
-        private void DeleteLine()
+        internal void DeleteLine()
         {
             if (OriginDiagram != null && OriginDiagram.DepartureLines.Any())
             {
