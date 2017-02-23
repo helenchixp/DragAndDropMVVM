@@ -62,7 +62,6 @@
     <Compile Include="Behavior\Adorner\DroppingDiagramAdorner.cs" />
     <Compile Include="Controls\ILinePosition.cs" />
     <Compile Include="Controls\ExtensionCanvasBase.cs" />
-    <Compile Include="Converter\MultiCommandParameterConverter.cs" />
     <Compile Include="Enum.cs" />
     <Compile Include="Behavior\Adorner\DraggingAdorner.cs" />
     <Compile Include="Behavior\Adorner\DroppingAdorner.cs" />
@@ -70,7 +69,6 @@
     <Compile Include="Behavior\DiagramElementDropBehavior.cs" />
     <Compile Include="Controls\ConnectionDiagramBase.cs" />
     <Compile Include="Extensions\ExtenstionsFunction.cs" />
-    <Compile Include="Extensions\LayoutAssist.cs" />
     <Compile Include="Model\IMapLayout.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UndoRedoManager.cs" />
