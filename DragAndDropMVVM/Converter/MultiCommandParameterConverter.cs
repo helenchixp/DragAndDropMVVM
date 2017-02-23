@@ -8,6 +8,7 @@ using System.Windows.Data;
 
 namespace DragAndDropMVVM.Converter
 {
+    [Obsolete]
     public class MultiCommandParameterConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)

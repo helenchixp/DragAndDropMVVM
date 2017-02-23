@@ -202,7 +202,7 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
         /// </summary>
         public const string LayoutRelationshipMapPropertyName = "LayoutRelationshipMap";
 
-        private RelationshipMap _layoutRelationshipMap = null;
+        private RelationshipMap _layoutRelationshipMap = new RelationshipMap();
 
         /// <summary>
         /// Sets and gets the LayoutRelationshipMap property.
@@ -229,6 +229,40 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
             }
         }
 
+        #endregion
+
+        #region IsSyncLayoutRelationshipMap
+        /// <summary>
+        /// The <see cref="IsSyncLayoutRelationshipMap" /> property's name.
+        /// </summary>
+        public const string IsSyncLayoutRelationshipMapPropertyName = "IsSyncLayoutRelationshipMap";
+
+        private bool _isSyncLayoutRelationshipMap = false;
+
+        /// <summary>
+        /// Sets and gets the IsSyncLayoutRelationshipMap property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// This property's value is broadcasted by the MessengerInstance when it changes.
+        /// </summary>
+        public bool IsSyncLayoutRelationshipMap
+        {
+            get
+            {
+                return _isSyncLayoutRelationshipMap;
+            }
+
+            set
+            {
+                if (_isSyncLayoutRelationshipMap == value)
+                {
+                    return;
+                }
+
+                var oldValue = _isSyncLayoutRelationshipMap;
+                _isSyncLayoutRelationshipMap = value;
+                RaisePropertyChanged(IsSyncLayoutRelationshipMapPropertyName, oldValue, value, true);
+            }
+        }
         #endregion
 
         #endregion
@@ -672,55 +706,14 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
             {
                 var path = saveFileDialog.FileName;
 
-                //Create Serialize Object
-                var map = new RelationshipMap()
-                {
-                    Width = 500,
-                    Height = 500,
-                    Header = "Relation Map!",
-                    Footer = "Copyright",
-                    Characters = new RelationshipMap.Character[Characters.Count],
-                };
+                //request the newest the layout map
+                IsSyncLayoutRelationshipMap = true;
 
-                int idx = 0;
+                var map = LayoutRelationshipMap;
 
-                foreach (var charater in Characters)
-                {
-                    map.Characters[idx] = new RelationshipMap.Character()
-                    {
-                        Name = Characters[idx].Name,
-                        ImagePath = Characters[idx].ImagePath,
-                        Detail = Characters[idx].Detail,
-                        Index = Characters[idx].Index,
-                        DiagramTypeName = typeof(Controls.CharacterDiagram).FullName,
-                    };
-                    if (Characters[idx].DepartureLinesViewModel.Any())
-                    {
-                        map.Characters[idx].Connectors = new RelationshipMap.Connector[Characters[idx].DepartureLinesViewModel.Count];
+                if (map == null) throw new NullReferenceException("LayoutRelationshipMap is Null");
 
-                        int lineidx = 0;
-                        foreach (var line in Characters[idx].DepartureLinesViewModel)
-                        {
-                            map.Characters[idx].Connectors[lineidx] = new RelationshipMap.Connector()
-                            {
-                                Comment = (line as LineViewModel)?.Comment,
-                                ToIndex = line.TerminalDiagramViewModel?.Index ?? -1,
-                                LineTypeName = typeof(Controls.RelationshipLine).FullName,
-                            };
-
-                            lineidx++;
-                        }
-                    }
-                    idx++;
-                }
-
-                if( parameter is Canvas)
-                {
-                   // LayoutRelationshipMap = map;
-                    (parameter as Canvas).SetExportPosition(map.Characters);
-                }
-                
-
+       
                 XmlSerializer serializer = new XmlSerializer(typeof(RelationshipMap));
 
                 //ファイルを作る
@@ -730,7 +723,8 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
                                                    //ファイルを閉じる
                 fs.Close();
 
-                System.Diagnostics.Debug.WriteLine(LayoutRelationshipMap);
+                // if don't set false, it will update the layoutmap by every action
+                IsSyncLayoutRelationshipMap = false;
             }
 
         }
@@ -830,8 +824,6 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
                             }
                         }
 
-                        
-
 
                         LayoutRelationshipMap = layout;
                     }
@@ -879,6 +871,8 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
 
             var canvas = (parameter as System.Windows.Controls.Canvas);
             canvas.Children.Clear();
+
+
         }
 
         private bool CanExecuteClearCommand(object parameter)
@@ -910,6 +904,7 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
             _isUndoHandle = true;
 
             undo.UndoAction(undo);
+
         }
 
         private bool CanExecuteUndoCommand(object parameter)
@@ -942,6 +937,7 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
             _isUndoHandle = false;
 
             redo.RedoAction(redo);
+
         }
 
         private bool CanExecuteRedoCommand(object parameter)

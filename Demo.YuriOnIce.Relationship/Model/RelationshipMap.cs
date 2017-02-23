@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using Demo.YuriOnIce.Relationship.ViewModel;
+using DragAndDropMVVM;
 using DragAndDropMVVM.Model;
 using DragAndDropMVVM.ViewModel;
 
@@ -15,18 +16,33 @@ namespace Demo.YuriOnIce.Relationship.Model
     public class RelationshipMap : IMapLayout
     {
         [XmlAttribute]
-        public int Width { get; set; }
+        public double Width { get; set; }
         [XmlAttribute]
-        public int Height { get; set; }
+        public double Height { get; set; }
         [XmlElement]
         public string Header { get; set; }
         [XmlElement]
         public string Footer { get; set; }
         [XmlIgnore]
+        public Type DiagramLayoutType
+        {
+            get
+            {
+                return typeof(Character);
+            }
+        }
+        [XmlIgnore]
+        public Type LineLayouType
+        {
+            get
+            {
+                return typeof(Connector);
+            }
+        }
+        [XmlIgnore]
         public IDiagramLayout[] Diagrams
         {
             get
-
             {
                 if (Characters != null && Characters.Any())
                 {
@@ -37,27 +53,86 @@ namespace Demo.YuriOnIce.Relationship.Model
                     return null;
                 }
             }
+            set
+            {
+                if (value != null && value.Any())
+                {
+                    try
+                    {
+                        Characters = value.Cast<Character>().ToArray();
+                    }
+                    catch
+                    {
+
+                    }
+                }
+
+            }
+
         }
-        //[XmlIgnore]
-        //public bool IsSync { get; set; }
 
         [XmlElement]
         public Character[] Characters { get; set; }
 
+      
+
         [Serializable]
         public class Character : IDiagramLayout
         {
+            private string _name = string.Empty;
+            [XmlAttribute]
+            public string Name
+            {
+                get
+                {
+                    return string.IsNullOrWhiteSpace(_name) ? (_name = _dataContext?.Name) : _name;
+                }
+                set
+                {
+                    _name = value;
+                }
+            }
+            private string _detail = string.Empty;
+            [XmlAttribute]
+            public string Detail
+            {
+                get
+                {
+                    return string.IsNullOrWhiteSpace(_detail) ? (_detail = _dataContext?.Detail) : _detail;
+                }
+                set
+                {
+                    _detail = value;
+                }
+            }
+            private string _imagePath = string.Empty;
+            [XmlAttribute]
+            public string ImagePath
+            {
+                get
+                {
+                    return string.IsNullOrWhiteSpace(_imagePath) ? (_name = _dataContext?.ImagePath) : _imagePath;
+                }
+                set
+                {
+                    _imagePath = value;
+                }
+            }
+            [XmlAttribute]
+            public int Index
+            {
+                get
+                {
+                    int id = -1;
+                    int.TryParse(DiagramUUID, out id);
+                    return id;
+                }
+                set
+                {
 
-
-            [XmlAttribute]
-            public string Name { get; set; }
-            [XmlAttribute]
-            public string Detail { get; set; }
-
-            [XmlAttribute]
-            public string ImagePath { get; set; }
-            [XmlAttribute]
-            public int Index { get; set; }
+                    DiagramUUID = value.ToString();
+                }
+            }
             [XmlElement]
             public Connector[] Connectors { get; set; }
 
@@ -76,6 +151,21 @@ namespace Demo.YuriOnIce.Relationship.Model
                         return null;
                     }
                 }
+
+                set
+                {
+                    if (value != null && value.Any())
+                    {
+                        try
+                        {
+                            Connectors = value.Cast<Connector>().ToArray();
+                        }
+                        catch
+                        {
+
+                        }
+                    }
+                }
             }
 
             #region IDiagramLayout
@@ -88,7 +178,7 @@ namespace Demo.YuriOnIce.Relationship.Model
 
             private Type _diagramTypeType = null;
             [XmlIgnore]
-            public Type DiagramType
+            public Type DiagramUIType
             {
                 get
                 {
@@ -113,11 +203,8 @@ namespace Demo.YuriOnIce.Relationship.Model
             [XmlIgnore]
             public string DiagramUUID
             {
-                get
-                {
-                    return Index.ToString();
-                }
-                set { }
+                get;
+                set;
             }
 
             DiagramViewModel _dataContext = null;
@@ -136,18 +223,7 @@ namespace Demo.YuriOnIce.Relationship.Model
                             Detail = Detail,
                             ImagePath = ImagePath,
                         };
-                        if (Connectors != null && Connectors.Any())
-                        {
-                            //_dataContext.DepartureLinesViewModel = new ObservableCollection<IConnectionLineViewModel>(
-                            //    from line in Connectors
-                            //    select new LineViewModel()
-                            //    {
-                            //        Comment = line.Comment,
-                            //        OriginDiagramViewModel = _dataContext,
-                            //        TerminalDiagramUUID = line.TerminalDiagramUUID,
-                            //    }
-                            //);
-                        }
+
 
                     }
                     return _dataContext;
@@ -156,6 +232,10 @@ namespace Demo.YuriOnIce.Relationship.Model
                 set
                 {
                     _dataContext = value as DiagramViewModel;
+
+                    if (_dataContext != null)
+                    {
+                    }
                 }
             }
             #endregion
@@ -166,22 +246,47 @@ namespace Demo.YuriOnIce.Relationship.Model
                 get; set;
             }
 
+
         }
 
         [Serializable]
         public class Connector : ILineLayout
         {
+
             [XmlAttribute]
-            public int ToIndex { get; set; } = -1;
-            //[XmlElement]
+            public int ToIndex
+            {
+                get
+                {
+                    int toindex = -1;
+                    int.TryParse(TerminalDiagramUUID, out toindex);
+                    return toindex;
+                }
+                set
+                {
+                    TerminalDiagramUUID = value.ToString();
+                }
+            }
+
+            private string _comment = string.Empty;
             [XmlElement]
-            public string Comment { get; set; }
+            public string Comment
+            {
+                get
+                {
+                    return string.IsNullOrWhiteSpace(_comment) ? (_comment = _dataContext?.Comment) : _comment;
+                }
+                set
+                {
+                    _comment = value;
+                }
+            }
 
             #region ILineLayout
             private Type _lineType = null;
 
             [XmlIgnore]
-            public Type LineType
+            public Type LineUIType
             {
                 get
                 {
@@ -207,15 +312,23 @@ namespace Demo.YuriOnIce.Relationship.Model
             [XmlIgnore]
             public string TerminalDiagramUUID
             {
-                get
-                {
-                    return ToIndex.ToString();
-                }
-                set { }
+                get;
+                set;
             }
 
+            private string _lineUUID = string.Empty;
             [XmlAttribute]
-            public string LineUUID { get; set; }
+            public string LineUUID
+            {
+                get
+                {
+                    return string.IsNullOrWhiteSpace(_lineUUID) ? (_lineUUID = _dataContext?.LineUUID) : _lineUUID;
+                }
+                set
+                {
+                    _lineUUID = value;
+                }
+            }
 
             private LineViewModel _dataContext = null;
 
@@ -238,6 +351,11 @@ namespace Demo.YuriOnIce.Relationship.Model
                 set
                 {
                     _dataContext = value as LineViewModel;
+
+                    if (_dataContext != null)
+                    {
+
+                    }
                 }
             }
             #endregion

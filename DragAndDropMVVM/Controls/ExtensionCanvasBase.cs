@@ -7,10 +7,11 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using DragAndDropMVVM.Model;
 
 namespace DragAndDropMVVM.Controls
 {
-    public abstract class ExtensionCanvasBase : Canvas
+    public abstract class ExtensionCanvasBase : Canvas//, IMapLayout
     {
 
         #region Properties
@@ -21,40 +22,237 @@ namespace DragAndDropMVVM.Controls
 
         protected bool _isUndoHandle = false;
 
+
+        private IMapLayout _innerMapLayout = null;
+
         #endregion
+
+        #region Method
+
+        private void RefreshLayoutInCanvas()
+        {
+
+            if (LayoutDataContext == null ||
+                this.Children == null ||
+                (Children.Count == 0))
+                return;
+
+            _innerMapLayout =  LayoutDataContext;
+
+            var diagrams = (_innerMapLayout ?? (_innerMapLayout =  LayoutDataContext)).Diagrams;
+
+
+            int diagramsum = this.Children.Cast<UIElement>().Sum(child =>
+            {
+                if (child is ConnectionDiagramBase) return 1;
+                else return 0;
+            });
+
+            if (diagrams == null || diagrams.Count() > diagramsum)
+            {
+                diagrams = (from child in this.Children.Cast<UIElement>()
+                            where child is ConnectionDiagramBase
+                            select Activator.CreateInstance(_innerMapLayout.DiagramLayoutType)).Cast<IDiagramLayout>().ToArray();
+            }
+            else if (diagrams.Count() < diagramsum)
+            {
+                Array.Resize(ref diagrams, diagramsum); 
+            }
+
+            var idx = 0;
+
+            //set the diagramUI position and properties
+            foreach(var child in this.Children)
+            {
+                if (!(child is ConnectionDiagramBase)) continue;
+
+                var diagramUI = child as ConnectionDiagramBase;
+
+                if (diagrams[idx] == null) diagrams[idx] = Activator.CreateInstance(_innerMapLayout.DiagramLayoutType) as IDiagramLayout;
+
+                diagrams[idx].X = Canvas.GetLeft(diagramUI);
+                diagrams[idx].Y = Canvas.GetTop(diagramUI);
+                diagrams[idx].DiagramUUID = diagramUI.DiagramUUID;
+                diagrams[idx].DiagramUIType = diagramUI.GetType();
+                diagrams[idx].DataContext = diagramUI.DataContext;
+
+                //set the Line properties
+                if (diagramUI.DepartureLines!= null && diagramUI.DepartureLines.Any())
+                {
+                    diagrams[idx].DepartureLines = (from line in diagramUI.DepartureLines
+                                                    select Activator.CreateInstance(_innerMapLayout.LineLayouType)).Cast<ILineLayout>().ToArray<ILineLayout>();
+
+                    int lidx = 0;
+
+                    foreach(var lineui in diagramUI.DepartureLines)
+                    {
+                        diagrams[idx].DepartureLines[lidx].LineUUID = lineui.LineUUID;
+                        diagrams[idx].DepartureLines[lidx].LineUIType = lineui.GetType();
+                        diagrams[idx].DepartureLines[lidx].TerminalDiagramUUID = lineui.TerminalDiagram?.DiagramUUID;
+                        diagrams[idx].DepartureLines[lidx].DataContext = lineui.DataContext;
+                        lidx++;
+                    }
+
+                }
+
+                idx++;
+            }
+
+
+            _innerMapLayout.Diagrams = diagrams;
+
+            _innerMapLayout.Height = Height;
+            _innerMapLayout.Width = Width;
+
+            var map = RefreshMapLayout(_innerMapLayout);
+            SetValue(LayoutDataContextProperty, map);
+        }
+
+
+        private void ReloadLayoutInCanvas()
+        {
+            if (_innerMapLayout == null) return;
+        }
+
+        #endregion
+
+
+        #region Virtual
+        /// <summary>
+        /// If you want to update MapLayout, override it and rewrite this methods
+        /// </summary>
+        /// <param name="mapLayout"></param>
+        /// <returns></returns>
+        protected virtual IMapLayout RefreshMapLayout(IMapLayout mapLayout)
+        {
+            return mapLayout;
+        }
+        #endregion
+
 
         #region Dependency Property
 
-        #region ClearCommand
+        #region LayoutDataContext
         /// <summary>
-        /// The <see cref="ClearCommand" /> dependency property's name.
+        /// The <see cref="LayoutDataContext" /> dependency property's name.
         /// </summary>
-        public const string ClearCommandPropertyName = "ClearCommand";
+        public const string LayoutDataContextPropertyName = "LayoutDataContext";
 
         /// <summary>
-        /// Gets or sets the value of the <see cref="ClearCommand" />
+        /// Gets or sets the value of the <see cref="LayoutDataContext" />
         /// property. This is a dependency property.
         /// </summary>
-        public ICommand ClearCommand
+        public IMapLayout LayoutDataContext
         {
             get
             {
-                return (ICommand)GetValue(ClearCommandProperty);
+                return (IMapLayout)GetValue(LayoutDataContextProperty);
             }
             set
             {
-                SetValue(ClearCommandProperty, value);
+                SetValue(LayoutDataContextProperty, value);
             }
         }
 
         /// <summary>
-        /// Identifies the <see cref="ClearCommand" /> dependency property.
+        /// Identifies the <see cref="LayoutDataContext" /> dependency property.
         /// </summary>
-        public static readonly DependencyProperty ClearCommandProperty = DependencyProperty.Register(
-            ClearCommandPropertyName,
-            typeof(ICommand),
+        public static readonly DependencyProperty LayoutDataContextProperty = DependencyProperty.Register(
+            LayoutDataContextPropertyName,
+            typeof(IMapLayout),
             typeof(ExtensionCanvasBase),
-            new UIPropertyMetadata(null));
+            new UIPropertyMetadata(null,
+                  (d, e) =>
+                  {
+                      if (e.NewValue == null
+                        || !(e.NewValue is IMapLayout)
+                        || (e.NewValue == e.OldValue)
+                        || !(d is Canvas))
+                          return;
+                      var map = (e.NewValue as IMapLayout);
+                      var canvas = d as Canvas;
+
+                      canvas.Children.Clear();
+
+
+                  },
+                  (d, baseValue) =>
+                  {
+                      return baseValue;
+                  })
+            );
+        #endregion
+
+        #region IsSyncLayoutDataContext
+        /// <summary>
+        /// The <see cref="IsSyncLayoutDataContext" /> dependency property's name.
+        /// </summary>
+        public const string IsSyncLayoutDataContextPropertyName = "IsSyncLayoutDataContext";
+
+        /// <summary>
+        /// Gets or sets the value of the <see cref="IsSyncLayoutDataContext" />
+        /// property. This is a dependency property.
+        /// </summary>
+        public bool IsSyncLayoutDataContext
+        {
+            get
+            {
+                return (bool)GetValue(IsSyncLayoutDataContextProperty);
+            }
+            set
+            {
+                SetValue(IsSyncLayoutDataContextProperty, value);
+            }
+        }
+
+        /// <summary>
+        /// Identifies the <see cref="IsSyncLayoutDataContext" /> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty IsSyncLayoutDataContextProperty = DependencyProperty.Register(
+            IsSyncLayoutDataContextPropertyName,
+            typeof(bool),
+            typeof(ExtensionCanvasBase),
+            new UIPropertyMetadata(false,
+                (d, e) =>
+                {
+                    if (true.Equals(e.NewValue))
+                    {
+                        (d as ExtensionCanvasBase).RefreshLayoutInCanvas();
+                    }
+                }
+                ));
+        #endregion
+
+        #region ClearCommand[Obsoleted]
+        /////// <summary>
+        /////// The <see cref="ClearCommand" /> dependency property's name.
+        /////// </summary>
+        ////public const string ClearCommandPropertyName = "ClearCommand";
+
+        /////// <summary>
+        /////// Gets or sets the value of the <see cref="ClearCommand" />
+        /////// property. This is a dependency property.
+        /////// </summary>
+        ////public ICommand ClearCommand
+        ////{
+        ////    get
+        ////    {
+        ////        return (ICommand)GetValue(ClearCommandProperty);
+        ////    }
+        ////    set
+        ////    {
+        ////        SetValue(ClearCommandProperty, value);
+        ////    }
+        ////}
+
+        /////// <summary>
+        /////// Identifies the <see cref="ClearCommand" /> dependency property.
+        /////// </summary>
+        ////public static readonly DependencyProperty ClearCommandProperty = DependencyProperty.Register(
+        ////    ClearCommandPropertyName,
+        ////    typeof(ICommand),
+        ////    typeof(ExtensionCanvasBase),
+        ////    new UIPropertyMetadata(null));
 
         #endregion
 
@@ -127,13 +325,14 @@ namespace DragAndDropMVVM.Controls
 
 
         #region Override Methods
-
+        
 
         #region OnInitialized
+
         protected override void OnInitialized(EventArgs e)
         {
             base.OnInitialized(e);
-
+            
 
             CommandBindings.Add(new CommandBinding(ApplicationCommands.Undo,
                                 (sender, ce) =>
@@ -221,8 +420,8 @@ namespace DragAndDropMVVM.Controls
         {
             if (visualAdded != null)
             {
-                Action<object> delact = (o) => DeleteElementAction(visualAdded );
-                Action <object> addact = (o) => AddElementAction(visualAdded);
+                Action<object> delact = (o) => DeleteElementAction(visualAdded);
+                Action<object> addact = (o) => AddElementAction(visualAdded);
                 if (_isUndoHandle)
                 {
                     RedoStack.Push(new UndoRedoManager()
@@ -272,13 +471,15 @@ namespace DragAndDropMVVM.Controls
             }
 
             base.OnVisualChildrenChanged(visualAdded, visualRemoved);
+
+            if (IsSyncLayoutDataContext)
+                RefreshLayoutInCanvas();
         }
         #endregion
 
         #region OnDrop
         protected override void OnDrop(DragEventArgs e)
         {
-            //_isUndoRedoAction = false;
             UIElement element = e.Data.GetData(typeof(UIElement)) as UIElement;
 
             _isUndoHandle = false;
@@ -333,6 +534,9 @@ namespace DragAndDropMVVM.Controls
                     UndoAction = undoact,
                     RedoAction = redoact,
                 });
+
+                if (IsSyncLayoutDataContext)
+                    RefreshLayoutInCanvas();
             }
             else
             {
@@ -340,8 +544,11 @@ namespace DragAndDropMVVM.Controls
             }
 
             base.OnDrop(e);
+
         }
         #endregion
+
+      
 
         #endregion
     }

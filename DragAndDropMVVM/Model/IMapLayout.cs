@@ -8,10 +8,13 @@ namespace DragAndDropMVVM.Model
 {
     public interface IMapLayout
     {
-        int Width { get; set; }
-        int Height { get; set; }
-        
-        IDiagramLayout[] Diagrams { get;  }
+        double Width { get; set; }
+        double Height { get; set; }
+
+        Type DiagramLayoutType { get; }
+        Type LineLayouType { get; }
+
+        IDiagramLayout[] Diagrams { get; set; }
 
       //  Action GetDiagramsPosition { get; set; }
     }

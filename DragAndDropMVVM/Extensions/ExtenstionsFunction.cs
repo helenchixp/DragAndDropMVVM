@@ -69,6 +69,7 @@ namespace DragAndDropMVVM.Extensions
 
         #endregion
 
+        [Obsolete]
         public static void SetExportPosition(this Canvas canvas, IDiagramLayout[] diagrams)
         {
             if (diagrams == null || !diagrams.Any()) return;
@@ -90,7 +91,7 @@ namespace DragAndDropMVVM.Extensions
 
         }
 
-
+        [Obsolete]
         internal static void LoadLayout(this Canvas canvas, IDiagramLayout[] diagrams)
         {
 
@@ -101,7 +102,7 @@ namespace DragAndDropMVVM.Extensions
 
             foreach (var diagram in diagrams)
             {
-                var clnele = Activator.CreateInstance(diagram.DiagramType) as UIElement;
+                var clnele = Activator.CreateInstance(diagram.DiagramUIType) as UIElement;
                 //clnele.SetValue(ConnectionDiagramBase.DiagramUUIDProperty, diagram.DiagramUUID);
 
                 if (clnele is ContentControl)
@@ -142,7 +143,7 @@ namespace DragAndDropMVVM.Extensions
 
                         if (terminaldiagram != null)
                         {
-                            conline = Activator.CreateInstance(defline.LineType);
+                            conline = Activator.CreateInstance(defline.LineUIType);
                             if (conline is ConnectionLineBase)
                             {
 
