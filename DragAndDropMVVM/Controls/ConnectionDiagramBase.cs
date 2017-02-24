@@ -157,7 +157,7 @@ namespace DragAndDropMVVM.Controls
                 {
                     dline.TerminalDiagram.ArrivalLines.Remove(dline);
 
-                    WPFUtil.FindVisualParent<Canvas>(dline).Children.Remove(dline);
+                    WPFUtility.FindVisualParent<Canvas>(dline).Children.Remove(dline);
                 }
             }
 
@@ -167,7 +167,7 @@ namespace DragAndDropMVVM.Controls
                 {
                     aline.OriginDiagram.DepartureLines.Remove(aline);
 
-                    WPFUtil.FindVisualParent<Canvas>(aline).Children.Remove(aline);
+                    WPFUtility.FindVisualParent<Canvas>(aline).Children.Remove(aline);
 
                 }
             }
@@ -175,7 +175,7 @@ namespace DragAndDropMVVM.Controls
             this.ArrivalLines.Clear();
             this.DepartureLines.Clear();
 
-            WPFUtil.FindVisualParent<Canvas>(this).Children.Remove(this);
+            WPFUtility.FindVisualParent<Canvas>(this).Children.Remove(this);
         }
         #endregion
 
@@ -349,6 +349,41 @@ namespace DragAndDropMVVM.Controls
             new UIPropertyMetadata(FrameworkElementAdornerType.DrawEllipse));
         #endregion
 
+
+        #region CenterPositionRadius
+
+        /// <summary>
+        /// The <see cref="CenterPositionRadius" /> dependency property's name.
+        /// </summary>
+        public const string CenterPositionRadiusPropertyName = "CenterPositionRadius";
+
+        /// <summary>
+        /// Gets or sets the value of the <see cref="CenterPositionRadius" />
+        /// property. This is a dependency property.
+        /// </summary>
+        public int CenterPositionRadius
+        {
+            get
+            {
+                return (int)GetValue(CenterPositionRadiusProperty);
+            }
+            set
+            {
+                SetValue(CenterPositionRadiusProperty, value);
+            }
+        }
+
+        /// <summary>
+        /// Identifies the <see cref="CenterPositionRadius" /> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty CenterPositionRadiusProperty = DependencyProperty.Register(
+            CenterPositionRadiusPropertyName,
+            typeof(int),
+            typeof(ConnectionDiagramBase),
+            new UIPropertyMetadata(5));
+
+
+        #endregion
 
         #endregion
 

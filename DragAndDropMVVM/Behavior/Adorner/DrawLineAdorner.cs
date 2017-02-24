@@ -38,7 +38,7 @@ namespace DragAndDropMVVM.Behavior
             _move = (Vector)Window.GetWindow(element).PointFromScreen(element.PointToScreen(point));
             _move.Negate();
 
-            AdornerLayer adorner = AdornerLayer.GetAdornerLayer((Visual)WPFUtil.FindVisualParent<Window>(this.AdornedElement).Content);
+            AdornerLayer adorner = AdornerLayer.GetAdornerLayer((Visual)WPFUtility.FindVisualParent<Window>(this.AdornedElement).Content);
             if (adorner != null) adorner.Add(this);
 
         }
@@ -103,7 +103,7 @@ namespace DragAndDropMVVM.Behavior
             GeneralTransformGroup result = new GeneralTransformGroup();
             result.Children.Add(base.GetDesiredTransform(transform));
             result.Children.Add(new TranslateTransform(Position.X, Position.Y));
-            result.Children.Add(WPFUtil.FindVisualParent<System.Windows.Controls.Canvas>(this.AdornedElement).GetValue(LayoutTransformProperty) as GeneralTransform);
+            result.Children.Add(WPFUtility.FindVisualParent<System.Windows.Controls.Canvas>(this.AdornedElement).GetValue(LayoutTransformProperty) as GeneralTransform);
 
             return result;
         }

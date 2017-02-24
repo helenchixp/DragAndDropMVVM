@@ -12,7 +12,7 @@ using System.Reflection;
 
 namespace DragAndDropMVVM
 {
-    class WPFUtil
+    class WPFUtility
     {
         #region FindVisualParent
         public static T FindVisualParent<T>(DependencyObject d) where T : DependencyObject

@@ -60,6 +60,8 @@ namespace Demo.YuriOnIce.Relationship.Controls
              DataContext = new DiagramViewModel();
         }
 
+        bool _isEnd = false;
+
         protected override void OnInitialized(EventArgs e)
         {
             base.OnInitialized(e);
@@ -76,14 +78,16 @@ namespace Demo.YuriOnIce.Relationship.Controls
         {
             get
             {
-                if(ArrivalLines.Any() || DepartureLines.Any())
-                {
+                //if(ArrivalLines.Any() || DepartureLines.Any())
+                //{
 
-                    return new Point(base.CenterPosition.X, base.CenterPosition.Y + 30);
+                //    return new Point(base.CenterPosition.X, base.CenterPosition.Y + 30);
 
-                }
+                //}
 
-                return new Point(base.CenterPosition.X, base.CenterPosition.Y + 20); ;
+                //return new Point(base.CenterPosition.X, base.CenterPosition.Y + 20); ;
+
+                return new Point(base.CenterPosition.X, base.CenterPosition.Y +  (_isEnd ? 20 : 30)); 
             }
         }
 
@@ -98,6 +102,22 @@ namespace Demo.YuriOnIce.Relationship.Controls
             {
                // Can't set the ActionComment
             }
+        }
+
+
+        protected override void OnDrop(DragEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine($"OnDrop : {this.CenterPosition}  ____ base:{base.CenterPosition}");
+
+            _isEnd = true;
+
+            base.OnDrop(e);
+        }
+
+        protected override void OnPreviewDragOver(DragEventArgs e)
+        {
+            _isEnd = false;
+            base.OnPreviewDragOver(e);
         }
     }
 }

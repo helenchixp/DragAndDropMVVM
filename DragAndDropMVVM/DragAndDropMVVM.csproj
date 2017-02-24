@@ -76,7 +76,7 @@
     <Compile Include="Model\IDiagramLayout.cs" />
     <Compile Include="ViewModel\IDragged.cs" />
     <Compile Include="Model\ILineLayout.cs" />
-    <Compile Include="WPFUtil.cs" />
+    <Compile Include="WPFUtility.cs" />
     <Page Include="Styles\Colors.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

@@ -72,6 +72,8 @@ namespace DragAndDropMVVM.Behavior
 
                         double x1, y1, x2, y2 = 0.0;
 
+                        System.Diagnostics.Debug.WriteLine($"nameof(AssociatedObject_PreviewMouseMove)");
+
                         if (origindiagram.ConnectorPositionType != ConnectorPositionType.Custom)
                         {
                             Point orpos = e.GetPosition(terminaldiagram) - e.GetPosition(origindiagram) + origindiagram.CenterPosition;
@@ -98,7 +100,7 @@ namespace DragAndDropMVVM.Behavior
                         //the line type of custom
                         Type linetype = GetDropLineControlType(element);
 
-                        if (!WPFUtil.IsCorrectType(linetype, typeof(ConnectionLineBase)))
+                        if (!WPFUtility.IsCorrectType(linetype, typeof(ConnectionLineBase)))
                         {
                             throw new ArgumentException($"DropLineControlType is base on {nameof(ConnectionLineBase)}.");
                         }

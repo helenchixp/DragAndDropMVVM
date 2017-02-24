@@ -107,12 +107,20 @@ namespace DragAndDropMVVM.Controls
 
             var map = RefreshMapLayout(LayoutDataContext);
             SetValue(LayoutDataContextProperty, map);
+
+            UndoStack.Clear();
+            RedoStack.Clear();
         }
 
         private void ReloadLayoutInCanvas(IMapLayout map)
         {
             
             Children.Clear();
+
+            UndoStack.Clear();
+            RedoStack.Clear();
+
+
             var diagrams = map.Diagrams;
 
             if (diagrams == null || !diagrams.Any()) return;
@@ -122,7 +130,6 @@ namespace DragAndDropMVVM.Controls
             foreach (var diagram in diagrams)
             {
                 var clnele = Activator.CreateInstance(diagram.DiagramUIType) as UIElement;
-                //clnele.SetValue(ConnectionDiagramBase.DiagramUUIDProperty, diagram.DiagramUUID);
 
                 if (clnele is ContentControl)
                 {
@@ -253,9 +260,13 @@ namespace DragAndDropMVVM.Controls
                 encoder.Frames.Add(BitmapFrame.Create(renderBitmap));
                 encoder.Save(os);
             }
+
+            UndoStack.Clear();
+            RedoStack.Clear();
+
         }
 
-        
+
 
         #endregion
 
@@ -654,6 +665,9 @@ namespace DragAndDropMVVM.Controls
 
             base.OnVisualChildrenChanged(visualAdded, visualRemoved);
 
+            //if (!_isUndoHandle) RedoStack.Clear();
+
+            //update the layout object mode by is sync
             if (IsSyncLayoutDataContext)
                 RefreshLayoutInCanvas();
         }
@@ -722,15 +736,17 @@ namespace DragAndDropMVVM.Controls
             }
             else
             {
-                RedoStack.Clear();
             }
 
             base.OnDrop(e);
 
+            RedoStack.Clear();
+
+
         }
         #endregion
 
-      
+
 
         #endregion
     }

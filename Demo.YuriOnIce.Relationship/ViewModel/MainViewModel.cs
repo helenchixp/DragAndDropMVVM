@@ -912,7 +912,7 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
 
             var canvas = (parameter as System.Windows.Controls.Canvas);
             canvas.Children.Clear();
-
+            this.Characters.Clear();
 
         }
 

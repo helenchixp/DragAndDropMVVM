@@ -25,7 +25,7 @@ namespace DragAndDropMVVM.Behavior
             _move = (Vector)Window.GetWindow(element).PointFromScreen(element.PointToScreen(point));
             _move.Negate();
 
-            AdornerLayer adorner = AdornerLayer.GetAdornerLayer((Visual)WPFUtil.FindVisualParent<Window>(this.AdornedElement).Content);
+            AdornerLayer adorner = AdornerLayer.GetAdornerLayer((Visual)WPFUtility.FindVisualParent<Window>(this.AdornedElement).Content);
             if (adorner != null) adorner.Add(this);
         }
 
@@ -94,7 +94,7 @@ namespace DragAndDropMVVM.Behavior
         public object GetGhostElement()
         {
             //return (_ghost?.Fill as VisualBrush).Visual as UIElement;
-            return WPFUtil.GetUIElementSimpleClone((_ghost?.Fill as VisualBrush).Visual as UIElement);
+            return WPFUtility.GetUIElementSimpleClone((_ghost?.Fill as VisualBrush).Visual as UIElement);
         }
 
     }

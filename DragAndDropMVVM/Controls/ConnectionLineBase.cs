@@ -202,7 +202,7 @@ namespace DragAndDropMVVM.Controls
                 TerminalDiagram.ArrivalLines.Remove(this);
             }
 
-            WPFUtil.FindVisualParent<Canvas>(this).Children.Remove(this);
+            WPFUtility.FindVisualParent<Canvas>(this).Children.Remove(this);
         }
 
         #endregion

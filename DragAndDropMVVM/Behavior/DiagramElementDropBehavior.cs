@@ -80,7 +80,7 @@ namespace DragAndDropMVVM.Behavior
 
                             Type droppedcontroltype = dragelement != null ? GetDroppedControlType(dragelement) : null;
 
-                            if (droppedcontroltype != null && !WPFUtil.IsCorrectType(droppedcontroltype, typeof(ContentControl)))
+                            if (droppedcontroltype != null && !WPFUtility.IsCorrectType(droppedcontroltype, typeof(ContentControl)))
                             {
                                 throw new ArgumentException("DroppedControlType is base on ContentControl.");
                             }
@@ -470,9 +470,7 @@ namespace DragAndDropMVVM.Behavior
             new UIPropertyMetadata(null));
         #endregion
 
-        #region
-
-        #endregion IsDuplication
+        #region IsDuplication
         /// <summary>
         /// The IsDuplication attached property's name.
         /// </summary>
@@ -513,6 +511,7 @@ namespace DragAndDropMVVM.Behavior
 
         #endregion
 
+        #endregion 
 
         #region Private Method
 

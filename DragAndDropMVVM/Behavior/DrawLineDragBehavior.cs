@@ -44,7 +44,7 @@ namespace DragAndDropMVVM.Behavior
             if (element == null) return;
 
             DrawLineAdorner adorner = GetDraggingLineAdorner(element);
-            Point point = WPFUtil.GetMousePosition(element);
+            Point point = WPFUtility.GetMousePosition(element);
             if (adorner != null) adorner.Position = point;
         }
 
@@ -61,10 +61,11 @@ namespace DragAndDropMVVM.Behavior
 
             Point startPoint = element.CenterPosition;
 
-            //TODO : change the draw line center position
-            if (!WPFUtil.IsCenterDragging(startPoint, point, 5)) return;
+            //change the draw line center position
+            int centerradius = element.CenterPositionRadius;
+            if (!WPFUtility.IsCenterDragging(startPoint, point, centerradius)) return;
 
-            if (!WPFUtil.IsDragging(startPoint, point)) return;
+            if (!WPFUtility.IsDragging(startPoint, point)) return;
 
             DrawLineAdorner adorner = new DrawLineAdorner(element, 0.7, point);
             SetDraggingLineAdorner(element, adorner);
@@ -306,7 +307,7 @@ namespace DragAndDropMVVM.Behavior
             ConnectionDiagramBase element = null;
             if (!(sender is ConnectionDiagramBase))
             {
-                element = WPFUtil.FindVisualParent<ConnectionDiagramBase>(sender as UIElement);
+                element = WPFUtility.FindVisualParent<ConnectionDiagramBase>(sender as UIElement);
             }
             else
             {
