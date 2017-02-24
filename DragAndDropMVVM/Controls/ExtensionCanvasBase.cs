@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using DragAndDropMVVM.Model;
 
 namespace DragAndDropMVVM.Controls
@@ -23,11 +25,10 @@ namespace DragAndDropMVVM.Controls
         protected bool _isUndoHandle = false;
 
 
-      //  private IMapLayout _innerMapLayout = null;
 
         #endregion
 
-        #region Method
+        #region Method(Import and Export for Layout)
 
         private void RefreshLayoutInCanvas()
         {
@@ -108,10 +109,10 @@ namespace DragAndDropMVVM.Controls
             SetValue(LayoutDataContextProperty, map);
         }
 
-
-        private static void ReloadLayoutInCanvas(Canvas canvas, IMapLayout map)
+        private void ReloadLayoutInCanvas(IMapLayout map)
         {
-            canvas.Children.Clear();
+            
+            Children.Clear();
             var diagrams = map.Diagrams;
 
             if (diagrams == null || !diagrams.Any()) return;
@@ -140,22 +141,22 @@ namespace DragAndDropMVVM.Controls
                     Canvas.SetTop(clnele, diagram.Y);
 
 
-                    canvas.Children.Add(clnele);
+                    Children.Add(clnele);
                 });
             }
 
             //update the canvas.
-            canvas.UpdateLayout();
+            UpdateLayout();
 
 
             foreach (var dialines in uuidLines)
             {
-                ConnectionDiagramBase origindiagram = GetDiagramByUUID(canvas, dialines.Key);
+                ConnectionDiagramBase origindiagram = GetDiagramByUUID(dialines.Key);
                 if (origindiagram != null && dialines.Value != null)
                 {
                     foreach (var defline in dialines.Value)
                     {
-                        var terminaldiagram = GetDiagramByUUID(canvas, defline.TerminalDiagramUUID);
+                        var terminaldiagram = GetDiagramByUUID(defline.TerminalDiagramUUID);
 
                         dynamic conline;
 
@@ -189,7 +190,7 @@ namespace DragAndDropMVVM.Controls
                                 Canvas.SetTop(conline, (double)terminaldiagram.GetValue(Canvas.TopProperty));
                                 Canvas.SetLeft(conline, (double)terminaldiagram.GetValue(Canvas.LeftProperty));
 
-                                canvas.Children.Add(conline);
+                                Children.Add(conline);
                             });
                         }
                     }
@@ -197,10 +198,10 @@ namespace DragAndDropMVVM.Controls
             }
         }
 
-        private static ConnectionDiagramBase GetDiagramByUUID(Canvas canvas, string uuid)
+        private ConnectionDiagramBase GetDiagramByUUID(string uuid)
         {
             ConnectionDiagramBase result = null;
-            foreach (var child in canvas.Children)
+            foreach (var child in Children)
             {
                 if (!(child is ConnectionDiagramBase)) continue;
 
@@ -215,10 +216,51 @@ namespace DragAndDropMVVM.Controls
         }
 
 
+        private void SaveAsImage(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path)) return;
+
+
+            var fileext = path.Split('.');
+
+
+            // recalculate this canvas
+            var size = new Size(double.NaN.Equals(Width) ? ActualWidth : Width,
+                 double.NaN.Equals(Height) ? ActualHeight : Height);
+            Measure(size);
+            Arrange(new Rect(size));
+
+            // convert VisualObject to Bitmap
+            var renderBitmap = new RenderTargetBitmap((int)size.Width,       // width
+                                                      (int)size.Height,      // Height
+                                                      96.0d,                 // Horizonal 96.0DPI
+                                                      96.0d,                 // Vertual 96.0DPI
+                                                      PixelFormats.Pbgra32); // 32bit(RGBA 8bit)
+            renderBitmap.Render(this);
+
+            // Default encoder is PNG
+            BitmapEncoder encoder = new PngBitmapEncoder(); ;
+            if (fileext.Length >= 2 && fileext[fileext.Length - 1] == "jpg")
+            {
+                encoder = new JpegBitmapEncoder();
+            }
+
+
+            // Output FileStream 
+            using (var os = new FileStream(path, FileMode.Create))
+            {
+                // Create the Bitmap FileStream
+                encoder.Frames.Add(BitmapFrame.Create(renderBitmap));
+                encoder.Save(os);
+            }
+        }
+
+        
+
         #endregion
 
 
-        #region Virtual
+        #region Virtual Method
         /// <summary>
         /// If you want to update MapLayout, override it and rewrite this methods
         /// </summary>
@@ -271,9 +313,9 @@ namespace DragAndDropMVVM.Controls
                         || !(d is Canvas))
                           return;
                       var map = (e.NewValue as IMapLayout);
-                      var canvas = d as Canvas;
+                      var canvas = d as ExtensionCanvasBase;
 
-                      ReloadLayoutInCanvas(canvas, map);
+                      (d as ExtensionCanvasBase).ReloadLayoutInCanvas(map);
 
                   },
                   (d, baseValue) =>
@@ -321,6 +363,46 @@ namespace DragAndDropMVVM.Controls
                     }
                 }
                 ));
+        #endregion
+
+        #region SaveAsImageFileName
+        /// <summary>
+        /// The <see cref="SaveAsImageFileName" /> dependency property's name.
+        /// </summary>
+        public const string SaveAsImageFileNamePropertyName = "SaveAsImageFileName";
+
+        /// <summary>
+        /// Gets or sets the value of the <see cref="SaveAsImageFileName" />
+        /// property. This is a dependency property.
+        /// </summary>
+        public string SaveAsImageFileName
+        {
+            get
+            {
+                return (string)GetValue(SaveAsImageFileNameProperty);
+            }
+            set
+            {
+                SetValue(SaveAsImageFileNameProperty, value);
+            }
+        }
+
+        /// <summary>
+        /// Identifies the <see cref="SaveAsImageFileName" /> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty SaveAsImageFileNameProperty = DependencyProperty.Register(
+            SaveAsImageFileNamePropertyName,
+            typeof(string),
+            typeof(ExtensionCanvasBase),
+            new UIPropertyMetadata(string.Empty,
+                (d, e) =>
+                {
+                    if(!string.IsNullOrWhiteSpace(e.NewValue as string))
+                    {
+                        (d as ExtensionCanvasBase).SaveAsImage(e.NewValue as string);
+                    }
+
+                }));
         #endregion
 
         #region ClearCommand[Obsoleted]

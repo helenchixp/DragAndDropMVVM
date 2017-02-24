@@ -68,7 +68,6 @@
     <Compile Include="Behavior\DiagramElementDragBehavior.cs" />
     <Compile Include="Behavior\DiagramElementDropBehavior.cs" />
     <Compile Include="Controls\ConnectionDiagramBase.cs" />
-    <Compile Include="Extensions\ExtenstionsFunction.cs" />
     <Compile Include="Model\IMapLayout.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UndoRedoManager.cs" />

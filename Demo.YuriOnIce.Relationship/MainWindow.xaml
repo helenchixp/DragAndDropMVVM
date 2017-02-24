@@ -6,7 +6,6 @@
         xmlns:local="clr-namespace:Demo.YuriOnIce.Relationship.MvvmLight"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:b="clr-namespace:DragAndDropMVVM.Behavior;assembly=DragAndDropMVVM"
-        xmlns:ext="clr-namespace:DragAndDropMVVM.Extensions;assembly=DragAndDropMVVM"
         xmlns:ctrl="clr-namespace:Demo.YuriOnIce.Relationship.Controls"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         DataContext="{Binding Source={StaticResource Locator}, Path=Main}"
@@ -39,18 +38,18 @@
             <ColumnDefinition Width="1*" MinWidth="100"/>
             <ColumnDefinition Width="9*"/>
         </Grid.ColumnDefinitions>
-        <Menu Grid.ColumnSpan="2">
+        <Menu Grid.ColumnSpan="2" x:Name="mainMenu">
             <MenuItem Header="Action">
                 <MenuItem Header="Clear" Command="{Binding ClearCommand}" CommandParameter="{Binding ElementName=myDroppedCanvas}"/>
                 <Separator />
-                <MenuItem Header="Undo"  Command="ApplicationCommands.Undo" />
+                <MenuItem Header="Undo"  Command="ApplicationCommands.Undo" CommandTarget="{Binding ElementName=mainMenu}"/>
                 <MenuItem Header="Redo"  Command="ApplicationCommands.Redo"/>
             </MenuItem>
             <MenuItem Header="Save and Load">
-                <MenuItem Header="Load from XML file" Command="{Binding LoadXMLCommand}" CommandParameter="{Binding ElementName=myDroppedCanvas}" />
-                <MenuItem Header="Save as XML file" Command="{Binding SaveAsXMLCommand}" CommandParameter="{Binding ElementName=myDroppedCanvas}" />
+                <MenuItem Header="Load from XML file" Command="{Binding LoadXMLCommand}" />
+                <MenuItem Header="Save as XML file" Command="{Binding SaveAsXMLCommand}" />
                 <Separator />
-                <MenuItem Header="Export to Picture" Command="{Binding ExportImageCommand}" CommandParameter="{Binding ElementName=myDroppedCanvas}"/>
+                <MenuItem Header="Export to Picture" Command="{Binding ExportImageCommand}" />
             </MenuItem>
         </Menu>
 
@@ -96,6 +95,7 @@
                           LayoutDataContext="{Binding LayoutRelationshipMap}"
                           UndoCommand="{Binding UndoCommand}"
                           RedoCommand="{Binding RedoCommand}" 
+                          SaveAsImageFileName="{Binding ImageFileName, Mode=OneWay}"
                           Background="WhiteSmoke"
                           AllowDrop="True">
             <ctrl:PanelCanvas.LayoutTransform>

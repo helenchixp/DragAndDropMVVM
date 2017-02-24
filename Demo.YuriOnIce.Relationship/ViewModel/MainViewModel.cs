@@ -3,15 +3,12 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Windows.Controls;
 using System.Xml.Serialization;
 using Demo.YuriOnIce.Relationship.Model;
 using DragAndDropMVVM.ViewModel;
-using DragAndDropMVVM.Extensions;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Win32;
-using Demo.YuriOnIce.Relationship.Controls;
 using System.Collections.Generic;
 using DragAndDropMVVM;
 
@@ -261,6 +258,40 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
                 var oldValue = _isSyncLayoutRelationshipMap;
                 _isSyncLayoutRelationshipMap = value;
                 RaisePropertyChanged(IsSyncLayoutRelationshipMapPropertyName, oldValue, value, true);
+            }
+        }
+        #endregion
+
+        #region ImageFileName
+        /// <summary>
+        /// The <see cref="ImageFileName" /> property's name.
+        /// </summary>
+        public const string ImageFileNamePropertyName = "ImageFileName";
+
+        private string _imageFileName = string.Empty;
+
+        /// <summary>
+        /// Sets and gets the ImageFileName property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// This property's value is broadcasted by the MessengerInstance when it changes.
+        /// </summary>
+        public string ImageFileName
+        {
+            get
+            {
+                return _imageFileName;
+            }
+
+            set
+            {
+                if (_imageFileName == value)
+                {
+                    return;
+                }
+
+                var oldValue = _imageFileName;
+                _imageFileName = value;
+                RaisePropertyChanged(ImageFileNamePropertyName, oldValue, value, true);
             }
         }
         #endregion
@@ -662,9 +693,17 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
 
         private void ExecuteExportImageCommand(object parameter)
         {
-            if (parameter is System.Windows.Controls.Canvas)
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.FilterIndex = 1;
+
+            //Extend the image type
+            saveFileDialog.Filter = "Png Image(*.png)|*.png|Jpeg Image(.jpg)|*.jpg|All Files (*.*)|*.*";
+            bool? result = saveFileDialog.ShowDialog();
+            if (result == true)
             {
-                (parameter as System.Windows.Controls.Canvas).ExportImage();
+                ImageFileName = saveFileDialog.FileName;
+
             }
         }
 
@@ -849,7 +888,6 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
         }
 
         #endregion
-
 
         #region ClearCommand
         private RelayCommand<object> _clearCommand;
