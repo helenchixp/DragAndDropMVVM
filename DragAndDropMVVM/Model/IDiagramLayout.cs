@@ -12,6 +12,7 @@ namespace DragAndDropMVVM.Model
         double Y { get; set; }
         Type DiagramUIType { get; set; }
         string DiagramUUID { get; set; }
+        Type LineLayouType { get; }
         ILineLayout[] DepartureLines { get; set; }
 
         object DataContext { get; set; }

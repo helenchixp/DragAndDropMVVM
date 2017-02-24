@@ -31,14 +31,7 @@ namespace Demo.YuriOnIce.Relationship.Model
                 return typeof(Character);
             }
         }
-        [XmlIgnore]
-        public Type LineLayouType
-        {
-            get
-            {
-                return typeof(Connector);
-            }
-        }
+
         [XmlIgnore]
         public IDiagramLayout[] Diagrams
         {
@@ -133,6 +126,16 @@ namespace Demo.YuriOnIce.Relationship.Model
                     DiagramUUID = value.ToString();
                 }
             }
+
+            [XmlIgnore]
+            public Type LineLayouType
+            {
+                get
+                {
+                    return typeof(Connector);
+                }
+            }
+
             [XmlElement]
             public Connector[] Connectors { get; set; }
 

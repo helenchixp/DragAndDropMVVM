@@ -23,7 +23,7 @@ namespace DragAndDropMVVM.Controls
         protected bool _isUndoHandle = false;
 
 
-        private IMapLayout _innerMapLayout = null;
+      //  private IMapLayout _innerMapLayout = null;
 
         #endregion
 
@@ -37,10 +37,10 @@ namespace DragAndDropMVVM.Controls
                 (Children.Count == 0))
                 return;
 
-            _innerMapLayout =  LayoutDataContext;
+            //    _innerMapLayout =  LayoutDataContext;
 
-            var diagrams = (_innerMapLayout ?? (_innerMapLayout =  LayoutDataContext)).Diagrams;
-
+            //var diagrams = (_innerMapLayout ?? (_innerMapLayout =  LayoutDataContext)).Diagrams;
+            var diagrams =LayoutDataContext.Diagrams;
 
             int diagramsum = this.Children.Cast<UIElement>().Sum(child =>
             {
@@ -52,7 +52,7 @@ namespace DragAndDropMVVM.Controls
             {
                 diagrams = (from child in this.Children.Cast<UIElement>()
                             where child is ConnectionDiagramBase
-                            select Activator.CreateInstance(_innerMapLayout.DiagramLayoutType)).Cast<IDiagramLayout>().ToArray();
+                            select Activator.CreateInstance(LayoutDataContext.DiagramLayoutType)).Cast<IDiagramLayout>().ToArray();
             }
             else if (diagrams.Count() < diagramsum)
             {
@@ -68,7 +68,7 @@ namespace DragAndDropMVVM.Controls
 
                 var diagramUI = child as ConnectionDiagramBase;
 
-                if (diagrams[idx] == null) diagrams[idx] = Activator.CreateInstance(_innerMapLayout.DiagramLayoutType) as IDiagramLayout;
+                if (diagrams[idx] == null) diagrams[idx] = Activator.CreateInstance(LayoutDataContext.DiagramLayoutType) as IDiagramLayout;
 
                 diagrams[idx].X = Canvas.GetLeft(diagramUI);
                 diagrams[idx].Y = Canvas.GetTop(diagramUI);
@@ -80,7 +80,7 @@ namespace DragAndDropMVVM.Controls
                 if (diagramUI.DepartureLines!= null && diagramUI.DepartureLines.Any())
                 {
                     diagrams[idx].DepartureLines = (from line in diagramUI.DepartureLines
-                                                    select Activator.CreateInstance(_innerMapLayout.LineLayouType)).Cast<ILineLayout>().ToArray<ILineLayout>();
+                                                    select Activator.CreateInstance(diagrams[idx].LineLayouType)).Cast<ILineLayout>().ToArray<ILineLayout>();
 
                     int lidx = 0;
 
@@ -99,20 +99,121 @@ namespace DragAndDropMVVM.Controls
             }
 
 
-            _innerMapLayout.Diagrams = diagrams;
+            LayoutDataContext.Diagrams = diagrams;
 
-            _innerMapLayout.Height = Height;
-            _innerMapLayout.Width = Width;
+            LayoutDataContext.Height = Height;
+            LayoutDataContext.Width = Width;
 
-            var map = RefreshMapLayout(_innerMapLayout);
+            var map = RefreshMapLayout(LayoutDataContext);
             SetValue(LayoutDataContextProperty, map);
         }
 
 
-        private void ReloadLayoutInCanvas()
+        private static void ReloadLayoutInCanvas(Canvas canvas, IMapLayout map)
         {
-            if (_innerMapLayout == null) return;
+            canvas.Children.Clear();
+            var diagrams = map.Diagrams;
+
+            if (diagrams == null || !diagrams.Any()) return;
+
+            Dictionary<string, ILineLayout[]> uuidLines = new Dictionary<string, ILineLayout[]>();
+
+            foreach (var diagram in diagrams)
+            {
+                var clnele = Activator.CreateInstance(diagram.DiagramUIType) as UIElement;
+                //clnele.SetValue(ConnectionDiagramBase.DiagramUUIDProperty, diagram.DiagramUUID);
+
+                if (clnele is ContentControl)
+                {
+                    (clnele as ContentControl).DataContext = diagram.DataContext;
+                }
+
+                //add the line by Diagram ActionComment after finish all diagrams
+                uuidLines.Add(diagram.DiagramUUID, diagram.DepartureLines);
+
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+
+                    Canvas.SetRight(clnele, diagram.X);
+                    Canvas.SetLeft(clnele, diagram.X);
+                    Canvas.SetBottom(clnele, diagram.Y);
+                    Canvas.SetTop(clnele, diagram.Y);
+
+
+                    canvas.Children.Add(clnele);
+                });
+            }
+
+            //update the canvas.
+            canvas.UpdateLayout();
+
+
+            foreach (var dialines in uuidLines)
+            {
+                ConnectionDiagramBase origindiagram = GetDiagramByUUID(canvas, dialines.Key);
+                if (origindiagram != null && dialines.Value != null)
+                {
+                    foreach (var defline in dialines.Value)
+                    {
+                        var terminaldiagram = GetDiagramByUUID(canvas, defline.TerminalDiagramUUID);
+
+                        dynamic conline;
+
+                        if (terminaldiagram != null)
+                        {
+                            conline = Activator.CreateInstance(defline.LineUIType);
+                            if (conline is ConnectionLineBase)
+                            {
+
+                                (conline as ConnectionLineBase).OriginDiagram = origindiagram;
+                                (conline as ConnectionLineBase).TerminalDiagram = terminaldiagram;
+                                (conline as ConnectionLineBase).DataContext = defline.DataContext;
+                                (conline as ConnectionLineBase).LineUUID = string.IsNullOrWhiteSpace(defline.LineUUID) ? $"{conline.GetType().Name}_{Guid.NewGuid().ToString()}" : defline.LineUUID;
+                                //if inherb
+                                if (conline is ILinePosition)
+                                {
+                                    (conline as ILinePosition).X1 = (double)origindiagram.GetValue(Canvas.LeftProperty) - (double)terminaldiagram.GetValue(Canvas.LeftProperty) + origindiagram.CenterPosition.X;
+                                    (conline as ILinePosition).Y1 = (double)origindiagram.GetValue(Canvas.TopProperty) - (double)terminaldiagram.GetValue(Canvas.TopProperty) + origindiagram.CenterPosition.Y; ;
+                                    (conline as ILinePosition).X2 = terminaldiagram.CenterPosition.X;
+                                    (conline as ILinePosition).Y2 = terminaldiagram.CenterPosition.Y;
+
+                                }
+
+                                origindiagram.DepartureLines.Add(conline);
+                                terminaldiagram.ArrivalLines.Add(conline);
+
+                            }
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+
+                                Canvas.SetTop(conline, (double)terminaldiagram.GetValue(Canvas.TopProperty));
+                                Canvas.SetLeft(conline, (double)terminaldiagram.GetValue(Canvas.LeftProperty));
+
+                                canvas.Children.Add(conline);
+                            });
+                        }
+                    }
+                }
+            }
         }
+
+        private static ConnectionDiagramBase GetDiagramByUUID(Canvas canvas, string uuid)
+        {
+            ConnectionDiagramBase result = null;
+            foreach (var child in canvas.Children)
+            {
+                if (!(child is ConnectionDiagramBase)) continue;
+
+                if ((child as ConnectionDiagramBase).DiagramUUID == uuid)
+                {
+                    result = (child as ConnectionDiagramBase);
+                    break;
+                }
+            }
+
+            return result;
+        }
+
 
         #endregion
 
@@ -172,8 +273,7 @@ namespace DragAndDropMVVM.Controls
                       var map = (e.NewValue as IMapLayout);
                       var canvas = d as Canvas;
 
-                      canvas.Children.Clear();
-
+                      ReloadLayoutInCanvas(canvas, map);
 
                   },
                   (d, baseValue) =>

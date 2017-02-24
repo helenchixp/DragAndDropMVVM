@@ -711,6 +711,9 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
 
                 var map = LayoutRelationshipMap;
 
+                map.Header = "it is relationship map.";
+                map.Footer = "Yuri on Ice!!!";
+
                 if (map == null) throw new NullReferenceException("LayoutRelationshipMap is Null");
 
        

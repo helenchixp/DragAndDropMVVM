@@ -12,7 +12,6 @@ namespace DragAndDropMVVM.Model
         double Height { get; set; }
 
         Type DiagramLayoutType { get; }
-        Type LineLayouType { get; }
 
         IDiagramLayout[] Diagrams { get; set; }
 
