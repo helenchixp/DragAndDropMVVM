@@ -5,12 +5,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DragAndDropMVVM.ViewModel;
+#if PRISM
+using Microsoft.Practices.Prism.Mvvm;
+#else
 using GalaSoft.MvvmLight;
+#endif
 
 namespace Demo.YuriOnIce.Relationship.ViewModel
 {
-    public class DiagramViewModel : ViewModelBase, IConnectionDiagramViewModel
+    public class DiagramViewModel :
+#if PRISM
+        BindableBase,
+#else
+        ViewModelBase,
+#endif
+        IConnectionDiagramViewModel
     {
+        
         #region IConnectionDiagramViewModel
         public ObservableCollection<IConnectionLineViewModel> ArrivalLinesViewModel
         {
@@ -41,10 +52,10 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
 
             set;
         }
-        #endregion
+#endregion
 
 
-        #region Properties
+#region Properties
         /// <summary>
         /// The <see cref="ImagePath" /> property's name.
         /// </summary>
@@ -70,10 +81,14 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
                 {
                     return;
                 }
+#if PRISM
+                this.SetProperty(ref _imagePath, value);
+#else
 
                 var oldValue = _imagePath;
                 _imagePath = value;
                 RaisePropertyChanged(ImagePathPropertyName, oldValue, value, true);
+#endif
             }
         }
 
@@ -103,10 +118,13 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
                 {
                     return;
                 }
-
+#if PRISM
+                this.SetProperty(ref _name, value);
+#else
                 var oldValue = _name;
                 _name = value;
                 RaisePropertyChanged(NamePropertyName, oldValue, value, true);
+#endif
             }
         }
 
@@ -136,13 +154,16 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
                 {
                     return;
                 }
-
+#if PRISM
+                this.SetProperty(ref _detail, value);
+#else
                 var oldValue = _detail;
                 _detail = value;
                 RaisePropertyChanged(DetailPropertyName, oldValue, value, true);
+#endif
             }
         }
 
-        #endregion
+#endregion
     }
 }

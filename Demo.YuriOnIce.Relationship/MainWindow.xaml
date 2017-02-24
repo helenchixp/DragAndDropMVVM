@@ -3,12 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Demo.YuriOnIce.Relationship.MvvmLight"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:b="clr-namespace:DragAndDropMVVM.Behavior;assembly=DragAndDropMVVM"
         xmlns:ctrl="clr-namespace:Demo.YuriOnIce.Relationship.Controls"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
-        DataContext="{Binding Source={StaticResource Locator}, Path=Main}"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="625">
     <Window.Resources>

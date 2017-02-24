@@ -6,8 +6,14 @@ using System.Text;
 using System.Xml.Serialization;
 using Demo.YuriOnIce.Relationship.Model;
 using DragAndDropMVVM.ViewModel;
+#if PRISM
+using Microsoft.Practices.Prism.Mvvm;
+using Microsoft.Practices.Prism.Commands;
+#else
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+#endif
+
 using Microsoft.Win32;
 using System.Collections.Generic;
 using DragAndDropMVVM;
@@ -26,7 +32,13 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
     /// See http://www.galasoft.ch/mvvm
     /// </para>
     /// </summary>
-    public class MainViewModel : ViewModelBase, IDragged
+    public class MainViewModel :
+#if PRISM
+        BindableBase,
+#else
+        ViewModelBase,
+#endif
+        IDragged
     {
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
@@ -36,33 +48,49 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
 
             PalletItems.Add(new DiagramModel()
             {
+#if PRISM
+                ImagePath = "/Demo.YuriOnIce.Relationship.Prism;component/ImagesResource/Yuri.png",
+#else
                 ImagePath = "/Demo.YuriOnIce.Relationship.MvvmLight;component/ImagesResource/Yuri.png",
+#endif
                 Name = "Yuri",
                 Detail = "He has a glass heart.",
                 Index = 1,
             });
             PalletItems.Add(new DiagramModel()
             {
+#if PRISM
+                ImagePath = "/Demo.YuriOnIce.Relationship.Prism;component/ImagesResource/Victory.png",
+#else
                 ImagePath = "/Demo.YuriOnIce.Relationship.MvvmLight;component/ImagesResource/Victory.png",
+#endif
                 Name = "Victory",
                 Detail = "He is Legend!!!",
                 Index = 2,
             });
             PalletItems.Add(new DiagramModel()
             {
+#if PRISM
+                ImagePath = "/Demo.YuriOnIce.Relationship.Prism;component/ImagesResource/Yurio.png",
+#else
                 ImagePath = "/Demo.YuriOnIce.Relationship.MvvmLight;component/ImagesResource/Yurio.png",
+#endif
                 Name = "Yurio",
                 Detail = "He is Tigger(Cat?).",
                 Index = 3,
             });
             PalletItems.Add(new DiagramModel()
             {
+#if PRISM
+                ImagePath = "/Demo.YuriOnIce.Relationship.Prism;component/ImagesResource/Maccachin.png",
+#else
                 ImagePath = "/Demo.YuriOnIce.Relationship.MvvmLight;component/ImagesResource/Maccachin.png",
+#endif
                 Name = "Maccachin",
                 Detail = "Maccachin is dog.",
                 Index = 4,
             });
-            
+
         }
 
         #region IDragged Objects
@@ -114,10 +142,13 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
                 {
                     return;
                 }
-
+#if PRISM
+                this.SetProperty(ref _palletItems, value);
+#else
                 var oldValue = _palletItems;
                 _palletItems = value;
                 RaisePropertyChanged(PalletItemsPropertyName, oldValue, value, true);
+#endif
             }
         }
         #endregion
@@ -148,10 +179,13 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
                 {
                     return;
                 }
-
+#if PRISM
+                this.SetProperty(ref _characters, value);
+#else
                 var oldValue = _characters;
                 _characters = value;
                 RaisePropertyChanged(CharactersPropertyName, oldValue, value, true);
+#endif
             }
         }
 
@@ -184,10 +218,13 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
                 {
                     return;
                 }
-
+#if PRISM
+                this.SetProperty(ref _errorMessage, value);
+#else
                 var oldValue = _errorMessage;
                 _errorMessage = value;
                 RaisePropertyChanged(ErrorMessagePropertyName, oldValue, value, true);
+#endif
             }
         }
         #endregion
@@ -219,10 +256,13 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
                 {
                     return;
                 }
-
+#if PRISM
+                this.SetProperty(ref _layoutRelationshipMap, value);
+#else
                 var oldValue = _layoutRelationshipMap;
                 _layoutRelationshipMap = value;
                 RaisePropertyChanged(LayoutRelationshipMapPropertyName, oldValue, value, true);
+#endif
             }
         }
 
@@ -254,10 +294,13 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
                 {
                     return;
                 }
-
+#if PRISM
+                this.SetProperty(ref _isSyncLayoutRelationshipMap, value);
+#else
                 var oldValue = _isSyncLayoutRelationshipMap;
                 _isSyncLayoutRelationshipMap = value;
                 RaisePropertyChanged(IsSyncLayoutRelationshipMapPropertyName, oldValue, value, true);
+#endif
             }
         }
         #endregion
@@ -288,10 +331,13 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
                 {
                     return;
                 }
-
+#if PRISM
+                this.SetProperty(ref _imageFileName, value);
+#else
                 var oldValue = _imageFileName;
                 _imageFileName = value;
                 RaisePropertyChanged(ImageFileNamePropertyName, oldValue, value, true);
+#endif
             }
         }
         #endregion
@@ -303,17 +349,34 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
 
         #region DragCommand
 
-        private RelayCommand<object> _dragCommand;
+        private
+#if PRISM
+                DelegateCommand<object>
+#else
+                RelayCommand<object> 
+#endif
+            _dragCommand;
 
         /// <summary>
         /// Gets the DragCommand.
         /// </summary>
-        public RelayCommand<object> DragCommand
+        public
+#if PRISM
+                DelegateCommand<object>
+#else
+                RelayCommand<object> 
+#endif
+            DragCommand
         {
             get
             {
-                return _dragCommand ?? (_dragCommand = new RelayCommand<object>(
-                    ExecuteDragCommand,
+                return _dragCommand ?? (_dragCommand = new
+#if PRISM
+                DelegateCommand<object>
+#else
+                RelayCommand<object> 
+#endif
+                    (ExecuteDragCommand,
                     CanExecuteDragCommand));
             }
         }
@@ -333,16 +396,34 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
         #region DropCommand
 
 
-        private RelayCommand<object> _dropCommand;
+        private
+#if PRISM
+                DelegateCommand<object>
+#else
+                RelayCommand<object> 
+#endif
+            _dropCommand;
 
         /// <summary>
         /// Gets the DropCommand.
         /// </summary>
-        public RelayCommand<object> DropCommand
+        public
+#if PRISM
+                DelegateCommand<object>
+#else
+                RelayCommand<object> 
+#endif
+            DropCommand
         {
             get
             {
-                return _dropCommand ?? (_dropCommand = new RelayCommand<object>(
+                return _dropCommand ?? (_dropCommand = new
+#if PRISM
+                DelegateCommand<object>
+#else
+                RelayCommand<object> 
+#endif
+                    (
                     ExecuteDropCommand,
                     CanExecuteDropCommand));
             }
@@ -394,7 +475,7 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
                 redomemo(null);
             }
         }
-       
+
 
         private bool CanExecuteDropCommand(object parameter)
         {
@@ -415,16 +496,34 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
 
         #region DragLineCommand
 
-        private RelayCommand<object> _dragLineCommand;
+        private
+#if PRISM
+                DelegateCommand<object>
+#else
+                RelayCommand<object> 
+#endif
+            _dragLineCommand;
 
         /// <summary>
         /// Gets the DragLineCommand.
         /// </summary>
-        public RelayCommand<object> DragLineCommand
+        public
+#if PRISM
+                DelegateCommand<object>
+#else
+                RelayCommand<object> 
+#endif
+            DragLineCommand
         {
             get
             {
-                return _dragLineCommand ?? (_dragLineCommand = new RelayCommand<object>(
+                return _dragLineCommand ?? (_dragLineCommand = new
+#if PRISM
+                DelegateCommand<object>
+#else
+                RelayCommand<object> 
+#endif
+                    (
                     ExecuteDragLineCommand,
                     CanExecuteDragLineCommand));
             }
@@ -443,16 +542,34 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
         #endregion
 
         #region DropLineCommand
-        private RelayCommand<object> _dropLineCommand;
+        private
+#if PRISM
+                DelegateCommand<object>
+#else
+                RelayCommand<object> 
+#endif
+            _dropLineCommand;
 
         /// <summary>
         /// Gets the DropLineCommand.
         /// </summary>
-        public RelayCommand<object> DropLineCommand
+        public
+#if PRISM
+                DelegateCommand<object>
+#else
+                RelayCommand<object> 
+#endif
+            DropLineCommand
         {
             get
             {
-                return  _dropLineCommand ?? ( _dropLineCommand = new RelayCommand<object>(
+                return _dropLineCommand ?? (_dropLineCommand = new
+#if PRISM
+                DelegateCommand<object>
+#else
+                RelayCommand<object> 
+#endif
+                    (
                     ExecuteDropLineCommand,
                     CanExecuteDropLineCommand));
             }
@@ -464,7 +581,7 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
 
             var linevm = (parameter as IConnectionLineViewModel);
 
-            if(DraggedDataContext!=null && DraggedDataContext is Tuple<object, object>)
+            if (DraggedDataContext != null && DraggedDataContext is Tuple<object, object>)
             {
                 var originvm = (DraggedDataContext as Tuple<object, object>).Item1 as IConnectionDiagramViewModel;
                 var terminalvm = (DraggedDataContext as Tuple<object, object>).Item2 as IConnectionDiagramViewModel;
@@ -556,16 +673,34 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
         #region DeleteLineCommand
 
 
-        private RelayCommand<object> _deleteLineCommand;
+        private
+#if PRISM
+                DelegateCommand<object>
+#else
+                RelayCommand<object> 
+#endif
+            _deleteLineCommand;
 
         /// <summary>
         /// Gets the DeleteLineCommand.
         /// </summary>
-        public RelayCommand<object> DeleteLineCommand
+        public
+#if PRISM
+                DelegateCommand<object>
+#else
+                RelayCommand<object> 
+#endif
+            DeleteLineCommand
         {
             get
             {
-                return _deleteLineCommand ?? (_deleteLineCommand = new RelayCommand<object>(
+                return _deleteLineCommand ?? (_deleteLineCommand = new
+#if PRISM
+                DelegateCommand<object>
+#else
+                RelayCommand<object> 
+#endif
+                    (
                     ExecuteDeleteLineCommand,
                     CanExecuteDeleteLineCommand));
             }
@@ -615,16 +750,34 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
 
         #region DeleteDiagramCommand
 
-        private RelayCommand<object> _deleteDiagramCommand;
+        private
+#if PRISM
+                DelegateCommand<object>
+#else
+                RelayCommand<object> 
+#endif
+            _deleteDiagramCommand;
 
         /// <summary>
         /// Gets the DeleteDiagramCommand.
         /// </summary>
-        public RelayCommand<object> DeleteDiagramCommand
+        public
+#if PRISM
+                DelegateCommand<object>
+#else
+                RelayCommand<object> 
+#endif
+            DeleteDiagramCommand
         {
             get
             {
-                return _deleteDiagramCommand ?? (_deleteDiagramCommand = new RelayCommand<object>(
+                return _deleteDiagramCommand ?? (_deleteDiagramCommand = new
+#if PRISM
+                DelegateCommand<object>
+#else
+                RelayCommand<object> 
+#endif
+                    (
                     ExecuteDeleteDiagramCommand,
                     CanExecuteDeleteDiagramCommand));
             }
@@ -632,7 +785,7 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
 
         private void ExecuteDeleteDiagramCommand(object parameter)
         {
-            var redomemo = new Action<object>((obj) =>  Characters.Remove(parameter as DiagramViewModel));
+            var redomemo = new Action<object>((obj) => Characters.Remove(parameter as DiagramViewModel));
 
             var undomemo = new Action<object>((obj) => ExecuteDropCommand(parameter));
 
@@ -676,16 +829,34 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
         #endregion
 
         #region ExportImageCommand
-        private RelayCommand<object> _exportImageCommand;
+        private
+#if PRISM
+                DelegateCommand<object>
+#else
+                RelayCommand<object> 
+#endif
+            _exportImageCommand;
 
         /// <summary>
         /// Gets the ExportImageCommand.
         /// </summary>
-        public RelayCommand<object> ExportImageCommand
+        public
+#if PRISM
+                DelegateCommand<object>
+#else
+                RelayCommand<object> 
+#endif
+            ExportImageCommand
         {
             get
             {
-                return _exportImageCommand ?? (_exportImageCommand = new RelayCommand<object>(
+                return _exportImageCommand ?? (_exportImageCommand = new
+#if PRISM
+                DelegateCommand<object>
+#else
+                RelayCommand<object> 
+#endif
+                    (
                     ExecuteExportImageCommand,
                     CanExecuteExportImageCommand));
             }
@@ -716,16 +887,34 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
 
         #region SaveAsXMLCommand
 
-        private RelayCommand<object> _saveAsXMLCommand;
+        private
+#if PRISM
+                DelegateCommand<object>
+#else
+                RelayCommand<object> 
+#endif
+            _saveAsXMLCommand;
 
         /// <summary>
         /// Gets the SaveAsXMLCommand.
         /// </summary>
-        public RelayCommand<object> SaveAsXMLCommand
+        public
+#if PRISM
+                DelegateCommand<object>
+#else
+                RelayCommand<object> 
+#endif
+            SaveAsXMLCommand
         {
             get
             {
-                return _saveAsXMLCommand ?? (_saveAsXMLCommand = new RelayCommand<object>(
+                return _saveAsXMLCommand ?? (_saveAsXMLCommand = new
+#if PRISM
+                DelegateCommand<object>
+#else
+                RelayCommand<object> 
+#endif
+                    (
                     ExecuteSaveAsXMLCommand,
                     CanExecuteSaveAsXMLCommand));
             }
@@ -755,14 +944,14 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
 
                 if (map == null) throw new NullReferenceException("LayoutRelationshipMap is Null");
 
-       
+
                 XmlSerializer serializer = new XmlSerializer(typeof(RelationshipMap));
 
                 //ファイルを作る
                 FileStream fs = new FileStream(path, FileMode.Create);
                 //書き込み
                 serializer.Serialize(fs, map);  //sclsはSampleClassのインスタンス名
-                                                   //ファイルを閉じる
+                                                //ファイルを閉じる
                 fs.Close();
 
                 // if don't set false, it will update the layoutmap by every action
@@ -777,19 +966,37 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
         }
 
         #endregion
-        
+
         #region LoadXMLCommand
 
-        private RelayCommand<object> _loadXMLCommand;
+        private
+#if PRISM
+                DelegateCommand<object>
+#else
+                RelayCommand<object> 
+#endif
+            _loadXMLCommand;
 
         /// <summary>
         /// Gets the LoadXMLCommand.
         /// </summary>
-        public RelayCommand<object> LoadXMLCommand
+        public
+#if PRISM
+                DelegateCommand<object>
+#else
+                RelayCommand<object> 
+#endif
+            LoadXMLCommand
         {
             get
             {
-                return _loadXMLCommand ?? (_loadXMLCommand = new RelayCommand<object>(
+                return _loadXMLCommand ?? (_loadXMLCommand = new
+#if PRISM
+                DelegateCommand<object>
+#else
+                RelayCommand<object> 
+#endif
+                    (
                     ExecuteLoadXMLCommand,
                     CanExecuteLoadXMLCommand));
             }
@@ -890,16 +1097,34 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
         #endregion
 
         #region ClearCommand
-        private RelayCommand<object> _clearCommand;
+        private
+#if PRISM
+                DelegateCommand<object>
+#else
+                RelayCommand<object> 
+#endif
+            _clearCommand;
 
         /// <summary>
         /// Gets the ClearCommand.
         /// </summary>
-        public RelayCommand<object> ClearCommand
+        public
+#if PRISM
+                DelegateCommand<object>
+#else
+                RelayCommand<object> 
+#endif
+            ClearCommand
         {
             get
             {
-                return _clearCommand ?? (_clearCommand = new RelayCommand<object>(
+                return _clearCommand ?? (_clearCommand = new
+#if PRISM
+                DelegateCommand<object>
+#else
+                RelayCommand<object> 
+#endif
+                    (
                     ExecuteClearCommand,
                     CanExecuteClearCommand));
             }
@@ -924,16 +1149,36 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
 
         #region UndoCommand
 
-        private RelayCommand<object> _undoCommand;
+        private
+#if PRISM
+                DelegateCommand<object>
+#else
+                RelayCommand<object> 
+#endif
+
+            _undoCommand;
 
         /// <summary>
         /// Gets the UndoCommand.
         /// </summary>
-        public RelayCommand<object> UndoCommand
+        public
+#if PRISM
+                DelegateCommand<object>
+#else
+                RelayCommand<object> 
+#endif
+
+            UndoCommand
         {
             get
             {
-                return _undoCommand ?? (_undoCommand = new RelayCommand<object>(
+                return _undoCommand ?? (_undoCommand = new
+#if PRISM
+                DelegateCommand<object>
+#else
+                RelayCommand<object> 
+#endif
+                    (
                     ExecuteUndoCommand,
                     CanExecuteUndoCommand));
             }
@@ -957,16 +1202,36 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
 
         #region RedoCommand
 
-        private RelayCommand<object> _redoCommand;
+        private
+#if PRISM
+                DelegateCommand<object>
+#else
+                RelayCommand<object> 
+#endif
+             _redoCommand;
 
         /// <summary>
         /// Gets the RedoCommand.
         /// </summary>
-        public RelayCommand<object> RedoCommand
+        public
+#if PRISM
+                DelegateCommand<object>
+#else
+                RelayCommand<object> 
+#endif
+
+            RedoCommand
         {
             get
             {
-                return _redoCommand ?? (_redoCommand = new RelayCommand<object>(
+                return _redoCommand ?? (_redoCommand = new
+#if PRISM
+                DelegateCommand<object>
+#else
+                RelayCommand<object> 
+#endif
+
+                    (
                     ExecuteRedoCommand,
                     CanExecuteRedoCommand));
             }

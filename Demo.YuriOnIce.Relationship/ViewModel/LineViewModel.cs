@@ -4,11 +4,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DragAndDropMVVM.ViewModel;
+#if PRISM
+using Microsoft.Practices.Prism.Mvvm;
+#else
 using GalaSoft.MvvmLight;
+#endif
 
 namespace Demo.YuriOnIce.Relationship.ViewModel
 {
-    public class LineViewModel : ViewModelBase, IConnectionLineViewModel
+    public class LineViewModel :
+#if PRISM
+        BindableBase,
+#else
+        ViewModelBase,
+#endif
+        IConnectionLineViewModel
     {
         #region IConnectionLineViewModel
         public bool IsSelected
@@ -72,11 +82,11 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
             get;
             set;
         }
-        #endregion
+#endregion
 
-        #region Property Changes
+#region Property Changes
 
-        #region Comment
+#region Comment
         /// <summary>
         /// The <see cref="Comment" /> property's name.
         /// </summary>
@@ -103,15 +113,18 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
                     return;
                 }
 
+#if PRISM
+                this.SetProperty(ref _comment, value);
+#else
                 var oldValue = _comment;
                 _comment = value;
 
                 IsCompleted = !string.IsNullOrWhiteSpace(_comment);
-
                 RaisePropertyChanged(CommentPropertyName, oldValue, value, true);
+#endif
             }
         }
-        #endregion
+#endregion
 
         #region IsCompleted
         /// <summary>
@@ -139,14 +152,17 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
                 {
                     return;
                 }
-
+#if PRISM
+                this.SetProperty(ref _isCompleted, value);
+#else
                 var oldValue = _isCompleted;
                 _isCompleted = value;
                 RaisePropertyChanged(IsCompletedPropertyName, oldValue, value, true);
+#endif
             }
         }
-        #endregion
+#endregion
 
-        #endregion
+#endregion
     }
 }

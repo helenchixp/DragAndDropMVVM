@@ -5,7 +5,6 @@
     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
     xmlns:b="clr-namespace:DragAndDropMVVM.Behavior;assembly=DragAndDropMVVM"
     xmlns:ctrl="clr-namespace:Demo.YuriOnIce.Relationship.Controls"
-    xmlns:ext="clr-namespace:DragAndDropMVVM.Extensions;assembly=DragAndDropMVVM"
     >
 
 

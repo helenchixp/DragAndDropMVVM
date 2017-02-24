@@ -23,6 +23,14 @@ namespace Demo.YuriOnIce.Relationship.MvvmLight
         public MainWindow()
         {
             InitializeComponent();
+
+#if PRISM
+            this.Title = "It is used Prism.";
+            this.DataContext = new ViewModel.MainViewModel();
+#else
+            this.Title = "It is used MVVMLight.";
+            this.DataContext = (App.Current.Resources["Locator"] as ViewModel.ViewModelLocator)?.Main;
+#endif
         }
     }
 }
