@@ -236,7 +236,7 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
         /// </summary>
         public const string LayoutRelationshipMapPropertyName = "LayoutRelationshipMap";
 
-        private RelationshipMap _layoutRelationshipMap = new RelationshipMap();
+        private RelationshipMap _layoutRelationshipMap = null;
 
         /// <summary>
         /// Sets and gets the LayoutRelationshipMap property.
@@ -438,7 +438,7 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
                 {
                     (parameter as DiagramViewModel).Name = (DraggedDataContext as DiagramModel).Name;
                     (parameter as DiagramViewModel).Detail = (DraggedDataContext as DiagramModel).Detail;
-                    (parameter as DiagramViewModel).ImagePath = (DraggedDataContext as DiagramModel).ImagePath;
+                  //  (parameter as DiagramViewModel).ImagePath = (DraggedDataContext as DiagramModel).ImagePath;
                     (parameter as DiagramViewModel).Index = (DraggedDataContext as DiagramModel).Index;
 
                 }
@@ -1138,6 +1138,7 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
             var canvas = (parameter as System.Windows.Controls.Canvas);
             canvas.Children.Clear();
             this.Characters.Clear();
+            LayoutRelationshipMap = null;
 
         }
 

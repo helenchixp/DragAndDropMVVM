@@ -72,24 +72,57 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
         {
             get
             {
+                if (Index == 1)
+                {
+#if PRISM
+                    _imagePath = "/Demo.YuriOnIce.Relationship.Prism;component/ImagesResource/Yuri.png";
+#else
+                    _imagePath = "/Demo.YuriOnIce.Relationship.MvvmLight;component/ImagesResource/Yuri.png";
+#endif
+                }
+                else if (Index == 2)
+                {
+#if PRISM
+                    _imagePath = "/Demo.YuriOnIce.Relationship.Prism;component/ImagesResource/Victory.png";
+#else
+                    _imagePath = "/Demo.YuriOnIce.Relationship.MvvmLight;component/ImagesResource/Victory.png";
+#endif
+                }
+                else if (Index == 3)
+                {
+#if PRISM
+                    _imagePath = "/Demo.YuriOnIce.Relationship.Prism;component/ImagesResource/Yurio.png";
+#else
+                    _imagePath = "/Demo.YuriOnIce.Relationship.MvvmLight;component/ImagesResource/Yurio.png";
+#endif
+                }
+                else if (Index == 4)
+                {
+#if PRISM
+                    _imagePath = "/Demo.YuriOnIce.Relationship.Prism;component/ImagesResource/Maccachin.png";
+#else
+                    _imagePath = "/Demo.YuriOnIce.Relationship.MvvmLight;component/ImagesResource/Maccachin.png";
+#endif
+                }
+
                 return _imagePath;
             }
 
-            set
-            {
-                if (_imagePath == value)
-                {
-                    return;
-                }
-#if PRISM
-                this.SetProperty(ref _imagePath, value);
-#else
+//            set
+//            {
+//                if (_imagePath == value)
+//                {
+//                    return;
+//                }
+//#if PRISM
+//                this.SetProperty(ref _imagePath, value);
+//#else
 
-                var oldValue = _imagePath;
-                _imagePath = value;
-                RaisePropertyChanged(ImagePathPropertyName, oldValue, value, true);
-#endif
-            }
+//                var oldValue = _imagePath;
+//                _imagePath = value;
+//                RaisePropertyChanged(ImagePathPropertyName, oldValue, value, true);
+//#endif
+//            }
         }
 
 

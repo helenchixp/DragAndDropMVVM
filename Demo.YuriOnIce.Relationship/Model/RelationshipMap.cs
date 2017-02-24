@@ -98,19 +98,19 @@ namespace Demo.YuriOnIce.Relationship.Model
                     _detail = value;
                 }
             }
-            private string _imagePath = string.Empty;
-            [XmlAttribute]
-            public string ImagePath
-            {
-                get
-                {
-                    return string.IsNullOrWhiteSpace(_imagePath) ? (_name = _dataContext?.ImagePath) : _imagePath;
-                }
-                set
-                {
-                    _imagePath = value;
-                }
-            }
+            //private string _imagePath = string.Empty;
+            //[XmlAttribute]
+            //public string ImagePath
+            //{
+            //    get
+            //    {
+            //        return string.IsNullOrWhiteSpace(_imagePath) ? (_name = _dataContext?.ImagePath) : _imagePath;
+            //    }
+            //    set
+            //    {
+            //        _imagePath = value;
+            //    }
+            //}
             [XmlAttribute]
             public int Index
             {
@@ -224,7 +224,7 @@ namespace Demo.YuriOnIce.Relationship.Model
                             Index = Index,
                             Name = Name,
                             Detail = Detail,
-                            ImagePath = ImagePath,
+                            //ImagePath = ImagePath,
                         };
 
 
