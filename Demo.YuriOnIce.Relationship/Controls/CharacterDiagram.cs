@@ -107,7 +107,6 @@ namespace Demo.YuriOnIce.Relationship.Controls
 
         protected override void OnDrop(DragEventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine($"OnDrop : {this.CenterPosition}  ____ base:{base.CenterPosition}");
 
             _isEnd = true;
 

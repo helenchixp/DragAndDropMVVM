@@ -48,44 +48,28 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
 
             PalletItems.Add(new DiagramModel()
             {
-#if PRISM
-                ImagePath = "/Demo.YuriOnIce.Relationship.Prism;component/ImagesResource/Yuri.png",
-#else
-                ImagePath = "/Demo.YuriOnIce.Relationship.MvvmLight;component/ImagesResource/Yuri.png",
-#endif
+                ImagePath = "/Demo.YuriOnIce.Relationship;component/ImagesResource/Yuri.png",
                 Name = "Yuri",
                 Detail = "He has a glass heart.",
                 Index = 1,
             });
             PalletItems.Add(new DiagramModel()
             {
-#if PRISM
-                ImagePath = "/Demo.YuriOnIce.Relationship.Prism;component/ImagesResource/Victory.png",
-#else
-                ImagePath = "/Demo.YuriOnIce.Relationship.MvvmLight;component/ImagesResource/Victory.png",
-#endif
+                ImagePath = "/Demo.YuriOnIce.Relationship;component/ImagesResource/Victory.png",
                 Name = "Victory",
                 Detail = "He is Legend!!!",
                 Index = 2,
             });
             PalletItems.Add(new DiagramModel()
             {
-#if PRISM
-                ImagePath = "/Demo.YuriOnIce.Relationship.Prism;component/ImagesResource/Yurio.png",
-#else
-                ImagePath = "/Demo.YuriOnIce.Relationship.MvvmLight;component/ImagesResource/Yurio.png",
-#endif
+                ImagePath = "/Demo.YuriOnIce.Relationship;component/ImagesResource/Yurio.png",
                 Name = "Yurio",
                 Detail = "He is Tigger(Cat?).",
                 Index = 3,
             });
             PalletItems.Add(new DiagramModel()
             {
-#if PRISM
-                ImagePath = "/Demo.YuriOnIce.Relationship.Prism;component/ImagesResource/Maccachin.png",
-#else
-                ImagePath = "/Demo.YuriOnIce.Relationship.MvvmLight;component/ImagesResource/Maccachin.png",
-#endif
+                ImagePath = "/Demo.YuriOnIce.Relationship;component/ImagesResource/Maccachin.png",
                 Name = "Maccachin",
                 Detail = "Maccachin is dog.",
                 Index = 4,

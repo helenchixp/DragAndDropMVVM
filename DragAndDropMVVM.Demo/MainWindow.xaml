@@ -7,13 +7,11 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:b="clr-namespace:DragAndDropMVVM.Behavior;assembly=DragAndDropMVVM"
         xmlns:ctrl="clr-namespace:DragAndDropMVVM.Demo.Controls"
-        xmlns:conv="clr-namespace:DragAndDropMVVM.Converter;assembly=DragAndDropMVVM"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         DataContext="{Binding Source={StaticResource Locator}, Path=Main}"
         mc:Ignorable="d"
         Title="DragAndDropMVVM.Demo" Height="350" Width="525">
     <Window.Resources>
-        <conv:MultiCommandParameterConverter x:Key="mcpConverter" />
 
 
         <DataTemplate x:Key="YuriPalletTemplate">

@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using DragAndDropMVVM.Demo.Model;
 using DragAndDropMVVM.ViewModel;
-using DragAndDropMVVM.Extensions;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using System.Xml.Serialization;
@@ -360,10 +359,10 @@ namespace DragAndDropMVVM.Demo.ViewModel
 
         private void ExecuteExportImageCommand(object parameter)
         {
-            if(parameter is System.Windows.Controls.Canvas)
-            {
-                (parameter as System.Windows.Controls.Canvas).ExportImage();
-            }
+            //if(parameter is System.Windows.Controls.Canvas)
+            //{
+            //    (parameter as System.Windows.Controls.Canvas).ExportImage();
+            //}
         }
 
         private bool CanExecuteExportImageCommand(object parameter)
