@@ -72,9 +72,8 @@ namespace DragAndDropMVVM.Behavior
 
                         double x1, y1, x2, y2 = 0.0;
 
-                        System.Diagnostics.Debug.WriteLine($"nameof(AssociatedObject_PreviewMouseMove)");
 
-                        if (origindiagram.ConnectorPositionType != ConnectorPositionType.Custom)
+                        if (origindiagram!=null && !ConnectorPositionType.Custom.Equals(origindiagram.ConnectorPositionType))
                         {
                             Point orpos = e.GetPosition(terminaldiagram) - e.GetPosition(origindiagram) + origindiagram.CenterPosition;
                             x1 = orpos.X;
@@ -86,7 +85,7 @@ namespace DragAndDropMVVM.Behavior
                             y1 = adn.GetLineStartEndPosition().Item2;
                         }
 
-                        if (terminaldiagram.ConnectorPositionType != ConnectorPositionType.Custom)
+                        if (terminaldiagram != null && !ConnectorPositionType.Custom.Equals(terminaldiagram.ConnectorPositionType))
                         {
                             x2 = terminaldiagram.CenterPosition.X;
                             y2 = terminaldiagram.CenterPosition.Y;

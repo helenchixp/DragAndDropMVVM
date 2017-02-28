@@ -40,7 +40,7 @@ namespace DragAndDropMVVM.Behavior
         #region Event Handler
         private void AssociatedObject_QueryContinueDrag(object sender, QueryContinueDragEventArgs e)
         {
-            var element = GetSenderDiagram(sender);
+            var element = GetSenderDiagram(sender) ?? sender as UIElement;
             if (element == null) return;
 
             DrawLineAdorner adorner = GetDraggingLineAdorner(element);
@@ -53,16 +53,16 @@ namespace DragAndDropMVVM.Behavior
             if (e.LeftButton == MouseButtonState.Released) return;
 
             //use the connection object base on ConnectionDiagramBase
-            var element = GetSenderDiagram(sender);
+            var element = GetSenderDiagram(sender) ?? sender as UIElement;
             if (element == null) return;
 
             Point point = e.GetPosition(element as UIElement);
 
 
-            Point startPoint = element.CenterPosition;
+            Point startPoint = (element as ConnectionDiagramBase)?.CenterPosition ?? new Point(0,0);
 
             //change the draw line center position
-            int centerradius = element.CenterPositionRadius;
+            int centerradius = (element as ConnectionDiagramBase)?.CenterPositionRadius ?? 0;
             if (!WPFUtility.IsCenterDragging(startPoint, point, centerradius)) return;
 
             if (!WPFUtility.IsDragging(startPoint, point)) return;
@@ -102,15 +102,15 @@ namespace DragAndDropMVVM.Behavior
         private void AssociatedObject_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
 
-            var element = GetSenderDiagram(sender);
-            if (element == null) return;
+            //var element = GetSenderDiagram(sender);
+            //if (element == null) return;
 
-            element.SetValue(ConnectionDiagramBase.IsSelectedProperty, false);
+            //element.SetValue(ConnectionDiagramBase.IsSelectedProperty, false);
 
-            if(element.DataContext is IConnectionDiagramViewModel)
-            {
-                (element.DataContext as IConnectionDiagramViewModel).IsSelected = false;
-            }
+            //if(element.DataContext is IConnectionDiagramViewModel)
+            //{
+            //    (element.DataContext as IConnectionDiagramViewModel).IsSelected = false;
+            //}
         }
 
         private void AssociatedObject_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -119,15 +119,10 @@ namespace DragAndDropMVVM.Behavior
             if (e.LeftButton != MouseButtonState.Pressed) return;
 
             var element = GetSenderDiagram(sender);
-            if (element == null) return;
+            //if (element == null) return;
+            if (element != null)
+                element.Focus();
 
-            element.Focus();
-            element.SetValue(ConnectionDiagramBase.IsSelectedProperty, true);
-
-            if (element.DataContext is IConnectionDiagramViewModel)
-            {
-                (element.DataContext as IConnectionDiagramViewModel).IsSelected = true;
-            }
         }
         #endregion
 

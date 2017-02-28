@@ -103,7 +103,7 @@ namespace DragAndDropMVVM.Behavior
             GeneralTransformGroup result = new GeneralTransformGroup();
             result.Children.Add(base.GetDesiredTransform(transform));
             result.Children.Add(new TranslateTransform(Position.X, Position.Y));
-            result.Children.Add(WPFUtility.FindVisualParent<System.Windows.Controls.Canvas>(this.AdornedElement).GetValue(LayoutTransformProperty) as GeneralTransform);
+            //result.Children.Add(WPFUtility.FindVisualParent<System.Windows.Controls.Canvas>(this.AdornedElement).GetValue(LayoutTransformProperty) as GeneralTransform);
 
             return result;
         }
