@@ -9,6 +9,7 @@ using System.IO;
 using System.Xml;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Reflection;
+using DragAndDropMVVM.Controls;
 
 namespace DragAndDropMVVM
 {
@@ -308,5 +309,60 @@ namespace DragAndDropMVVM
         }
         #endregion
 
+
+        #region GetCenterPosition
+        public static Point GetCenterPosition(FrameworkElement element, FrameworkElement relative = null, ConnectorPositionType position = ConnectorPositionType.Center)
+        {
+
+            Vector retpoint = new Vector(0, 0);
+
+            double elewidth = element.ActualWidth;
+            double eleheight = element.ActualHeight;
+
+            if (element is ConnectionDiagramBase)
+            {
+                retpoint = (Vector)(element as ConnectionDiagramBase).CenterPosition;
+            }
+            else
+            {
+                switch (position)
+                {
+                    case ConnectorPositionType.Center:
+                        retpoint = new Vector(elewidth / 2, eleheight / 2);
+                        break;
+                    case ConnectorPositionType.Top:
+                        retpoint = new Vector(elewidth / 2, 0);
+                        break;
+                    case ConnectorPositionType.TopLeft:
+                        retpoint = new Vector(0, 0);
+                        break;
+                    case ConnectorPositionType.TopRight:
+                        retpoint = new Vector(elewidth, 0);
+                        break;
+
+                    case ConnectorPositionType.Left:
+                        retpoint = new Vector(0, eleheight / 2);
+                        break;
+                    case ConnectorPositionType.Bottom:
+                        retpoint = new Vector(elewidth / 2, eleheight);
+                        break;
+                    case ConnectorPositionType.BottomLeft:
+                        retpoint = new Vector(0, eleheight);
+                        break;
+                    case ConnectorPositionType.BottomRight:
+                        retpoint = new Vector(elewidth, eleheight);
+                        break;
+                    case ConnectorPositionType.Right:
+                        retpoint = new Vector(elewidth, eleheight / 2);
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+            return (Point)(element.PointToScreen(new Point(0, 0)) + retpoint - (relative?.PointToScreen(new Point(0, 0)) ?? new Point(0,0)));
+
+        }
+        #endregion
     }
 }

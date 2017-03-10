@@ -47,7 +47,7 @@ namespace DragAndDropMVVM.Behavior
                 //if the data type can be dropped 
                 if (e.Data.GetDataPresent(_dataType))
                 {
-                    UIElement element = sender as FrameworkElement;
+                    FrameworkElement element = sender as FrameworkElement;
 
                     ICommand dropcommand = GetDropLineCommand(element);
 
@@ -62,38 +62,42 @@ namespace DragAndDropMVVM.Behavior
                         Point adnPoint = adn.Position;
 
                         Canvas droppedcanvas = GetDroppedLineCanvas(element);
-                        ConnectionDiagramBase origindiagram = e.Data.GetData(typeof(ConnectionDiagramBase)) as ConnectionDiagramBase;
+                        var originelement = (e.Data.GetData(typeof(ConnectionDiagramBase)) as FrameworkElement);
+
+                        //the object for ConnectionDiagram
+                        ConnectionDiagramBase origindiagram = originelement as ConnectionDiagramBase;
                         ConnectionDiagramBase terminaldiagram = element as ConnectionDiagramBase;
 
-                        if(droppedcanvas.DataContext is IDragged)
+                        if (droppedcanvas.DataContext is IDragged)
                         {
-                            (droppedcanvas.DataContext as IDragged).DraggedDataContext = new Tuple<object, object>(origindiagram.DataContext, terminaldiagram.DataContext);
+                            (droppedcanvas.DataContext as IDragged).DraggedDataContext =
+                                new Tuple<object, object>((originelement as ConnectionDiagramBase)?.DataContext, (element as ConnectionDiagramBase)?.DataContext);
                         }
 
                         double x1, y1, x2, y2 = 0.0;
 
-
-                        if (origindiagram!=null && !ConnectorPositionType.Custom.Equals(origindiagram.ConnectorPositionType))
+                        if (ConnectorPositionType.Custom.Equals(origindiagram?.ConnectorPositionType))
                         {
-                            Point orpos = e.GetPosition(terminaldiagram) - e.GetPosition(origindiagram) + origindiagram.CenterPosition;
-                            x1 = orpos.X;
-                            y1 = orpos.Y;
-                        }
-                        else
-                        {
+                            //the Ghost line position
                             x1 = adn.GetLineStartEndPosition().Item1;
                             y1 = adn.GetLineStartEndPosition().Item2;
                         }
-
-                        if (terminaldiagram != null && !ConnectorPositionType.Custom.Equals(terminaldiagram.ConnectorPositionType))
+                        else
                         {
-                            x2 = terminaldiagram.CenterPosition.X;
-                            y2 = terminaldiagram.CenterPosition.Y;
+                            x1 = WPFUtility.GetCenterPosition(originelement, droppedcanvas).X;
+                            y1 = WPFUtility.GetCenterPosition(originelement, droppedcanvas).Y;
+                        }
+
+                        if (ConnectorPositionType.Custom.Equals(terminaldiagram?.ConnectorPositionType))
+                        {
+                            //the Ghost line position
+                            x2 = adn.GetLineStartEndPosition().Item3;
+                            y2 = adn.GetLineStartEndPosition().Item4;
                         }
                         else
                         {
-                            x2 = adn.GetLineStartEndPosition().Item3;
-                            y2 = adn.GetLineStartEndPosition().Item4;
+                            x2 = WPFUtility.GetCenterPosition(element, droppedcanvas).X;
+                            y2 = WPFUtility.GetCenterPosition(element, droppedcanvas).Y;
                         }
 
                         //the line type of custom
@@ -116,7 +120,7 @@ namespace DragAndDropMVVM.Behavior
                                 (conline as ConnectionLineBase).OriginDiagram = origindiagram;
                                 (conline as ConnectionLineBase).TerminalDiagram = terminaldiagram;
 
-                                //if inherb
+                                //if inherit from ILinePosition
                                 if (conline is ILinePosition)
                                 {
                                     (conline as ILinePosition).X1 = x1;
@@ -128,11 +132,7 @@ namespace DragAndDropMVVM.Behavior
                         }
                         else
                         {
-                            //****************************************
-                            //TODO:The Line Position is need to Calcute
-                            //****************************************
-
-
+                            //default line for connect is straight line
                             conline = new DrawLineThump()
                             {
                                 X1 = x1,
@@ -144,15 +144,13 @@ namespace DragAndDropMVVM.Behavior
                             };
                         }
 
-                        //**::::::::::::::::::::::::::::::::::::::::::
-                        var linevm = (conline as ConnectionLineBase)?.DataContext;
+                        //set the parameter
+                        var linevm = (conline as ConnectionLineBase)?.DataContext ?? parameter;
 
                         if (dropcommand.CanExecute(linevm))
                         {
-
-                            Canvas.SetTop(conline, (double)element.GetValue(Canvas.TopProperty));
-                            Canvas.SetLeft(conline, (double)element.GetValue(Canvas.LeftProperty));
-
+                            Canvas.SetTop(conline, 0);
+                            Canvas.SetLeft(conline, 0);
 
                             //add the relation of the diagram
                             if (origindiagram != null)
@@ -168,16 +166,7 @@ namespace DragAndDropMVVM.Behavior
 
                             (conline as ConnectionLineBase).LineUUID = $"{conline.GetType().Name}_{Guid.NewGuid().ToString()}";
 
-
-
-                            if (linevm == null)
-                            {
-                                dropcommand.Execute(parameter);
-                            }
-                            else
-                            {
-                                dropcommand.Execute(linevm);
-                            }
+                            dropcommand.Execute(linevm);
 
                         }
 

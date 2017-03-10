@@ -1,0 +1,42 @@
+﻿<Window x:Class="Demo.Mr.Osomatsu.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Demo.Mr.Osomatsu"
+        xmlns:vm="clr-namespace:Demo.Mr.Osomatsu.ViewModel;assembly=Demo.Mr.Osomatsu.ViewModel"
+        mc:Ignorable="d"
+        DataContext="{Binding Source={StaticResource Locator}, Path=Main}"
+        Title="MainWindow" Height="350" Width="525">
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type vm:GroupViewModel}">
+            <local:Group />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:ListViewModel}">
+            <local:List />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:TreeViewModel}">
+            <local:Tree />
+        </DataTemplate>
+        
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="3" />
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal">
+            <Button Content="List" Command="{Binding ChangeCommand}" CommandParameter="{Binding Source={StaticResource Locator}, Path=List}"/>
+            <Button Content="Group" Command="{Binding ChangeCommand}" CommandParameter="{Binding Source={StaticResource Locator}, Path=Group}"/>
+            <Button Content="Tree" Command="{Binding ChangeCommand}" CommandParameter="{Binding Source={StaticResource Locator}, Path=Tree}"/>
+        </StackPanel>
+
+        <ContentControl Content="{Binding CurrentContent}" Grid.Row="1"/>
+    </Grid>
+</Window>

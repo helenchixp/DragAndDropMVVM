@@ -1,0 +1,49 @@
+﻿<UserControl x:Class="Demo.Mr.Osomatsu.List"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:b="clr-namespace:DragAndDropMVVM.Behavior;assembly=DragAndDropMVVM"
+             xmlns:local="clr-namespace:Demo.Mr.Osomatsu"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+
+        <DataTemplate x:Key="BeforeItemTemplate">
+            <WrapPanel Orientation="Horizontal"
+                       b:DrawLineDragBehavior.DragLineCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DragCommand}"
+                       b:DrawLineDragBehavior.DragLineCommandParameter="{Binding No}"
+                       b:DrawLineDropBehavior.DroppedLineCanvas="{Binding ElementName=LineCanvas}">
+                <i:Interaction.Behaviors>
+                    <b:DrawLineDragBehavior/>
+                </i:Interaction.Behaviors>
+                <Image Source="{Binding ImagePath}" Height="40" Width="40" HorizontalAlignment="Center"  Opacity="0.1"/>
+                <TextBlock Text="{Binding Name}" HorizontalAlignment="Center"/>
+            </WrapPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="AfterListTemplate">
+            <WrapPanel Orientation="Horizontal"
+                       b:DrawLineDropBehavior.DropLineCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DropCommand}"
+                       b:DrawLineDropBehavior.DropLineCommandParameter="{Binding No}"
+                       b:DrawLineDropBehavior.DroppedLineCanvas="{Binding ElementName=LineCanvas}">
+                <i:Interaction.Behaviors>
+                    <b:DrawLineDropBehavior/>
+                </i:Interaction.Behaviors>
+                <TextBlock Text="{Binding Name}" HorizontalAlignment="Center"/>
+                <Image Source="{Binding ImagePath}" Height="40" Width="40" HorizontalAlignment="Center" Opacity="0.1"/>
+            </WrapPanel>
+        </DataTemplate>
+
+    </UserControl.Resources>
+    
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="5*"/>
+        </Grid.ColumnDefinitions>
+        <ListView ItemsSource="{Binding BeforeItems}" ItemTemplate="{StaticResource BeforeItemTemplate}" />
+        <Canvas x:Name="LineCanvas" Panel.ZIndex="1" Grid.ColumnSpan="2"/>
+        <ListView Grid.Column="1" ItemsSource="{Binding AfterItems}" ItemTemplate="{StaticResource AfterListTemplate}" />
+    </Grid>
+</UserControl>

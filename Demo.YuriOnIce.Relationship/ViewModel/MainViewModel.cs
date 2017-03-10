@@ -586,7 +586,7 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
 
                 linevm.OriginDiagramViewModel.DepartureLinesViewModel.Add(linevm);
                 linevm.TerminalDiagramViewModel.ArrivalLinesViewModel.Add(linevm);
-                (linevm as LineViewModel).Comment = $"testtttt ";
+                (linevm as LineViewModel).Comment = $"{(linevm.OriginDiagramViewModel as DiagramViewModel).Name} And {(linevm.TerminalDiagramViewModel as DiagramViewModel).Name}";
 
             });
 

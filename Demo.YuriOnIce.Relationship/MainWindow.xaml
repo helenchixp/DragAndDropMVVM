@@ -18,7 +18,7 @@
                 <i:Interaction.Behaviors>
                     <b:DiagramElementDragBehavior/>
                 </i:Interaction.Behaviors>
-                <Image Source="{Binding ImagePath}" Height="50" Width="50" HorizontalAlignment="Center"/>
+                <Image Source="{Binding ImagePath}" Height="50" Width="50" HorizontalAlignment="Center" Opacity="0.1"/>
                 <TextBlock Text="{Binding Name}" HorizontalAlignment="Center"/>
             </WrapPanel>
         </DataTemplate>

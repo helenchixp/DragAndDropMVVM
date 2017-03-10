@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.YuriOnIce.Relationship
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.YuriOnIce.Relationship.Prism", "Demo.YuriOnIce.Relationship.Prism\Demo.YuriOnIce.Relationship.Prism.csproj", "{CAFFB5DC-61B3-4CC5-91BA-B92A2734B7DA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Mr.Osomatsu", "Demo.Mr.Osomatsu\Demo.Mr.Osomatsu.csproj", "{A0ACB6E6-5226-421E-AAE4-0BF63D1F85DF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Mr.Osomatsu.ViewModel", "Demo.Mr.Osomatsu.ViewModel\Demo.Mr.Osomatsu.ViewModel.csproj", "{93F47B1D-F01F-43C1-A4E2-C9D4D5DB7FBC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{CAFFB5DC-61B3-4CC5-91BA-B92A2734B7DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CAFFB5DC-61B3-4CC5-91BA-B92A2734B7DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CAFFB5DC-61B3-4CC5-91BA-B92A2734B7DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0ACB6E6-5226-421E-AAE4-0BF63D1F85DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0ACB6E6-5226-421E-AAE4-0BF63D1F85DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0ACB6E6-5226-421E-AAE4-0BF63D1F85DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0ACB6E6-5226-421E-AAE4-0BF63D1F85DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93F47B1D-F01F-43C1-A4E2-C9D4D5DB7FBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93F47B1D-F01F-43C1-A4E2-C9D4D5DB7FBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93F47B1D-F01F-43C1-A4E2-C9D4D5DB7FBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93F47B1D-F01F-43C1-A4E2-C9D4D5DB7FBC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

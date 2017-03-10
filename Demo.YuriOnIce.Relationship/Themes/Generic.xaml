@@ -35,7 +35,7 @@
                             <RowDefinition Height="*" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <Image Source="{Binding ImagePath}" Height="60" Width="60" ToolTip="{Binding Detail}" IsHitTestVisible="True">
+                        <Image Source="{Binding ImagePath}" Height="60" Width="60" ToolTip="{Binding Detail}" IsHitTestVisible="True"  Opacity="0.1">
                             <Image.Clip>
                                 <EllipseGeometry RadiusX="30" RadiusY="30" Center="30,30" />
                             </Image.Clip>
