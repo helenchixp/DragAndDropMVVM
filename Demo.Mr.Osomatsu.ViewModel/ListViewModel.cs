@@ -28,7 +28,7 @@ namespace Demo.Mr.Osomatsu.ViewModel
                 });
                 _afterItems.Add(new ProfileModel()
                 {
-                    Name = Const.BrotherNames[i-1],
+                    Name = Const.BrotherNames[i - 1],
                     No = i,
                     //Comment = $"It is handsome No.{i} Brother",
                     ImagePath = $"/Demo.Mr.Osomatsu;component/ImagesResource/m{i}_04.png",
@@ -101,19 +101,50 @@ namespace Demo.Mr.Osomatsu.ViewModel
             }
         }
 
+        ///////// <summary>
+        //////    /// The <see cref="ConnectionCollection" /> property's name.
+        //////    /// </summary>
+        //////public const string ConnectionCollectionPropertyName = "ConnectionCollection";
+
+        //////private ObservableCollection<Tuple<int,int>> _connectionCollection = new ObservableCollection<Tuple<int, int>>();
+
+        ///////// <summary>
+        ///////// Sets and gets the ConnectionCollection property.
+        ///////// Changes to that property's value raise the PropertyChanged event. 
+        ///////// This property's value is broadcasted by the MessengerInstance when it changes.
+        ///////// </summary>
+        //////public ObservableCollection<Tuple<int,int>> ConnectionCollection
+        //////{
+        //////    get
+        //////    {
+        //////        return _connectionCollection;
+        //////    }
+
+        //////    set
+        //////    {
+        //////        if (_connectionCollection == value)
+        //////        {
+        //////            return;
+        //////        }
+
+        //////        var oldValue = _connectionCollection;
+        //////        _connectionCollection = value;
+        //////        RaisePropertyChanged(ConnectionCollectionPropertyName, oldValue, value, true);
+        //////    }
+        //////}
         /// <summary>
-            /// The <see cref="ConnectionCollection" /> property's name.
-            /// </summary>
+        /// The <see cref="ConnectionCollection" /> property's name.
+        /// </summary>
         public const string ConnectionCollectionPropertyName = "ConnectionCollection";
 
-        private ObservableCollection<Tuple<int,int>> _connectionCollection = new ObservableCollection<Tuple<int, int>>();
+        private ObservableCollection<ListConnectionModel> _connectionCollection = new ObservableCollection<ListConnectionModel>();
 
         /// <summary>
         /// Sets and gets the ConnectionCollection property.
         /// Changes to that property's value raise the PropertyChanged event. 
         /// This property's value is broadcasted by the MessengerInstance when it changes.
         /// </summary>
-        public ObservableCollection<Tuple<int,int>> ConnectionCollection
+        public ObservableCollection<ListConnectionModel> ConnectionCollection
         {
             get
             {
@@ -132,6 +163,7 @@ namespace Demo.Mr.Osomatsu.ViewModel
                 RaisePropertyChanged(ConnectionCollectionPropertyName, oldValue, value, true);
             }
         }
+
 
         #endregion
 
@@ -158,9 +190,10 @@ namespace Demo.Mr.Osomatsu.ViewModel
 
         private bool CanExecuteDragCommand(int parameter)
         {
-            var item = _connectionCollection.FirstOrDefault(tuple => tuple.Item1 == parameter);
+            // var item = _connectionCollection.FirstOrDefault(tuple => tuple.Item1 == parameter);
 
-            return item == null;
+            // return item == null;
+            return true;
         }
 
         private RelayCommand<int> _dropCommand;
@@ -180,17 +213,77 @@ namespace Demo.Mr.Osomatsu.ViewModel
 
         private void ExecuteDropCommand(int parameter)
         {
-            ConnectionCollection.Add(new Tuple<int, int>(_draggedIndex.Value, parameter));
+            //  ConnectionCollection.Add(new Tuple<int, int>(_draggedIndex.Value, parameter));
+            //  ConnectionCollection.Add(parameter.ToString());
+
+            var line = new ListConnectionModel()
+            {
+                DepartureIndex = _draggedIndex.Value,
+                ArrivalIndex = parameter,
+            };
+            ConnectionCollection.Add(line);
             _draggedIndex = null;
         }
 
         private bool CanExecuteDropCommand(int parameter)
         {
-            if (_draggedIndex != parameter) return false;
+
+            return !ConnectionCollection.Any(item => item.DepartureIndex == _draggedIndex && item.ArrivalIndex == parameter);
 
 
+            // return true;
+        }
+
+        private RelayCommand<object> _doubleClickCommand;
+
+        /// <summary>
+        /// Gets the LineDoubleClickCommand.
+        /// </summary>
+        public RelayCommand<object> DoubleClickCommand
+        {
+            get
+            {
+                return _doubleClickCommand ?? (_doubleClickCommand = new RelayCommand<object>(
+                    ExecuteDoubleClickCommand,
+                    CanExecuteDoubleClickCommand));
+            }
+        }
+
+        private void ExecuteDoubleClickCommand(object parameter)
+        {
+
+        }
+
+        private bool CanExecuteDoubleClickCommand(object parameter)
+        {
             return true;
         }
+
+        private RelayCommand<object> _deleteCommand;
+
+        /// <summary>
+        /// Gets the DeleteCommand.
+        /// </summary>
+        public RelayCommand<object> DeleteCommand
+        {
+            get
+            {
+                return _deleteCommand ?? (_deleteCommand = new RelayCommand<object>(
+                    ExecuteDeleteCommand,
+                    CanExecuteDeleteCommand));
+            }
+        }
+
+        private void ExecuteDeleteCommand(object parameter)
+        {
+
+        }
+
+        private bool CanExecuteDeleteCommand(object parameter)
+        {
+            return true;
+        }
+
 
         #endregion
     }

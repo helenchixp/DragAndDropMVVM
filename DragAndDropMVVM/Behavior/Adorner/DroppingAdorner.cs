@@ -40,7 +40,7 @@ namespace DragAndDropMVVM.Behavior
             Pen renderPen = new Pen((SolidColorBrush)Application.Current.Resources["AdornerPanelBrush"], 1.5);
             double renderRadius = 5.0;
 
-            if (FrameworkElementAdornerType.DrawEllipse.Equals(DiagramElementDropBehavior.GetAdornerType(this.AdornedElement)))
+            if (DroppingElementAdornerType.DrawEllipse.Equals(DiagramElementDropBehavior.GetAdornerType(this.AdornedElement)))
             {
                 // Draw a circle at each corner.
                 drawingContext.DrawEllipse(renderBrush, renderPen, adornedElementRect.TopLeft, renderRadius, renderRadius);

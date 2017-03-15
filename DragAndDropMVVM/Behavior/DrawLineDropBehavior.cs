@@ -9,6 +9,7 @@ using System.Windows.Input;
 using System.Windows.Interactivity;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using DragAndDropMVVM.Assist;
 using DragAndDropMVVM.Controls;
 using DragAndDropMVVM.ViewModel;
 
@@ -68,7 +69,7 @@ namespace DragAndDropMVVM.Behavior
                         ConnectionDiagramBase origindiagram = originelement as ConnectionDiagramBase;
                         ConnectionDiagramBase terminaldiagram = element as ConnectionDiagramBase;
 
-                        if (droppedcanvas.DataContext is IDragged)
+                        if (droppedcanvas?.DataContext is IDragged)
                         {
                             (droppedcanvas.DataContext as IDragged).DraggedDataContext =
                                 new Tuple<object, object>((originelement as ConnectionDiagramBase)?.DataContext, (element as ConnectionDiagramBase)?.DataContext);
@@ -110,6 +111,7 @@ namespace DragAndDropMVVM.Behavior
 
                         dynamic conline;
 
+
                         if (!typeof(DrawLineThump).Equals(linetype))
                         {
                             conline = Activator.CreateInstance(linetype);
@@ -132,22 +134,23 @@ namespace DragAndDropMVVM.Behavior
                         }
                         else
                         {
-                            //default line for connect is straight line
-                            conline = new DrawLineThump()
+                            conline = new Line()
                             {
                                 X1 = x1,
                                 Y1 = y1,
                                 X2 = x2,
                                 Y2 = y2,
-                                OriginDiagram = origindiagram,
-                                TerminalDiagram = terminaldiagram,
                             };
+
+                            FrameworkElementAssist.SetOriginDiagram(conline, originelement);
+                            FrameworkElementAssist.SetTerminalDiagram(conline, element);
                         }
 
                         //set the parameter
-                        var linevm = (conline as ConnectionLineBase)?.DataContext ?? parameter;
+                        var dropparam = parameter ?? conline.DataContext;
+                        string lineuuid = $"{conline.GetType().Name}_{Guid.NewGuid().ToString()}";
 
-                        if (dropcommand.CanExecute(linevm))
+                        if (dropcommand.CanExecute(dropparam))
                         {
                             Canvas.SetTop(conline, 0);
                             Canvas.SetLeft(conline, 0);
@@ -162,15 +165,23 @@ namespace DragAndDropMVVM.Behavior
                                 terminaldiagram.ArrivalLines.Add(conline);
                             }
 
-                            droppedcanvas.Children.Add(conline);
+                            //TODO:FrameworkElement????
+                            if (droppedcanvas != null)
+                                droppedcanvas.Children.Add(conline);
 
-                            (conline as ConnectionLineBase).LineUUID = $"{conline.GetType().Name}_{Guid.NewGuid().ToString()}";
+                            dropcommand.Execute(dropparam);
 
-                            dropcommand.Execute(linevm);
-
+                            if (conline is ConnectionLineBase)
+                            {
+                                (conline as ConnectionLineBase).LineUUID = lineuuid;
+                            }
+                            else if (conline is Line)
+                            {
+                                FrameworkElementAssist.SetLineUUID(conline, lineuuid);
+                            }
                         }
 
-                        if (droppedcanvas.DataContext is IDragged)
+                        if (droppedcanvas?.DataContext is IDragged)
                         {
                             (droppedcanvas.DataContext as IDragged).DraggedDataContext = null;
                         }

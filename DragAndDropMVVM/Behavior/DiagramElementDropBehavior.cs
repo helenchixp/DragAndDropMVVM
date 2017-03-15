@@ -279,9 +279,9 @@ namespace DragAndDropMVVM.Behavior
         /// <param name="obj">The object for which the property value
         /// is read.</param>
         /// <returns>The value of the AdornerType property of the specified object.</returns>
-        public static FrameworkElementAdornerType GetAdornerType(DependencyObject obj)
+        public static DroppingElementAdornerType GetAdornerType(DependencyObject obj)
         {
-            return (FrameworkElementAdornerType)obj.GetValue(AdornerTypeProperty);
+            return (DroppingElementAdornerType)obj.GetValue(AdornerTypeProperty);
         }
 
         /// <summary>
@@ -291,7 +291,7 @@ namespace DragAndDropMVVM.Behavior
         /// <param name="obj">The object to which the property value
         /// is written.</param>
         /// <param name="value">Sets the AdornerType value of the specified object.</param>
-        public static void SetAdornerType(DependencyObject obj, FrameworkElementAdornerType value)
+        public static void SetAdornerType(DependencyObject obj, DroppingElementAdornerType value)
         {
             obj.SetValue(AdornerTypeProperty, value);
         }
@@ -301,9 +301,9 @@ namespace DragAndDropMVVM.Behavior
         /// </summary>
         public static readonly DependencyProperty AdornerTypeProperty = DependencyProperty.RegisterAttached(
             AdornerTypePropertyName,
-            typeof(FrameworkElementAdornerType),
+            typeof(DroppingElementAdornerType),
             typeof(DiagramElementDropBehavior),
-            new UIPropertyMetadata(FrameworkElementAdornerType.DrawEllipse));
+            new UIPropertyMetadata(DroppingElementAdornerType.DrawEllipse));
 
 
         #endregion

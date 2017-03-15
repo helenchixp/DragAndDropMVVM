@@ -14,6 +14,7 @@
 
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Practices.ServiceLocation;
 
 namespace Demo.Mr.Osomatsu.ViewModel
@@ -24,6 +25,7 @@ namespace Demo.Mr.Osomatsu.ViewModel
     /// </summary>
     public class ViewModelLocator
     {
+        private static readonly object _current = new object();
         /// <summary>
         /// Initializes a new instance of the ViewModelLocator class.
         /// </summary>
@@ -46,8 +48,11 @@ namespace Demo.Mr.Osomatsu.ViewModel
             SimpleIoc.Default.Register<TreeViewModel>();
             SimpleIoc.Default.Register<ListViewModel>();
             SimpleIoc.Default.Register<GroupViewModel>();
-        }
 
+
+            Messenger.Default.Register<object>(_current, "DeleteLine", this.DeleteLine);
+        }
+        #region ViewModel
         public MainViewModel Main
         {
             get
@@ -77,6 +82,17 @@ namespace Demo.Mr.Osomatsu.ViewModel
                 return ServiceLocator.Current.GetInstance<GroupViewModel>();
             }
         }
+        #endregion
+
+        #region Messenger Action Methods
+
+        private void DeleteLine(object line)
+        {
+
+        }
+
+        #endregion
+
         public static void Cleanup()
         {
             // TODO Clear the ViewModels

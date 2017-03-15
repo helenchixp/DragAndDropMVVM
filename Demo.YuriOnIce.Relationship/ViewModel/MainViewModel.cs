@@ -616,7 +616,7 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
 
         private bool CanExecuteDropLineCommand(object parameter)
         {
-            if (parameter == null || !(parameter is IConnectionLineViewModel)) return false;
+            //if (parameter == null || !(parameter is IConnectionLineViewModel)) return false;
 
             if (DraggedDataContext == null && !(DraggedDataContext is Tuple<object, object>)) return false;
 

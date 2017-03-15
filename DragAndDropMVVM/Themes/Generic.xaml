@@ -12,11 +12,10 @@
         <ResourceDictionary.MergedDictionaries>
             <ResourceDictionary Source="/DragAndDropMVVM;component/Styles/Colors.xaml" />
         </ResourceDictionary.MergedDictionaries>
-        
 
-        <!-- Default style and control-template for 'NodeItem'. -->
-    <Style TargetType="{x:Type local:DrawLineThump}"
-        >
+  
+    <!-- Default style and control-template for 'NodeItem'. -->
+    <Style TargetType="{x:Type local:DrawLineThump}" x:Key="DrawLineThumpBaseStyle">
         <Style.Setters>
             <Setter Property="Template">
                 <Setter.Value>
@@ -34,6 +33,16 @@
                             <Trigger Property="IsSelected" Value="True">
                                 <Setter Property="Stroke" Value="{DynamicResource IsSelectedBrush}" TargetName="PART_DrawLine"/>
                             </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Effect" TargetName="PART_DrawLine">
+                                    <Setter.Value>
+                                        <DropShadowEffect BlurRadius="3"
+                                              Direction="315"
+                                              ShadowDepth="2"
+                                              Color="{DynamicResource Gray10}" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
@@ -43,4 +52,7 @@
 
     </Style>
 
+    <Style TargetType="{x:Type local:DrawLineThump}"  BasedOn="{StaticResource DrawLineThumpBaseStyle}">
+    </Style>
+    
 </ResourceDictionary>

@@ -6,6 +6,7 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:b="clr-namespace:DragAndDropMVVM.Behavior;assembly=DragAndDropMVVM"
              xmlns:local="clr-namespace:Demo.Mr.Osomatsu"
+             xmlns:ctrl="clr-namespace:DragAndDropMVVM.Controls;assembly=DragAndDropMVVM"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -35,15 +36,83 @@
             </WrapPanel>
         </DataTemplate>
 
+        <Style TargetType="{x:Type Line}" x:Key="ConnectLineStyle">
+            <Setter Property="Stroke" Value="Red" />
+            <Setter Property="StrokeThickness" Value="4" />
+            <Setter Property="Panel.ZIndex" Value="-1" />
+            <Setter Property="Focusable" Value="True" />
+            <Setter Property="IsHitTestVisible" Value="True" />
+            <Setter Property="Tag" Value="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor},Path=DataContext}" />
+            <Setter Property="ContextMenu">
+                <Setter.Value>
+                    <ContextMenu>                        
+                        <MenuItem Header="_Detail"
+                                  Command="{Binding Path=PlacementTarget.Tag.DoubleClickCommand,RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                  CommandParameter="{Binding}"
+                                   />
+                        <MenuItem Header="_Delete"
+                                  Command="{Binding Path=PlacementTarget.Tag.DeleteCommand,RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                  CommandParameter="{Binding}"
+                                  />
+
+                    </ContextMenu>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsSame}" Value="True">
+                    <Setter Property="Stroke" Value="Blue" />
+                </DataTrigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Effect">
+                        <Setter.Value>
+                            <DropShadowEffect BlurRadius="3"
+                                              Direction="315"
+                                              ShadowDepth="2"
+                                              Color="{DynamicResource Gray10}" />
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                
+            </Style.Triggers>
+        </Style>
+
+
+        <DataTemplate x:Key="ConnectionLineTemplate">
+            <Line X1="0" X2="100" Y1="{Binding Y1}" Y2="{Binding Y2}" Style="{DynamicResource ConnectLineStyle}" >
+                <Line.InputBindings>
+                    <KeyBinding Gesture="Enter" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor},Path=DataContext.DoubleClickCommand}"/>
+                    <KeyBinding Gesture="Delete" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor},Path=DataContext.DeleteCommand}"/>
+                    <MouseBinding Gesture="LeftDoubleClick"
+                                  Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor},Path=DataContext.DoubleClickCommand}"
+                                  CommandParameter="{Binding}"/>
+                </Line.InputBindings>
+            </Line>
+        </DataTemplate>
+
     </UserControl.Resources>
     
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="5*"/>
         </Grid.ColumnDefinitions>
         <ListView ItemsSource="{Binding BeforeItems}" ItemTemplate="{StaticResource BeforeItemTemplate}" />
-        <Canvas x:Name="LineCanvas" Panel.ZIndex="1" Grid.ColumnSpan="2"/>
-        <ListView Grid.Column="1" ItemsSource="{Binding AfterItems}" ItemTemplate="{StaticResource AfterListTemplate}" />
+        <ListView Grid.Column="2" ItemsSource="{Binding AfterItems}" ItemTemplate="{StaticResource AfterListTemplate}" />
+
+        <ItemsControl Grid.Column="1" ItemsSource="{Binding ConnectionCollection}" ItemTemplate="{StaticResource ConnectionLineTemplate}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Pink" x:Name="ItemCanvas"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemContainerStyle>
+                <Style>
+                    <Setter Property="Canvas.Top" Value="0" />
+                    <Setter Property="Canvas.Left" Value="0" />
+                </Style>
+            </ItemsControl.ItemContainerStyle>
+        </ItemsControl>
+
     </Grid>
 </UserControl>

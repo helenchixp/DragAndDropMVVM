@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DragAndDropMVVM
 {
-    public enum FrameworkElementAdornerType
+    public enum DroppingElementAdornerType
     {
         DrawEllipse,
         DrawLine,

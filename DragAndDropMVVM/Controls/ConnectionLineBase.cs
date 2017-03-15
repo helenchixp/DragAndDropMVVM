@@ -19,16 +19,16 @@ namespace DragAndDropMVVM.Controls
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-
+            
             this.CommandBindings.Add(new CommandBinding(ApplicationCommands.Delete,
                         (sender, e) =>
                         {
-                            DeleteCommand.Execute(DataContext);
+                            DeleteCommand.Execute(DeleteCommandParameter);
                             DeleteLine();
                         },
                         (sender, e) =>
                         {
-                            e.CanExecute = DeleteCommand?.CanExecute(DataContext) ?? false;
+                            e.CanExecute = DeleteCommand?.CanExecute(DeleteCommandParameter) ?? false;
                         }
                         ));
         }
@@ -41,6 +41,11 @@ namespace DragAndDropMVVM.Controls
 
         protected override void OnMouseDoubleClick(MouseButtonEventArgs e)
         {
+            if(DoubleClickCommand?.CanExecute(DoubleClickCommandParameter) ?? false)
+            {
+                DoubleClickCommand.Execute(DoubleClickCommandParameter);
+            }
+
             base.OnMouseDoubleClick(e);
         }
 
@@ -55,10 +60,17 @@ namespace DragAndDropMVVM.Controls
         {
             if(e.Key == Key.Delete)
             {
-                if (DeleteCommand?.CanExecute(DataContext) ?? false)
+                if (DeleteCommand?.CanExecute(DeleteCommandParameter) ?? false)
                 {
-                    DeleteCommand.Execute(DataContext);
+                    DeleteCommand.Execute(DeleteCommandParameter);
                     DeleteLine();
+                }
+            }
+            else if(e.Key == Key.Enter)
+            {
+                if (DoubleClickCommand?.CanExecute(DoubleClickCommandParameter) ?? false)
+                {
+                    DoubleClickCommand.Execute(DoubleClickCommandParameter);
                 }
             }
 
@@ -94,10 +106,71 @@ namespace DragAndDropMVVM.Controls
 
         #endregion
 
-
         #region Dependence Properties
 
         #region DoubleClickCommand
+
+        /// <summary>
+        /// The <see cref="DoubleClickCommand" /> dependency property's name.
+        /// </summary>
+        public const string DoubleClickCommandPropertyName = "DoubleClickCommand";
+
+        /// <summary>
+        /// Gets or sets the value of the <see cref="DoubleClickCommand" />
+        /// property. This is a dependency property.
+        /// </summary>
+        public ICommand DoubleClickCommand
+        {
+            get
+            {
+                return (ICommand)GetValue(DoubleClickCommandProperty);
+            }
+            set
+            {
+                SetValue(DoubleClickCommandProperty, value);
+            }
+        }
+
+        /// <summary>
+        /// Identifies the <see cref="DoubleClickCommand" /> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty DoubleClickCommandProperty = DependencyProperty.Register(
+            DoubleClickCommandPropertyName,
+            typeof(ICommand),
+            typeof(ConnectionLineBase),
+            new UIPropertyMetadata(null));
+        #endregion
+
+        #region DoubleClickCommandParameter
+        /// <summary>
+        /// The <see cref="DoubleClickCommandParameter" /> dependency property's name.
+        /// </summary>
+        public const string DoubleClickCommandParameterPropertyName = "DoubleClickCommandParameter";
+
+        /// <summary>
+        /// Gets or sets the value of the <see cref="DoubleClickCommandParameter" />
+        /// property. This is a dependency property.
+        /// </summary>
+        public object DoubleClickCommandParameter
+        {
+            get
+            {
+                return (object)GetValue(DoubleClickCommandParameterProperty);
+            }
+            set
+            {
+                SetValue(DoubleClickCommandParameterProperty, value);
+            }
+        }
+
+        /// <summary>
+        /// Identifies the <see cref="DoubleClickCommandParameter" /> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty DoubleClickCommandParameterProperty = DependencyProperty.Register(
+            DoubleClickCommandParameterPropertyName,
+            typeof(object),
+            typeof(ConnectionLineBase),
+            new UIPropertyMetadata(null));
 
         #endregion
 
@@ -130,6 +203,40 @@ namespace DragAndDropMVVM.Controls
         public static readonly DependencyProperty DeleteCommandProperty = DependencyProperty.Register(
             DeleteCommandPropertyName,
             typeof(ICommand),
+            typeof(ConnectionLineBase),
+            new UIPropertyMetadata(null));
+
+        #endregion
+
+        #region DeleteCommandParameter
+
+        /// <summary>
+        /// The <see cref="DeleteCommandParameter" /> dependency property's name.
+        /// </summary>
+        public const string DeleteCommandParameterPropertyName = "DeleteCommandParameter";
+
+        /// <summary>
+        /// Gets or sets the value of the <see cref="DeleteCommandParameter" />
+        /// property. This is a dependency property.
+        /// </summary>
+        public object DeleteCommandParameter
+        {
+            get
+            {
+                return (object)GetValue(DeleteCommandParameterProperty);
+            }
+            set
+            {
+                SetValue(DeleteCommandParameterProperty, value);
+            }
+        }
+
+        /// <summary>
+        /// Identifies the <see cref="DeleteCommandParameter" /> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty DeleteCommandParameterProperty = DependencyProperty.Register(
+            DeleteCommandParameterPropertyName,
+            typeof(object),
             typeof(ConnectionLineBase),
             new UIPropertyMetadata(null));
 
@@ -177,7 +284,6 @@ namespace DragAndDropMVVM.Controls
                 }));
 
         #endregion
-
 
         #endregion
 

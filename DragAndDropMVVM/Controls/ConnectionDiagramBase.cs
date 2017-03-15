@@ -327,11 +327,11 @@ namespace DragAndDropMVVM.Controls
         /// Gets or sets the value of the <see cref="AdornerType" />
         /// property. This is a dependency property.
         /// </summary>
-        public FrameworkElementAdornerType AdornerType
+        public DroppingElementAdornerType AdornerType
         {
             get
             {
-                return (FrameworkElementAdornerType)GetValue(AdornerTypeProperty);
+                return (DroppingElementAdornerType)GetValue(AdornerTypeProperty);
             }
             set
             {
@@ -344,9 +344,9 @@ namespace DragAndDropMVVM.Controls
         /// </summary>
         public static readonly DependencyProperty AdornerTypeProperty = DependencyProperty.Register(
             AdornerTypePropertyName,
-            typeof(FrameworkElementAdornerType),
+            typeof(DroppingElementAdornerType),
             typeof(ConnectionDiagramBase),
-            new UIPropertyMetadata(FrameworkElementAdornerType.DrawEllipse));
+            new UIPropertyMetadata(DroppingElementAdornerType.DrawEllipse));
         #endregion
 
 

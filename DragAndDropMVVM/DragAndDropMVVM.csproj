@@ -54,6 +54,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assist\FrameworkElementAssist.cs" />
     <Compile Include="Behavior\Adorner\DrawLineAdorner.cs" />
     <Compile Include="Behavior\DrawLineDragBehavior.cs" />
     <Compile Include="Behavior\DrawLineDropBehavior.cs" />

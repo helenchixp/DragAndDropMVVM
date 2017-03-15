@@ -177,7 +177,10 @@ namespace DragAndDropMVVM.Controls
                                 (conline as ConnectionLineBase).TerminalDiagram = terminaldiagram;
                                 (conline as ConnectionLineBase).DataContext = defline.DataContext;
                                 (conline as ConnectionLineBase).LineUUID = string.IsNullOrWhiteSpace(defline.LineUUID) ? $"{conline.GetType().Name}_{Guid.NewGuid().ToString()}" : defline.LineUUID;
-                                //if inherb
+
+
+                                //TODOTODOTODO!!!!
+                                //TODO: Posistion Recaluter
                                 if (conline is ILinePosition)
                                 {
                                     (conline as ILinePosition).X1 = (double)origindiagram.GetValue(Canvas.LeftProperty) - (double)terminaldiagram.GetValue(Canvas.LeftProperty) + origindiagram.CenterPosition.X;
