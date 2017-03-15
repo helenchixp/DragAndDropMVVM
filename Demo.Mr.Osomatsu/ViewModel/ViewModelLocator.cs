@@ -12,6 +12,8 @@
   See http://www.galasoft.ch/mvvm
 */
 
+using System;
+using System.Windows;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
@@ -50,8 +52,9 @@ namespace Demo.Mr.Osomatsu.ViewModel
             SimpleIoc.Default.Register<GroupViewModel>();
 
 
-            Messenger.Default.Register<object>(_current, "DeleteLine", this.DeleteLine);
+            Messenger.Default.Register<object>(_current, "ShowDetail", this.ShowDetail);
         }
+
         #region ViewModel
         public MainViewModel Main
         {
@@ -86,9 +89,21 @@ namespace Demo.Mr.Osomatsu.ViewModel
 
         #region Messenger Action Methods
 
-        private void DeleteLine(object line)
+        private void ShowDetail(object line)
         {
-
+            if(line is Tuple<ProfileModel, ProfileModel>)
+            {
+                var before = (line as Tuple<ProfileModel, ProfileModel>).Item1;
+                var after = (line as Tuple<ProfileModel, ProfileModel>).Item2;
+                if (before.No == after.No)
+                {
+                    MessageBox.Show($"{before.Name} is No.{before.No} brother. Do you like which charactor?");
+                }
+                else
+                {
+                    MessageBox.Show($"It is different person ^_^!!!!");
+                }
+            }
         }
 
         #endregion
@@ -96,6 +111,8 @@ namespace Demo.Mr.Osomatsu.ViewModel
         public static void Cleanup()
         {
             // TODO Clear the ViewModels
+
+            Messenger.Default.Unregister<object>(_current, "ShowDetail");
         }
     }
 }

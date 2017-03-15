@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 
 namespace Demo.Mr.Osomatsu.ViewModel
 {
@@ -227,11 +228,7 @@ namespace Demo.Mr.Osomatsu.ViewModel
 
         private bool CanExecuteDropCommand(int parameter)
         {
-
             return !ConnectionCollection.Any(item => item.DepartureIndex == _draggedIndex && item.ArrivalIndex == parameter);
-
-
-            // return true;
         }
 
         private RelayCommand<object> _doubleClickCommand;
@@ -251,7 +248,15 @@ namespace Demo.Mr.Osomatsu.ViewModel
 
         private void ExecuteDoubleClickCommand(object parameter)
         {
+            var lineobj = parameter as ListConnectionModel;
+            if (lineobj == null) return;
+            var before = BeforeItems.FirstOrDefault(item => item.No == lineobj.DepartureIndex);
+            var after = AfterItems.FirstOrDefault(item => item.No == lineobj.ArrivalIndex);
 
+            if (before != null && after != null)
+            {
+                Messenger.Default.Send<object>(new Tuple<ProfileModel, ProfileModel>(before, after), "ShowDetail");
+            }
         }
 
         private bool CanExecuteDoubleClickCommand(object parameter)
@@ -276,7 +281,10 @@ namespace Demo.Mr.Osomatsu.ViewModel
 
         private void ExecuteDeleteCommand(object parameter)
         {
-
+            if(ConnectionCollection.Any(item => item.Equals(parameter)))
+            {
+                ConnectionCollection.Remove(parameter as ListConnectionModel);
+            }
         }
 
         private bool CanExecuteDeleteCommand(object parameter)
@@ -284,6 +292,39 @@ namespace Demo.Mr.Osomatsu.ViewModel
             return true;
         }
 
+
+        private RelayCommand _autoConnectCommand;
+
+        /// <summary>
+        /// Gets the AutoConnectCommand.
+        /// </summary>
+        public RelayCommand AutoConnectCommand
+        {
+            get
+            {
+                return _autoConnectCommand
+                    ?? (_autoConnectCommand = new RelayCommand(
+                    () =>
+                    {
+                        foreach(var bitem in BeforeItems)
+                        {
+
+                            if (!ConnectionCollection.Any(citem => citem.DepartureIndex == bitem.No && citem.ArrivalIndex == bitem.No))
+                            {
+                                var line = new ListConnectionModel()
+                                {
+                                    DepartureIndex = bitem.No,
+                                    ArrivalIndex = bitem.No,
+                                };
+                                ConnectionCollection.Add(line);
+                                break;
+                            }
+                        }
+
+
+                    }));
+            }
+        }
 
         #endregion
     }

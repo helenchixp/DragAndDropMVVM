@@ -13,6 +13,7 @@
 
         <DataTemplate x:Key="BeforeItemTemplate">
             <WrapPanel Orientation="Horizontal"
+                       HorizontalAlignment="Right"
                        b:DrawLineDragBehavior.DragLineCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DragCommand}"
                        b:DrawLineDragBehavior.DragLineCommandParameter="{Binding No}"
                        b:DrawLineDropBehavior.DroppedLineCanvas="{Binding ElementName=LineCanvas}">
@@ -41,6 +42,7 @@
             <Setter Property="StrokeThickness" Value="4" />
             <Setter Property="Panel.ZIndex" Value="-1" />
             <Setter Property="Focusable" Value="True" />
+            <!--<Setter Property="FocusVisualStyle" Value="{x:Null}" />-->
             <Setter Property="IsHitTestVisible" Value="True" />
             <Setter Property="Tag" Value="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor},Path=DataContext}" />
             <Setter Property="ContextMenu">
@@ -62,6 +64,10 @@
                 <DataTrigger Binding="{Binding IsSame}" Value="True">
                     <Setter Property="Stroke" Value="Blue" />
                 </DataTrigger>
+                <Trigger Property="IsFocused" Value="True">
+                    <!--<Setter Property="StrokeDashArray" Value="2 2" />-->
+                    <Setter Property="Stroke" Value="RosyBrown" />
+                </Trigger>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Effect">
                         <Setter.Value>
@@ -78,10 +84,14 @@
 
 
         <DataTemplate x:Key="ConnectionLineTemplate">
-            <Line X1="0" X2="100" Y1="{Binding Y1}" Y2="{Binding Y2}" Style="{DynamicResource ConnectLineStyle}" >
+            <Line X1="0" X2="{Binding RelativeSource={RelativeSource AncestorType=Canvas,Mode=FindAncestor}, Path=ActualWidth}" Y1="{Binding Y1}" Y2="{Binding Y2}" Style="{DynamicResource ConnectLineStyle}" >
                 <Line.InputBindings>
-                    <KeyBinding Gesture="Enter" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor},Path=DataContext.DoubleClickCommand}"/>
-                    <KeyBinding Gesture="Delete" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor},Path=DataContext.DeleteCommand}"/>
+                    <KeyBinding Gesture="Enter" 
+                                Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor},Path=DataContext.DoubleClickCommand}"
+                                CommandParameter="{Binding}"/>
+                    <KeyBinding Gesture="Delete"
+                                Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor},Path=DataContext.DeleteCommand}"
+                                CommandParameter="{Binding}"/>
                     <MouseBinding Gesture="LeftDoubleClick"
                                   Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor},Path=DataContext.DoubleClickCommand}"
                                   CommandParameter="{Binding}"/>
@@ -93,23 +103,33 @@
     
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="5*"/>
-            <ColumnDefinition Width="2*"/>
-            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="4*"/>
+            <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
+        <Button Content="Auto Connect" Panel.ZIndex="9" Grid.Column="1" Margin="-25" Height="20"
+                VerticalAlignment="Top"
+                Command="{Binding AutoConnectCommand}"/>
+
         <ListView ItemsSource="{Binding BeforeItems}" ItemTemplate="{StaticResource BeforeItemTemplate}" />
         <ListView Grid.Column="2" ItemsSource="{Binding AfterItems}" ItemTemplate="{StaticResource AfterListTemplate}" />
 
         <ItemsControl Grid.Column="1" ItemsSource="{Binding ConnectionCollection}" ItemTemplate="{StaticResource ConnectionLineTemplate}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Pink" x:Name="ItemCanvas"/>
+                    <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="AntiqueWhite" x:Name="ItemCanvas" Focusable="False" FocusManager.IsFocusScope="True">
+                        <!--<Canvas.InputBindings>
+                            <KeyBinding Gesture="Enter" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor},Path=DataContext.DoubleClickCommand}"/>
+                            <KeyBinding Gesture="Delete" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor},Path=DataContext.DeleteCommand}"/>
+                        </Canvas.InputBindings>-->
+                    </Canvas>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemContainerStyle>
                 <Style>
                     <Setter Property="Canvas.Top" Value="0" />
                     <Setter Property="Canvas.Left" Value="0" />
+                    <Setter Property="FocusManager.IsFocusScope"  Value="True" />
                 </Style>
             </ItemsControl.ItemContainerStyle>
         </ItemsControl>
