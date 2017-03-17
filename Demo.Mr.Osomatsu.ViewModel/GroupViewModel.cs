@@ -21,7 +21,7 @@ namespace Demo.Mr.Osomatsu.ViewModel
                 {
                     Name = Const.BrotherNames[i - 1],
                     No = i,
-                    //Comment = $"It is normal No.{i} Brother",
+                    Comment = "Pallet",
                     ImagePath = $"/Demo.Mr.Osomatsu;component/ImagesResource/m{i}_02.png",
                 });
              
@@ -240,9 +240,8 @@ namespace Demo.Mr.Osomatsu.ViewModel
         {
             Action<ObservableCollection<ProfileModel>, string> listAdd = (group, comment) =>
             {
-                if (!group.Contains(_draggedObject))
-                {
-                    var dragobj = _draggedObject.Clone(); ;
+             
+                    var dragobj = _draggedObject.Clone(); 
                     dragobj.Comment = comment;
                     group.Add(dragobj);
 
@@ -265,7 +264,6 @@ namespace Demo.Mr.Osomatsu.ViewModel
                         Brothers.Remove(_draggedObject);
                     }
 
-                }
                 _draggedObject = null;
             };
 
@@ -276,7 +274,7 @@ namespace Demo.Mr.Osomatsu.ViewModel
             }
             else if ("2x6".Equals(parameter))
             {
-                listAdd(Group2x6, "2x3");
+                listAdd(Group2x6, "2x6");
             }
             else if ("4x5".Equals(parameter))
             {
@@ -284,7 +282,7 @@ namespace Demo.Mr.Osomatsu.ViewModel
             }
             else
             {
-                listAdd(Brothers, parameter.ToString());
+                listAdd(Brothers, "1x2x3x4x5x6");
             }
 
             _draggedObject = null;
@@ -295,12 +293,31 @@ namespace Demo.Mr.Osomatsu.ViewModel
             if (parameter == null || _draggedObject == null)
                 return false;
 
-            var group = parameter.ToString().Split('x');
-            if (group == null) return false;
+            var groupid = parameter.ToString().Split('x');
+            if (groupid == null) return false;
 
 
 
-            return group.Any(id => id == _draggedObject.No.ToString());
+            if(! groupid.Any(id => id == _draggedObject.No.ToString()))
+                return false;
+
+            if ("1x3".Equals(parameter))
+            {
+                return !Group1x3.Any(item => item.No == _draggedObject.No);
+            }
+            else if ("2x6".Equals(parameter))
+            {
+                return !Group2x6.Any(item => item.No == _draggedObject.No);
+            }
+            else if ("4x5".Equals(parameter))
+            {
+                return !Group4x5.Any(item => item.No == _draggedObject.No);
+            }
+            else
+            {
+                return !Brothers.Any(item => item.No == _draggedObject.No);
+            }
+
         }
 
 
@@ -321,6 +338,39 @@ namespace Demo.Mr.Osomatsu.ViewModel
 
         private void ExecuteOrderChangeCommand(object parameter)
         {
+            var dropobj = parameter as ProfileModel;
+
+            if(dropobj.Comment == _draggedObject.Comment
+                && _draggedObject.Comment == "Pallet")
+            {
+                //remove the drag object and re-insert it
+                PalletList.Remove(_draggedObject);
+
+                var idx = PalletList.IndexOf(dropobj);
+
+                PalletList.Insert(idx, _draggedObject);
+            }
+            else
+            {
+                //delete the item from drag list
+                if ("1x3".Equals(_draggedObject.Comment))
+                {
+                    Group1x3.Remove(_draggedObject);
+                }
+                else if ("2x6".Equals(_draggedObject.Comment))
+                {
+                    Group2x6.Remove(_draggedObject);
+                }
+                else if ("4x5".Equals(_draggedObject.Comment))
+                {
+                    Group4x5.Remove(_draggedObject);
+                }
+                else if ("1x2x3x4x5x6".Equals(_draggedObject.Comment))
+                {
+                    Brothers.Remove(_draggedObject);
+                }
+
+            }
 
         }
 
@@ -332,6 +382,55 @@ namespace Demo.Mr.Osomatsu.ViewModel
             }
             return false;
         }
+
+        private RelayCommand<object> _dropAllCommand;
+
+        /// <summary>
+        /// Gets the DropAllCommand.
+        /// </summary>
+        public RelayCommand<object> DropAllCommand
+        {
+            get
+            {
+                return _dropAllCommand ?? (_dropAllCommand = new RelayCommand<object>(
+                    ExecuteDropAllCommand,
+                    CanExecuteDropAllCommand));
+            }
+        }
+
+        private void ExecuteDropAllCommand(object parameter)
+        {
+            var dropobj = parameter as ProfileModel;
+            if (_draggedObject.Comment != dropobj.Comment)
+            {
+                ExecuteDropCommand(parameter);
+            }
+            else
+            {
+                //remove the drag object and re-insert it
+                Brothers.Remove(_draggedObject);
+
+                var idx = Brothers.IndexOf(dropobj);
+
+                Brothers.Insert(idx, _draggedObject);
+            }
+        }
+
+        private bool CanExecuteDropAllCommand(object parameter)
+        {
+
+            if (_draggedObject.Comment != "1x2x3x4x5x6")
+            {
+                return !Brothers.Any(item => item.No == _draggedObject.No);
+            }
+            else
+            {
+                return !_draggedObject.Equals(parameter);
+            }
+
+        }
+
+
         #endregion
 
     }

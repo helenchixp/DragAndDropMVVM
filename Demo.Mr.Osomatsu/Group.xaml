@@ -24,7 +24,7 @@
                   b:DiagramElementDropBehavior.DropCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.OrderChangeCommand}"
                   b:DiagramElementDropBehavior.DropCommandParameter="{Binding}">
                 <b:DiagramElementDropBehavior.CustomAdornerContent>
-                    <Rectangle Fill="Red" RadiusX="2" Width="20" Height="11"></Rectangle>
+                    <Rectangle Fill="Red" RadiusX="2" Width="20" Height="11" VerticalAlignment="Top"></Rectangle>
                 </b:DiagramElementDropBehavior.CustomAdornerContent>
                 <i:Interaction.Behaviors>
                     <b:DiagramElementDragBehavior/>
@@ -46,6 +46,25 @@
                   b:DiagramElementDragBehavior.DragCommandParameter="{Binding}">
                 <i:Interaction.Behaviors>
                     <b:DiagramElementDragBehavior/>
+                </i:Interaction.Behaviors>
+                <Rectangle Width="40" Height="40" Stroke="{DynamicResource AccentDiagramBrush}" StrokeThickness="2">
+                    <Rectangle.Fill>
+                        <ImageBrush ImageSource="{Binding ImagePath}" Opacity="0.1"/>
+                    </Rectangle.Fill>
+                </Rectangle>
+                <TextBlock FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Right" Text="{Binding Name}" 
+                           Foreground="{DynamicResource AccentDiagramBrush}"/>
+            </WrapPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="OthersTemplate">
+            <WrapPanel b:DiagramElementDragBehavior.DragCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DragCommand}"
+                       b:DiagramElementDragBehavior.DragCommandParameter="{Binding}"
+                       b:DiagramElementDropBehavior.DropCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DropAllCommand}"
+                       b:DiagramElementDropBehavior.DropCommandParameter="{Binding}">
+                <i:Interaction.Behaviors>
+                    <b:DiagramElementDragBehavior/>
+                    <b:DiagramElementDropBehavior />
                 </i:Interaction.Behaviors>
                 <Rectangle Width="40" Height="40" Stroke="{DynamicResource AccentDiagramBrush}" StrokeThickness="2">
                     <Rectangle.Fill>
@@ -101,7 +120,7 @@
             </i:Interaction.Behaviors>
         </ListBox>
 
-        <ListBox ItemsSource="{Binding Brothers}" Grid.Row="1" Grid.Column="4" ItemTemplate="{StaticResource ListTemplate}"
+        <ListBox ItemsSource="{Binding Brothers}" Grid.Row="1" Grid.Column="4" ItemTemplate="{StaticResource OthersTemplate}"
                  b:DiagramElementDropBehavior.DropCommand="{Binding DropCommand}"
                  b:DiagramElementDropBehavior.DropCommandParameter="1x2x3x4x5x6" >
             <i:Interaction.Behaviors>
