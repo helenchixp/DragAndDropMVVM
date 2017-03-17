@@ -10,6 +10,7 @@ namespace DragAndDropMVVM
     {
         DrawEllipse,
         DrawLine,
+        Custom,
     }
 
     public enum ConnectorPositionType

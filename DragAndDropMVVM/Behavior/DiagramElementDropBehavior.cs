@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interactivity;
+using DragAndDropMVVM.Assist;
 using DragAndDropMVVM.Controls;
 using DragAndDropMVVM.ViewModel;
 
@@ -45,13 +46,7 @@ namespace DragAndDropMVVM.Behavior
             if (e.Data.GetDataPresent(typeof(DraggingAdorner)))
             {
 
-                ////drop the data
-                //IDropable target = this.AssociatedObject.DataContext as IDropable;
-                //target.Drop(source.DataContext);
 
-                ////remove the data from the source
-                //IDragable sourcevm = source.DataContext as IDragable;
-                //sourcevm.Drag(e.Data.GetData(_dataType));
                 UIElement element = sender as FrameworkElement;
 
                 ICommand dropcommand = GetDropCommand(element);
@@ -70,85 +65,93 @@ namespace DragAndDropMVVM.Behavior
 
                         Point point = e.GetPosition(element);
 
-                        ////TODO: Add the 
+                        //it is will be to DroopedCanvas is not exist  
                         Canvas droppedcanvas = GetDroppedCanvas(element);
 
-                        // if copy this dragobj 
-                        if (!GetIsFixedPosition(element) && droppedcanvas != null)
+                        UIElement dragelement = e.Data.GetDataPresent(typeof(UIElement)) ? e.Data.GetData(typeof(UIElement)) as UIElement : null;
+
+                        Type droppedcontroltype = dragelement != null ? GetDroppedControlType(dragelement) : null;
+
+                        if (droppedcontroltype != null && !WPFUtility.IsCorrectType(droppedcontroltype, typeof(ContentControl)))
                         {
-                            UIElement dragelement = e.Data.GetDataPresent(typeof(UIElement)) ? e.Data.GetData(typeof(UIElement)) as UIElement : null;
+                            throw new ArgumentException("DroppedControlType is base on ContentControl.");
+                        }
 
-                            Type droppedcontroltype = dragelement != null ? GetDroppedControlType(dragelement) : null;
+                        if (e.Data.GetDataPresent(typeof(DraggingAdorner)))
+                        {
+                            var adn = e.Data.GetData(typeof(DraggingAdorner)) as DraggingAdorner;
 
-                            if (droppedcontroltype != null && !WPFUtility.IsCorrectType(droppedcontroltype, typeof(ContentControl)))
+                            UIElement clnele = null;
+
+                            bool iscopy = false;
+
+                            if (droppedcontroltype != null)
                             {
-                                throw new ArgumentException("DroppedControlType is base on ContentControl.");
+
+                                //TODO: Copy Control or create new control
+                                if (GetIsDuplication(dragelement))
+                                    clnele = CreateNewContentControl(droppedcontroltype, adn.GetGhostElement() as UIElement);
+                                else
+                                    clnele = Activator.CreateInstance(droppedcontroltype) as UIElement;
+                                iscopy = true;
+                            }
+                            else
+                            {
+                                clnele = dragelement;
                             }
 
-                            if (e.Data.GetDataPresent(typeof(DraggingAdorner)))
+
+                            //add the clone element
+                            if (clnele != null)
                             {
-                                var adn = e.Data.GetData(typeof(DraggingAdorner)) as DraggingAdorner;
 
-                                UIElement clnele = null;
 
-                                bool iscopy = false;
+                                Point canvaspoint = (Point)(point - adn.CenterPoint);
 
-                                if (droppedcontroltype != null)
+                                Point oldpoint = new Point(Canvas.GetLeft(dragelement), Canvas.GetTop(dragelement));
+
+                                SetConnectionLinePosition(clnele as ConnectionDiagramBase, (Point)(canvaspoint - oldpoint));
+
+
+                                Canvas.SetLeft(clnele, canvaspoint.X);
+                                Canvas.SetTop(clnele, canvaspoint.Y);
+
+                                var duuid = $"{clnele.GetType().Name}_{Guid.NewGuid().ToString()}";
+                                if (clnele is ConnectionDiagramBase)
                                 {
-
-                                    //TODO: Copy Control or create new control
-                                    if (GetIsDuplication(dragelement))
-                                        clnele = CreateNewContentControl(droppedcontroltype, adn.GetGhostElement() as UIElement);
-                                    else
-                                        clnele = Activator.CreateInstance(droppedcontroltype) as UIElement;
-                                    iscopy = true;
+                                    (clnele as ConnectionDiagramBase).DiagramUUID = duuid;
                                 }
                                 else
                                 {
-                                    clnele = dragelement;
+                                    FrameworkElementAssist.SetDiagramUUID(clnele, duuid);
                                 }
 
-
-                                //add the clone element
-                                if (clnele != null)
+                                if (iscopy)
                                 {
-
-
-                                    Point canvaspoint = (Point)(point - adn.CenterPoint);
-
-                                    Point oldpoint = new Point(Canvas.GetLeft(dragelement), Canvas.GetTop(dragelement));
-
-                                    SetConnectionLinePosition(clnele as ConnectionDiagramBase, (Point)(canvaspoint - oldpoint));
-
-
-                                    Canvas.SetLeft(clnele, canvaspoint.X);
-                                    Canvas.SetTop(clnele, canvaspoint.Y);
-
-                                    (clnele as ConnectionDiagramBase).DiagramUUID = $"{clnele.GetType().Name}_{Guid.NewGuid().ToString()}";
-
-                                    if (iscopy)
+                                    if (droppedcanvas != null)
                                     {
                                         droppedcanvas.Children.Add(clnele);
                                     }
-                                    else
-                                    {
-                                        //???
-                                    }
+                                }
+                                else
+                                {
+                                    //???
+                                }
 
-                                    if (parameter != null)
-                                    {
-                                        dropcommand.Execute(parameter);
-                                    }
-                                    else
-                                    {
-                                        dropcommand.Execute((clnele as ContentControl)?.DataContext);
-                                    }
-
+                                if (parameter != null)
+                                {
+                                    dropcommand.Execute(parameter);
+                                }
+                                else
+                                {
+                                    dropcommand.Execute((clnele as ContentControl)?.DataContext);
                                 }
 
                             }
 
                         }
+
+                        //  }
                     }
 
                     if (this.AssociatedObject.DataContext is IDragged)
@@ -223,7 +226,7 @@ namespace DragAndDropMVVM.Behavior
 
         #region Dependency Property
 
-        #region IsFixedPosition
+        #region IsFixedPosition(Obsolete?????)
 
         /// <summary>
         /// The IsFixedPosition attached property's name.
@@ -305,6 +308,55 @@ namespace DragAndDropMVVM.Behavior
             typeof(DiagramElementDropBehavior),
             new UIPropertyMetadata(DroppingElementAdornerType.DrawEllipse));
 
+
+        #endregion
+
+        #region CustomAdornerContent
+
+        /// <summary>
+        /// The CustomAdornerContent attached property's name.
+        /// </summary>
+        public const string CustomAdornerContentPropertyName = "CustomAdornerContent";
+
+        /// <summary>
+        /// Gets the value of the CustomAdornerContent attached property 
+        /// for a given dependency object.
+        /// </summary>
+        /// <param name="obj">The object for which the property value
+        /// is read.</param>
+        /// <returns>The value of the CustomAdornerContent property of the specified object.</returns>
+        public static UIElement GetCustomAdornerContent(DependencyObject obj)
+        {
+            return (UIElement)obj.GetValue(CustomAdornerContentProperty);
+        }
+
+        /// <summary>
+        /// Sets the value of the CustomAdornerContent attached property
+        /// for a given dependency object. 
+        /// </summary>
+        /// <param name="obj">The object to which the property value
+        /// is written.</param>
+        /// <param name="value">Sets the CustomAdornerContent value of the specified object.</param>
+        public static void SetCustomAdornerContent(DependencyObject obj, UIElement value)
+        {
+            obj.SetValue(CustomAdornerContentProperty, value);
+        }
+
+        /// <summary>
+        /// Identifies the CustomAdornerContent attached property.
+        /// </summary>
+        public static readonly DependencyProperty CustomAdornerContentProperty = DependencyProperty.RegisterAttached(
+            CustomAdornerContentPropertyName,
+            typeof(UIElement),
+            typeof(DiagramElementDropBehavior),
+            new UIPropertyMetadata(null, 
+                (d, e) =>
+                {
+                    if(e.NewValue!=null)
+                    {
+                        d.SetValue(AdornerTypeProperty, DroppingElementAdornerType.Custom);
+                    }
+                }));
 
         #endregion
 

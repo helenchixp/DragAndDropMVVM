@@ -324,10 +324,9 @@ namespace DragAndDropMVVM.Controls
                       if (e.NewValue == null
                         || !(e.NewValue is IMapLayout)
                         || (e.NewValue == e.OldValue)
-                        || !(d is Canvas))
+                        || !(d is ExtensionCanvasBase))
                           return;
                       var map = (e.NewValue as IMapLayout);
-                      var canvas = d as ExtensionCanvasBase;
 
                       (d as ExtensionCanvasBase).ReloadLayoutInCanvas(map);
 

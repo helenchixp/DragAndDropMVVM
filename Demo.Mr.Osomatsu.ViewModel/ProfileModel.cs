@@ -6,11 +6,16 @@ using System.Threading.Tasks;
 
 namespace Demo.Mr.Osomatsu.ViewModel
 {
-    public class ProfileModel
+    public class ProfileModel 
     {
         public int No { get; set; }
         public string Name { get; set; }
         public string ImagePath { get; set; }
         public string Comment { get; set; }
+
+        public ProfileModel Clone()
+        {
+            return (ProfileModel)MemberwiseClone();
+        }
     }
 }

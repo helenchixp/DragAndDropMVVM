@@ -3,10 +3,115 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:b="clr-namespace:DragAndDropMVVM.Behavior;assembly=DragAndDropMVVM"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:local="clr-namespace:Demo.Mr.Osomatsu"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <Style TargetType="Image" >
+            <Setter Property="Opacity" Value="0.1" />
+            <Setter Property="Height" Value="40" />
+            <Setter Property="Width" Value="40" />
+        </Style>
+        
+     
+        
+
+        <DataTemplate x:Key="PalletTemplate">
+            <Grid b:DiagramElementDragBehavior.DragCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DragCommand}"
+                  b:DiagramElementDragBehavior.DragCommandParameter="{Binding}"
+                  b:DiagramElementDropBehavior.DropCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.OrderChangeCommand}"
+                  b:DiagramElementDropBehavior.DropCommandParameter="{Binding}">
+                <b:DiagramElementDropBehavior.CustomAdornerContent>
+                    <Rectangle Fill="Red" RadiusX="2" Width="20" Height="11"></Rectangle>
+                </b:DiagramElementDropBehavior.CustomAdornerContent>
+                <i:Interaction.Behaviors>
+                    <b:DiagramElementDragBehavior/>
+                    <b:DiagramElementDropBehavior />
+                </i:Interaction.Behaviors>
+                <Ellipse Width="40" Height="40" Stroke="{DynamicResource AccentDiagramBrush}" StrokeThickness="2">
+                <Ellipse.Fill>
+                    <ImageBrush ImageSource="{Binding ImagePath}" Opacity="0.1"/>
+                </Ellipse.Fill>
+            </Ellipse>
+                <TextBlock FontSize="24" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding No}" 
+                           Foreground="{DynamicResource AccentDiagramBrush}"/>
+            </Grid>
+        </DataTemplate>
+
+
+        <DataTemplate x:Key="ListTemplate">
+            <WrapPanel b:DiagramElementDragBehavior.DragCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DragCommand}"
+                  b:DiagramElementDragBehavior.DragCommandParameter="{Binding}">
+                <i:Interaction.Behaviors>
+                    <b:DiagramElementDragBehavior/>
+                </i:Interaction.Behaviors>
+                <Rectangle Width="40" Height="40" Stroke="{DynamicResource AccentDiagramBrush}" StrokeThickness="2">
+                    <Rectangle.Fill>
+                        <ImageBrush ImageSource="{Binding ImagePath}" Opacity="0.1"/>
+                    </Rectangle.Fill>
+                </Rectangle>
+                <TextBlock FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Right" Text="{Binding Name}" 
+                           Foreground="{DynamicResource AccentDiagramBrush}"/>
+            </WrapPanel>
+        </DataTemplate>
+    </UserControl.Resources>
+    
+    
     <Grid>
-        <TextBlock Text="Group View" />
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="20*" />
+            <ColumnDefinition Width="20*" />
+            <ColumnDefinition Width="20*" />
+            <ColumnDefinition Width="20*" />
+            <ColumnDefinition Width="20*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <ListBox ItemsSource="{Binding PalletList}" Grid.Row="1" ItemTemplate="{StaticResource PalletTemplate}"  />
+
+        <ListBox ItemsSource="{Binding Group1x3}" Grid.Row="1" Grid.Column="1" ItemTemplate="{StaticResource ListTemplate}"
+                 b:DiagramElementDropBehavior.DropCommand="{Binding DropCommand}"
+                 b:DiagramElementDropBehavior.DropCommandParameter="1x3"
+                 >
+            <i:Interaction.Behaviors>
+                <b:DiagramElementDropBehavior/>
+            </i:Interaction.Behaviors>
+        </ListBox>
+
+        <ListBox ItemsSource="{Binding Group2x6}" Grid.Row="1" Grid.Column="2"  ItemTemplate="{StaticResource ListTemplate}"
+                 b:DiagramElementDropBehavior.DropCommand="{Binding DropCommand}"
+                 b:DiagramElementDropBehavior.DropCommandParameter="2x6">
+            <i:Interaction.Behaviors>
+                <b:DiagramElementDropBehavior/>
+            </i:Interaction.Behaviors>
+        </ListBox>
+
+        <ListBox ItemsSource="{Binding Group4x5}" Grid.Row="1" Grid.Column="3" ItemTemplate="{StaticResource ListTemplate}"
+                 b:DiagramElementDropBehavior.DropCommand="{Binding DropCommand}"
+                 b:DiagramElementDropBehavior.DropCommandParameter="4x5" >
+            <i:Interaction.Behaviors>
+                <b:DiagramElementDropBehavior/>
+            </i:Interaction.Behaviors>
+        </ListBox>
+
+        <ListBox ItemsSource="{Binding Brothers}" Grid.Row="1" Grid.Column="4" ItemTemplate="{StaticResource ListTemplate}"
+                 b:DiagramElementDropBehavior.DropCommand="{Binding DropCommand}"
+                 b:DiagramElementDropBehavior.DropCommandParameter="1x2x3x4x5x6" >
+            <i:Interaction.Behaviors>
+                <b:DiagramElementDropBehavior/>
+            </i:Interaction.Behaviors>
+        </ListBox>
+
+        <Image Source="/Demo.Mr.Osomatsu;component/ImagesResource/m_brothers_1x3.png" Grid.Column="1"/>
+        <Image Source="/Demo.Mr.Osomatsu;component/ImagesResource/m_brothers_2x6.png" Grid.Column="2"/>
+        <Image Source="/Demo.Mr.Osomatsu;component/ImagesResource/m_brothers_4x5.png" Grid.Column="3"/>
+        <Image Source="/Demo.Mr.Osomatsu;component/ImagesResource/m_brothers_05.png" Grid.Column="4"/>
     </Grid>
 </UserControl>

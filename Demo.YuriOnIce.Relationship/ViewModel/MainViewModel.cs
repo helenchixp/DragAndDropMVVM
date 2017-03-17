@@ -75,6 +75,8 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
                 Index = 4,
             });
 
+            _layoutRelationshipMap = new RelationshipMap();
+
         }
 
         #region IDragged Objects

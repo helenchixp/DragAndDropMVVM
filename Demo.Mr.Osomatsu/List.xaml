@@ -42,7 +42,6 @@
             <Setter Property="StrokeThickness" Value="4" />
             <Setter Property="Panel.ZIndex" Value="-1" />
             <Setter Property="Focusable" Value="True" />
-            <!--<Setter Property="FocusVisualStyle" Value="{x:Null}" />-->
             <Setter Property="IsHitTestVisible" Value="True" />
             <Setter Property="Tag" Value="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor},Path=DataContext}" />
             <Setter Property="ContextMenu">

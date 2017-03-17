@@ -58,7 +58,7 @@ namespace DragAndDropMVVM.Behavior
                 drawingContext.DrawEllipse(renderBrush, renderPen, adornedElementRect.BottomLeft, renderRadius, renderRadius);
                 drawingContext.DrawEllipse(renderBrush, renderPen, adornedElementRect.BottomRight, renderRadius, renderRadius);
             }
-            else
+            else if(DroppingElementAdornerType.DrawLine.Equals(adornertype))
             {
                 renderPen.DashStyle = DashStyles.Dash;
                 renderPen.Thickness = 6.0;
@@ -66,6 +66,10 @@ namespace DragAndDropMVVM.Behavior
                 drawingContext.DrawLine(renderPen, adornedElementRect.TopLeft, adornedElementRect.BottomLeft);
                 drawingContext.DrawLine(renderPen, adornedElementRect.TopRight, adornedElementRect.BottomRight);
                 drawingContext.DrawLine(renderPen, adornedElementRect.BottomLeft, adornedElementRect.BottomRight);
+            }
+            else
+            {
+                //TODO:Extention
             }
         }
     }

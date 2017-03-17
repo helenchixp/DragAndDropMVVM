@@ -113,6 +113,10 @@ namespace Demo.Mr.Osomatsu.ViewModel
             // TODO Clear the ViewModels
 
             Messenger.Default.Unregister<object>(_current, "ShowDetail");
+            SimpleIoc.Default.Unregister<MainViewModel>();
+            SimpleIoc.Default.Unregister<TreeViewModel>();
+            SimpleIoc.Default.Unregister<ListViewModel>();
+            SimpleIoc.Default.Unregister<GroupViewModel>();
         }
     }
 }
