@@ -600,16 +600,16 @@ namespace DragAndDropMVVM.Behavior
             {
                 foreach (var dline in element.DepartureLines)
                 {
-                    if (dline is DrawLineThump)
+                    if (dline is ILinePosition)
                     {
-                        (dline as DrawLineThump).X1 = (dline as DrawLineThump).X1 + point.X;
-                        (dline as DrawLineThump).Y1 = (dline as DrawLineThump).Y1 + point.Y;
+                        (dline as ILinePosition).X1 = (dline as ILinePosition).X1 + point.X;
+                        (dline as ILinePosition).Y1 = (dline as ILinePosition).Y1 + point.Y;
 
                         var angle = Math.Atan2(
-                            (dline as DrawLineThump).Y1 - (dline as DrawLineThump).Y2,
-                            (dline as DrawLineThump).X1 - (dline as DrawLineThump).X2) * 180d / Math.PI;
+                            (dline as ILinePosition).Y1 - (dline as ILinePosition).Y2,
+                            (dline as ILinePosition).X1 - (dline as ILinePosition).X2) * 180d / Math.PI;
 
-                        (dline as DrawLineThump).Angle = angle < 0 ? angle + 360 : angle;
+                        (dline as ILinePosition).Angle = angle < 0 ? angle + 360 : angle;
                     }
                 }
 
@@ -619,17 +619,17 @@ namespace DragAndDropMVVM.Behavior
             {
                 foreach (var aline in element.ArrivalLines)
                 {
-                    if (aline is DrawLineThump)
+                    if (aline is ILinePosition)
                     {
-                        (aline as DrawLineThump).X2 = (aline as DrawLineThump).X2 + point.X;
-                        (aline as DrawLineThump).Y2 = (aline as DrawLineThump).Y2 + point.Y;
+                        (aline as ILinePosition).X2 = (aline as ILinePosition).X2 + point.X;
+                        (aline as ILinePosition).Y2 = (aline as ILinePosition).Y2 + point.Y;
 
 
                         var angle = Math.Atan2(
-                            (aline as DrawLineThump).Y1 - (aline as DrawLineThump).Y2,
-                            (aline as DrawLineThump).X1 - (aline as DrawLineThump).X2) * 180d / Math.PI;
+                            (aline as ILinePosition).Y1 - (aline as ILinePosition).Y2,
+                            (aline as ILinePosition).X1 - (aline as ILinePosition).X2) * 180d / Math.PI;
 
-                        (aline as DrawLineThump).Angle = angle < 0 ? angle + 360 : angle;
+                        (aline as ILinePosition).Angle = angle < 0 ? angle + 360 : angle;
                     }
                 }
             }

@@ -13,5 +13,6 @@ namespace DragAndDropMVVM.Controls
         double Y1 { get; set; }
         double X2 { get; set; }
         double Y2 { get; set; }
+        double Angle { get; set; }
     }
 }
