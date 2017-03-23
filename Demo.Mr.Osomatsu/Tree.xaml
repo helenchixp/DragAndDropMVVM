@@ -3,10 +3,391 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:b="clr-namespace:DragAndDropMVVM.Behavior;assembly=DragAndDropMVVM"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:local="clr-namespace:Demo.Mr.Osomatsu"
+             xmlns:vm="clr-namespace:Demo.Mr.Osomatsu.ViewModel;assembly=Demo.Mr.Osomatsu.ViewModel"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <Style TargetType="Image">
+            <Setter Property="Opacity" Value="0.1" />
+        </Style>
+
+        
+        
+
+        <DataTemplate x:Key="PalletTemplate">
+            <Grid b:DiagramElementDragBehavior.DragCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DragCommand}"
+                  b:DiagramElementDragBehavior.DragCommandParameter="{Binding}">
+                <i:Interaction.Behaviors>
+                    <b:DiagramElementDragBehavior/>
+                </i:Interaction.Behaviors>
+                <Ellipse Width="40" Height="40" Stroke="{DynamicResource AccentDiagramBrush}" StrokeThickness="2"
+                         ToolTip="{Binding Name}">
+                    <Ellipse.Fill>
+                        <ImageBrush ImageSource="{Binding ImagePath}" Opacity="0.1"/>
+                    </Ellipse.Fill>
+                </Ellipse>
+            </Grid>
+        </DataTemplate>
+
+
+        <DataTemplate DataType="{x:Type vm:ProfileConnectorModel}" >
+            <WrapPanel b:DiagramElementDragBehavior.DragCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DragCommand}"
+                    b:DiagramElementDragBehavior.DragCommandParameter="{Binding}"
+                    b:DiagramElementDropBehavior.DropCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DropCommand}"
+                    b:DiagramElementDropBehavior.DropCommandParameter="{Binding}">
+
+                <i:Interaction.Behaviors>
+                    <b:DiagramElementDragBehavior/>
+                    <b:DiagramElementDropBehavior/>
+                </i:Interaction.Behaviors>
+                <Ellipse Width="25" Height="25" Stroke="{DynamicResource AccentDiagramBrush}" StrokeThickness="2"
+                         ToolTip="{Binding Name}">
+                    <Ellipse.Fill>
+                        <ImageBrush ImageSource="{Binding ImagePath}" Opacity="0.1"/>
+                    </Ellipse.Fill>
+                </Ellipse>
+                <TextBlock Text="{Binding Name}" />
+            </WrapPanel>
+        </DataTemplate>
+
+        <HierarchicalDataTemplate DataType="{x:Type vm:GroupModel}" ItemsSource="{Binding Children}">
+            <WrapPanel b:DiagramElementDragBehavior.DragCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DragCommand}"
+                    b:DiagramElementDragBehavior.DragCommandParameter="{Binding}"
+                    b:DiagramElementDropBehavior.DropCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DropCommand}"
+                    b:DiagramElementDropBehavior.DropCommandParameter="{Binding}">
+
+                <i:Interaction.Behaviors>
+                    <b:DiagramElementDragBehavior/>
+                    <b:DiagramElementDropBehavior/>
+                </i:Interaction.Behaviors>
+
+                <Ellipse Width="30" Height="30" 
+                               x:Name="recBorder"
+                               Stroke="{DynamicResource AccentDiagramBrush}" StrokeThickness="2"
+                         ToolTip="{Binding Name}">
+                    <Ellipse.Fill>
+                        <ImageBrush ImageSource="{Binding ImagePath}" Opacity="0.1"/>
+                    </Ellipse.Fill>
+                </Ellipse>
+                <TextBlock Text="{Binding Name}" />
+            </WrapPanel>
+            <HierarchicalDataTemplate.Triggers>
+                <DataTrigger Binding="{Binding Path=IsSelected}" Value="True">
+                    <Setter Property="Stroke" Value="{DynamicResource IsSelectedDiagramBrush}" TargetName="recBorder" />
+                </DataTrigger>
+            </HierarchicalDataTemplate.Triggers>
+        </HierarchicalDataTemplate>
+
+    </UserControl.Resources>
     <Grid>
-        <TextBlock Text="Tree View" />
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="10*" />
+            <ColumnDefinition Width="30*" />
+            <ColumnDefinition Width="30*" />
+            <ColumnDefinition Width="30*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <!--<TextBlock Text="Tree View" />-->
+
+        <ListView ItemsSource="{Binding PalletItems}" Grid.Row="1" ItemTemplate="{StaticResource PalletTemplate}"/>
+
+        <TreeView Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Group01}" 
+                  b:DiagramElementDropBehavior.DropCommand="{Binding Path=DropCommand}"
+                  b:DiagramElementDropBehavior.DropCommandParameter="{Binding Path=ItemsSource, RelativeSource={RelativeSource Self}}">
+            <i:Interaction.Behaviors>
+                <b:DiagramElementDropBehavior/>
+            </i:Interaction.Behaviors>
+            <TreeView.Resources>
+                
+                <Style TargetType="{x:Type TreeViewItem}">
+                    <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}" />
+                    <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay}" />
+                    <!--<Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type TreeViewItem}">
+
+                                <WrapPanel Orientation="Vertical" >
+                                    <ContentPresenter ContentSource="Header" />
+                                    <Border BorderBrush="Black" BorderThickness="2">
+                                   
+
+                                    <ItemsPresenter Margin="25 0 0 0" />
+                                </Border>
+                                </WrapPanel>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>-->
+                </Style>
+
+
+                <!--<DataTemplate DataType="{x:Type vm:ProfileModel}" >
+                    <WrapPanel b:DiagramElementDragBehavior.DragCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DragCommand}"
+                    b:DiagramElementDragBehavior.DragCommandParameter="{Binding}"
+                    b:DiagramElementDropBehavior.DropCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DropCommand}"
+                    b:DiagramElementDropBehavior.DropCommandParameter="{Binding}">
+
+                        <i:Interaction.Behaviors>
+                            <b:DiagramElementDragBehavior/>
+                            <b:DiagramElementDropBehavior/>
+                        </i:Interaction.Behaviors>
+                        <Ellipse Width="25" Height="25" Stroke="{DynamicResource AccentDiagramBrush}" StrokeThickness="2"
+                         ToolTip="{Binding Name}">
+                            <Ellipse.Fill>
+                                <ImageBrush ImageSource="{Binding ImagePath}" Opacity="0.1"/>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                        <TextBlock Text="{Binding Name}" />
+                    </WrapPanel>
+                </DataTemplate>
+
+                <HierarchicalDataTemplate DataType="{x:Type vm:GroupModel}" ItemsSource="{Binding Children}">
+                    <WrapPanel b:DiagramElementDragBehavior.DragCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DragCommand}"
+                    b:DiagramElementDragBehavior.DragCommandParameter="{Binding}"
+                    b:DiagramElementDropBehavior.DropCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DropCommand}"
+                    b:DiagramElementDropBehavior.DropCommandParameter="{Binding}">
+
+                        <i:Interaction.Behaviors>
+                            <b:DiagramElementDragBehavior/>
+                            <b:DiagramElementDropBehavior/>
+                        </i:Interaction.Behaviors>
+
+                        <Ellipse Width="30" Height="30" 
+                               x:Name="recBorder"
+                               Stroke="{DynamicResource AccentDiagramBrush}" StrokeThickness="2"
+                         ToolTip="{Binding Name}">
+                            <Ellipse.Fill>
+                                <ImageBrush ImageSource="{Binding ImagePath}" Opacity="0.1"/>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                        <TextBlock Text="{Binding Name}" />
+                    </WrapPanel>
+                    <HierarchicalDataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding Path=IsSelected}" Value="True">
+                            <Setter Property="Stroke" Value="{DynamicResource IsSelectedDiagramBrush}" TargetName="recBorder" />
+                        </DataTrigger>
+                    </HierarchicalDataTemplate.Triggers>
+                </HierarchicalDataTemplate>-->
+
+
+            </TreeView.Resources>
+
+        </TreeView>
+        <!--<TreeView Grid.Row="1" Grid.Column="2" ItemsSource="{Binding Group02}"></TreeView>-->
+        <TreeView Grid.Row="1" Grid.Column="3" ItemsSource="{Binding Group02}"
+                  b:DiagramElementDropBehavior.DropCommand="{Binding Path=DropCommand}"
+                  b:DiagramElementDropBehavior.DropCommandParameter="{Binding Path=ItemsSource, RelativeSource={RelativeSource Self}}">
+            <i:Interaction.Behaviors>
+                <b:DiagramElementDropBehavior/>
+            </i:Interaction.Behaviors>
+            <TreeView.Resources>
+                <Style x:Key="ExpandCollapseToggleStyle" TargetType="ToggleButton">
+                    <Setter Property="Focusable" Value="False" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ToggleButton">
+                                <Grid Width="15" Height="13" Background="Transparent">
+                                    <VisualStateManager.VisualStateGroups>
+                                        <VisualStateGroup x:Name="CheckStates">
+                                            <VisualState x:Name="Checked">
+                                                <Storyboard>
+                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="Collapsed">
+                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Hidden}" />
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="Expanded">
+                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}" />
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                </Storyboard>
+                                            </VisualState>
+                                            <VisualState x:Name="Unchecked" />
+                                            <VisualState x:Name="Indeterminate" />
+                                        </VisualStateGroup>
+                                    </VisualStateManager.VisualStateGroups>
+                                    <Ellipse x:Name="Collapsed" Fill="AliceBlue" Width="15" Height="5">
+                                        
+                                    </Ellipse>
+                                    <Ellipse x:Name="Expanded" Fill="RosyBrown" Width="5" Height="15" Visibility="Hidden">
+
+                                    </Ellipse>
+                                    <!--<Path x:Name="Collapsed" HorizontalAlignment="Left" VerticalAlignment="Center"
+                                          Margin="1,1,1,1"
+                                          Data="M 4 0 L 8 4 L 4 8 Z">
+                                        <Path.Fill>
+                                            <SolidColorBrush Color="{DynamicResource DiagramColor1}" />
+                                        </Path.Fill>
+                                    </Path>
+                                    <Path x:Name="Expanded" HorizontalAlignment="Left" VerticalAlignment="Center"
+                                          Margin="1,1,1,1"
+                                          Data="M 0 4 L 8 4 L 4 8 Z"
+                                          Visibility="Hidden">
+                                        <Path.Fill>
+                                            <SolidColorBrush Color="{DynamicResource DiagramColor2}" />
+                                        </Path.Fill>
+                                    </Path>-->
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+                <Style x:Key="TreeViewItemFocusVisual">
+                    <Setter Property="Control.Template">
+                        <Setter.Value>
+                            <ControlTemplate>
+                                <Border>
+                                    <Rectangle Margin="0,0,0,0"
+                                               StrokeThickness="5"
+                                               Stroke="Black"
+                                               StrokeDashArray="1 2"
+                                               Opacity="0" />
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+
+
+
+
+                <!--<HierarchicalDataTemplate DataType="{x:Type vm:GroupModel}" ItemsSource="{Binding Children}">
+                    <WrapPanel b:DiagramElementDragBehavior.DragCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DragCommand}"
+                    b:DiagramElementDragBehavior.DragCommandParameter="{Binding}"
+                    b:DiagramElementDropBehavior.DropCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DropCommand}"
+                    b:DiagramElementDropBehavior.DropCommandParameter="{Binding}">
+
+                        <i:Interaction.Behaviors>
+                            <b:DiagramElementDragBehavior/>
+                            <b:DiagramElementDropBehavior/>
+                        </i:Interaction.Behaviors>
+
+                        <Ellipse Width="30" Height="30" 
+                               x:Name="recBorder"
+                               Stroke="{DynamicResource AccentDiagramBrush}" StrokeThickness="2"
+                         ToolTip="{Binding Name}">
+                            <Ellipse.Fill>
+                                <ImageBrush ImageSource="{Binding ImagePath}" Opacity="0.1"/>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                        <TextBlock Text="{Binding Name}" />
+                    </WrapPanel>
+                    <HierarchicalDataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding Path=IsSelected}" Value="True">
+                            <Setter Property="Stroke" Value="{DynamicResource IsSelectedDiagramBrush}" TargetName="recBorder" />
+                        </DataTrigger>
+                    </HierarchicalDataTemplate.Triggers>
+                </HierarchicalDataTemplate>-->
+
+
+                <Style x:Key="{x:Type TreeViewItem}"
+                       TargetType="{x:Type TreeViewItem}">
+                    <Setter Property="IsExpanded" Value="{Binding IsExpanded}" />
+                    <Setter Property="Background"
+                            Value="Transparent" />
+                    <Setter Property="HorizontalContentAlignment"
+                            Value="{Binding Path=HorizontalContentAlignment,RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
+                    <Setter Property="VerticalContentAlignment"
+                            Value="{Binding Path=VerticalContentAlignment,RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
+                    <Setter Property="Padding" Value="1,0,0,0" />
+                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+                    <Setter Property="FocusVisualStyle" Value="{StaticResource TreeViewItemFocusVisual}" />
+                    <!--<Setter Property="Header" Value="{Binding Name}" />-->
+                    <Setter Property="ItemsSource" Value="{Binding Children}" />
+                    <!--<Setter Property="ItemTemplate" Value="{StaticResource GroupTemplete}" />-->
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type TreeViewItem}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition MinWidth="19" Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <VisualStateManager.VisualStateGroups>
+                                        <VisualStateGroup x:Name="SelectionStates">
+                                            <VisualState x:Name="Selected">
+                                                <Storyboard>
+                                                    <ColorAnimationUsingKeyFrames Storyboard.TargetName="Bd" Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
+                                                        <EasingColorKeyFrame KeyTime="0" Value="{StaticResource Gray10}" />
+                                                    </ColorAnimationUsingKeyFrames>
+                                                </Storyboard>
+                                            </VisualState>
+                                            <VisualState x:Name="Unselected" />
+                                            <VisualState x:Name="SelectedInactive">
+                                                <Storyboard>
+                                                    <ColorAnimationUsingKeyFrames Storyboard.TargetName="Bd" Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
+                                                        <EasingColorKeyFrame KeyTime="0" Value="{StaticResource DiagramColor2}" />
+                                                    </ColorAnimationUsingKeyFrames>
+                                                </Storyboard>
+                                            </VisualState>
+                                        </VisualStateGroup>
+                                        <VisualStateGroup x:Name="ExpansionStates">
+                                            <VisualState x:Name="Expanded">
+                                                <Storyboard>
+                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="ItemsHost">
+                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}" />
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                </Storyboard>
+                                            </VisualState>
+                                            <VisualState x:Name="Collapsed" />
+                                        </VisualStateGroup>
+                                    </VisualStateManager.VisualStateGroups>
+                                    <ToggleButton x:Name="Expander" Style="{StaticResource ExpandCollapseToggleStyle}" ClickMode="Press"
+                                                  IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"/>
+                                    <Border x:Name="Bd" Grid.Column="1" Background="{TemplateBinding Background}"
+                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                            BorderThickness="{TemplateBinding BorderThickness}"
+                                            Padding="{TemplateBinding Padding}">
+
+                                         
+                                            <ContentPresenter x:Name="PART_Header"
+                                                          ContentSource="Header"
+                                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+                                        <!--</WrapPanel>-->
+                                    </Border>
+                                    <ItemsPresenter x:Name="ItemsHost"
+                                                    Grid.Row="1"
+                                                    Grid.Column="1"
+                                                    Grid.ColumnSpan="2"
+                                                    Visibility="Collapsed" />
+                                </Grid>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="HasItems" Value="false">
+                                        <Setter TargetName="Expander" Property="Visibility" Value="Hidden" />
+                                    </Trigger>
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="HasHeader" Value="false" />
+                                            <Condition Property="Width" Value="Auto" />
+                                        </MultiTrigger.Conditions>
+                                        <Setter TargetName="PART_Header" Property="MinWidth" Value="75" />
+                                    </MultiTrigger>
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="HasHeader" Value="false" />
+                                            <Condition Property="Height" Value="Auto" />
+                                        </MultiTrigger.Conditions>
+                                        <Setter TargetName="PART_Header" Property="MinHeight" Value="19" />
+                                    </MultiTrigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </TreeView.Resources>
+
+        </TreeView>
+
+        <Image Source="/Demo.Mr.Osomatsu;component/ImagesResource/m_brothers_01.png" Grid.Column="1"/>
+        <Image Source="/Demo.Mr.Osomatsu;component/ImagesResource/m_brothers_02.png" Grid.Column="2"/>
+        <Image Source="/Demo.Mr.Osomatsu;component/ImagesResource/m_brothers_03.png" Grid.Column="3"/>
     </Grid>
 </UserControl>

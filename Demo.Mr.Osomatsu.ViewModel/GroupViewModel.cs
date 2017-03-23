@@ -238,28 +238,28 @@ namespace Demo.Mr.Osomatsu.ViewModel
 
         private void ExecuteDropCommand(object parameter)
         {
-            Action<ObservableCollection<ProfileModel>, string> listAdd = (group, comment) =>
+            Action<ObservableCollection<ProfileModel>, int> listAdd = (group, groupid) =>
             {
              
                     var dragobj = _draggedObject.Clone(); 
-                    dragobj.Comment = comment;
-                    group.Add(dragobj);
+                    dragobj.GroupNo = groupid;
+                    group.Add(dragobj as ProfileModel);
 
                     
 
-                    if ("1x3".Equals(_draggedObject.Comment))
+                    if (13.Equals(_draggedObject.GroupNo))
                     {
                         Group1x3.Remove(_draggedObject);
                     }
-                    else if ("2x6".Equals(_draggedObject.Comment))
+                    else if (26.Equals(_draggedObject.GroupNo))
                     {
                         Group2x6.Remove(_draggedObject);
                     }
-                    else if ("4x5".Equals(_draggedObject.Comment))
+                    else if (45.Equals(_draggedObject.GroupNo))
                     {
                         Group4x5.Remove(_draggedObject);
                     }
-                    else if("1x2x3x4x5x6".Equals(_draggedObject.Comment))
+                    else if(123456.Equals(_draggedObject.GroupNo))
                     {
                         Brothers.Remove(_draggedObject);
                     }
@@ -270,19 +270,19 @@ namespace Demo.Mr.Osomatsu.ViewModel
 
             if ("1x3".Equals(parameter))
             {
-                listAdd(Group1x3, "1x3");
+                listAdd(Group1x3, 13);
             }
             else if ("2x6".Equals(parameter))
             {
-                listAdd(Group2x6, "2x6");
+                listAdd(Group2x6, 26);
             }
             else if ("4x5".Equals(parameter))
             {
-                listAdd(Group4x5, "4x5");
+                listAdd(Group4x5, 45);
             }
             else
             {
-                listAdd(Brothers, "1x2x3x4x5x6");
+                listAdd(Brothers, 123456);
             }
 
             _draggedObject = null;
@@ -298,25 +298,36 @@ namespace Demo.Mr.Osomatsu.ViewModel
 
 
 
-            if(! groupid.Any(id => id == _draggedObject.No.ToString()))
+            if (!groupid.Any(id => id == _draggedObject.No.ToString()))
+            {
+                Message = $"{_draggedObject.Name} is not in this group!";
                 return false;
+            }
+
+            bool isexist;
 
             if ("1x3".Equals(parameter))
             {
-                return !Group1x3.Any(item => item.No == _draggedObject.No);
+                isexist = Group1x3.Any(item => item.No == _draggedObject.No);
             }
             else if ("2x6".Equals(parameter))
             {
-                return !Group2x6.Any(item => item.No == _draggedObject.No);
+                isexist = Group2x6.Any(item => item.No == _draggedObject.No);
             }
             else if ("4x5".Equals(parameter))
             {
-                return !Group4x5.Any(item => item.No == _draggedObject.No);
+                isexist = Group4x5.Any(item => item.No == _draggedObject.No);
             }
             else
             {
-                return !Brothers.Any(item => item.No == _draggedObject.No);
+                isexist = Brothers.Any(item => item.No == _draggedObject.No);
             }
+
+            if (isexist)
+            {
+                Message = $"{_draggedObject.Name} is in here!";
+            }
+            return !isexist;
 
         }
 
@@ -340,7 +351,7 @@ namespace Demo.Mr.Osomatsu.ViewModel
         {
             var dropobj = parameter as ProfileModel;
 
-            if(dropobj.Comment == _draggedObject.Comment
+            if(dropobj.GroupNo == _draggedObject.GroupNo
                 && _draggedObject.Comment == "Pallet")
             {
                 //remove the drag object and re-insert it
@@ -353,19 +364,19 @@ namespace Demo.Mr.Osomatsu.ViewModel
             else
             {
                 //delete the item from drag list
-                if ("1x3".Equals(_draggedObject.Comment))
+                if (13.Equals(_draggedObject.GroupNo))
                 {
                     Group1x3.Remove(_draggedObject);
                 }
-                else if ("2x6".Equals(_draggedObject.Comment))
+                else if (26.Equals(_draggedObject.GroupNo))
                 {
                     Group2x6.Remove(_draggedObject);
                 }
-                else if ("4x5".Equals(_draggedObject.Comment))
+                else if (45.Equals(_draggedObject.GroupNo))
                 {
                     Group4x5.Remove(_draggedObject);
                 }
-                else if ("1x2x3x4x5x6".Equals(_draggedObject.Comment))
+                else if (123456.Equals(_draggedObject.GroupNo))
                 {
                     Brothers.Remove(_draggedObject);
                 }
@@ -401,7 +412,7 @@ namespace Demo.Mr.Osomatsu.ViewModel
         private void ExecuteDropAllCommand(object parameter)
         {
             var dropobj = parameter as ProfileModel;
-            if (_draggedObject.Comment != dropobj.Comment)
+            if (_draggedObject.GroupNo != dropobj.GroupNo)
             {
                 ExecuteDropCommand(parameter);
             }
@@ -419,7 +430,7 @@ namespace Demo.Mr.Osomatsu.ViewModel
         private bool CanExecuteDropAllCommand(object parameter)
         {
 
-            if (_draggedObject.Comment != "1x2x3x4x5x6")
+            if (_draggedObject.GroupNo != 123456)
             {
                 return !Brothers.Any(item => item.No == _draggedObject.No);
             }
@@ -433,5 +444,41 @@ namespace Demo.Mr.Osomatsu.ViewModel
 
         #endregion
 
+
+        #region Binding Property
+
+        /// <summary>
+            /// The <see cref="Message" /> property's name.
+            /// </summary>
+        public const string MessagePropertyName = "Message";
+
+        private string _message = string.Empty;
+
+        /// <summary>
+        /// Sets and gets the Message property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// This property's value is broadcasted by the MessengerInstance when it changes.
+        /// </summary>
+        public string Message
+        {
+            get
+            {
+                return _message;
+            }
+
+            set
+            {
+                if (_message == value)
+                {
+                    return;
+                }
+
+                var oldValue = _message;
+                _message = value;
+                RaisePropertyChanged(MessagePropertyName, oldValue, value, true);
+            }
+        }
+
+        #endregion
     }
 }

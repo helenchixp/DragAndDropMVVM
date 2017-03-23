@@ -93,6 +93,26 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
+        <TextBlock Text="{Binding Path=Message,NotifyOnTargetUpdated=True}" FontSize="16" Foreground="Red" Grid.Column="1" Grid.ColumnSpan="4">
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Style.Triggers>
+                        <EventTrigger RoutedEvent="Binding.TargetUpdated">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                             From="1.0" To="0.0"
+                                             Duration="0:0:2"
+                                             AutoReverse="False"
+                                             RepeatBehavior="1x" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+
         <ListBox ItemsSource="{Binding PalletList}" Grid.Row="1" ItemTemplate="{StaticResource PalletTemplate}"  />
 
         <ListBox ItemsSource="{Binding Group1x3}" Grid.Row="1" Grid.Column="1" ItemTemplate="{StaticResource ListTemplate}"
