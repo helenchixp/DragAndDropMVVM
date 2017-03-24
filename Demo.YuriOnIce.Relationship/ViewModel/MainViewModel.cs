@@ -79,7 +79,7 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
 
         }
 
-        #region IDragged Objects
+        #region Dragged Objects
         //public object DraggedDataContext
         //{
         //    get;
@@ -117,6 +117,38 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
                 var oldValue = _draggedDataContext;
                 _draggedDataContext = value;
                 RaisePropertyChanged(DraggedDataContextPropertyName, oldValue, value, true);
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="DroppingDataContext" /> property's name.
+        /// </summary>
+        public const string DroppingDataContextPropertyName = "DroppingDataContext";
+
+        private object _droppingDataContext = null;
+
+        /// <summary>
+        /// Sets and gets the DroppingDataContext property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// This property's value is broadcasted by the MessengerInstance when it changes.
+        /// </summary>
+        public object DroppingDataContext
+        {
+            get
+            {
+                return _droppingDataContext;
+            }
+
+            set
+            {
+                if (_droppingDataContext == value)
+                {
+                    return;
+                }
+
+                var oldValue = _droppingDataContext;
+                _droppingDataContext = value;
+                RaisePropertyChanged(DroppingDataContextPropertyName, oldValue, value, true);
             }
         }
 
@@ -596,14 +628,16 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
 
         private void ExecuteDropLineCommand(object parameter)
         {
-            if (parameter == null || !(parameter is IConnectionLineViewModel)) return;
+            //if (parameter == null || !(parameter is IConnectionLineViewModel)) return;
 
-            var linevm = (parameter as IConnectionLineViewModel);
+            if ((DroppingDataContext as LineViewModel) == null) return;
 
-            if (DraggedDataContext != null && DraggedDataContext is Tuple<object, object>)
-            {
-                var originvm = (DraggedDataContext as Tuple<object, object>).Item1 as IConnectionDiagramViewModel;
-                var terminalvm = (DraggedDataContext as Tuple<object, object>).Item2 as IConnectionDiagramViewModel;
+            var linevm = DroppingDataContext as IConnectionLineViewModel; //(parameter as IConnectionLineViewModel);
+
+            //if (DraggedDataContext != null )// && DraggedDataContext is Tuple<object, object>)
+            //{
+                var originvm = DraggedDataContext as IConnectionDiagramViewModel;//(DraggedDataContext as Tuple<object, object>).Item1 as IConnectionDiagramViewModel;
+                var terminalvm = parameter as IConnectionDiagramViewModel; //(DraggedDataContext as Tuple<object, object>).Item2 as IConnectionDiagramViewModel;
 
                 if (originvm != null)
                 {
@@ -614,7 +648,7 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
                 {
                     linevm.TerminalDiagramViewModel = terminalvm;
                 }
-            }
+            //}
 
             var redomemo = new Action<object>((obj) =>
             {
@@ -653,11 +687,11 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
         {
             //if (parameter == null || !(parameter is IConnectionLineViewModel)) return false;
 
-            if (DraggedDataContext == null && !(DraggedDataContext is Tuple<object, object>)) return false;
+            // if (DraggedDataContext == null && !(DraggedDataContext is Tuple<object, object>)) return false;
+            if (DraggedDataContext == null) return false;
 
-
-            var dragobj = (DraggedDataContext as Tuple<object, object>).Item1 as IConnectionDiagramViewModel;
-            var dropobj = (DraggedDataContext as Tuple<object, object>).Item2 as IConnectionDiagramViewModel;
+            var dragobj = DraggedDataContext as IConnectionDiagramViewModel; //(DraggedDataContext as Tuple<object, object>).Item1 as IConnectionDiagramViewModel;
+            var dropobj = parameter as IConnectionDiagramViewModel; //(DraggedDataContext as Tuple<object, object>).Item2 as IConnectionDiagramViewModel;
 
             if (dragobj == dropobj) return false;
 

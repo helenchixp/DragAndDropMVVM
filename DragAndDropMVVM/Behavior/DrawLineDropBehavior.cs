@@ -63,7 +63,7 @@ namespace DragAndDropMVVM.Behavior
                         Point adnPoint = adn.Position;
 
                         Canvas droppedcanvas = GetDroppedLineCanvas(element);
-                        var originelement = (e.Data.GetData(typeof(ConnectionDiagramBase)) as FrameworkElement);
+                        var originelement = (e.Data.GetData(typeof(UIElement)) as FrameworkElement);
 
                         //the object for ConnectionDiagram
                         ConnectionDiagramBase origindiagram = originelement as ConnectionDiagramBase;
@@ -74,7 +74,10 @@ namespace DragAndDropMVVM.Behavior
                         //    (droppedcanvas.DataContext as IDragged).DraggedDataContext =
                         //        new Tuple<object, object>((originelement as ConnectionDiagramBase)?.DataContext, (element as ConnectionDiagramBase)?.DataContext);
                         //}
-                        SetDraggedDataContext(this.AssociatedObject, new Tuple<object, object>((originelement as ConnectionDiagramBase)?.DataContext, (element as ConnectionDiagramBase)?.DataContext));
+
+                        SetDraggedDataContext(this.AssociatedObject, e.Data.GetData(DataFormats.Serializable));
+
+                        //SetDraggedDataContext(this.AssociatedObject, new Tuple<object, object>((originelement as ConnectionDiagramBase)?.DataContext, (element as ConnectionDiagramBase)?.DataContext));
 
 
                         double x1, y1, x2, y2 = 0.0;
@@ -121,8 +124,8 @@ namespace DragAndDropMVVM.Behavior
                             if (conline is ConnectionLineBase)
                             {
 
-                                (conline as ConnectionLineBase).OriginDiagram = origindiagram;
-                                (conline as ConnectionLineBase).TerminalDiagram = terminaldiagram;
+                                //(conline as ConnectionLineBase).OriginDiagram = origindiagram;
+                                //(conline as ConnectionLineBase).TerminalDiagram = terminaldiagram;
 
                                 //if inherit from ILinePosition
                                 if (conline is ILinePosition)
@@ -144,15 +147,17 @@ namespace DragAndDropMVVM.Behavior
                                 Y2 = y2,
                             };
 
-                            FrameworkElementAssist.SetOriginDiagram(conline, originelement);
-                            FrameworkElementAssist.SetTerminalDiagram(conline, element);
                         }
 
+                        FrameworkElementAssist.SetOriginDiagram(conline, originelement);
+                        FrameworkElementAssist.SetTerminalDiagram(conline, element);
+
+
                         //set the parameter
-                        var dropparam = parameter ?? conline.DataContext;
+                        //var dropparam = parameter ?? conline.DataContext;
                         string lineuuid = $"{conline.GetType().Name}_{Guid.NewGuid().ToString()}";
 
-                        if (dropcommand.CanExecute(dropparam))
+                        if (dropcommand.CanExecute(parameter))
                         {
                             Canvas.SetTop(conline, 0);
                             Canvas.SetLeft(conline, 0);
@@ -171,7 +176,11 @@ namespace DragAndDropMVVM.Behavior
                             if (droppedcanvas != null)
                                 droppedcanvas.Children.Add(conline);
 
-                            dropcommand.Execute(dropparam);
+
+                            //Set the Dropping Line DataContext
+                            SetDroppingDataContext(this.AssociatedObject, conline.DataContext);
+
+                            dropcommand.Execute(parameter);
 
                             if (conline is ConnectionLineBase)
                             {
@@ -188,7 +197,7 @@ namespace DragAndDropMVVM.Behavior
                         ////    (droppedcanvas.DataContext as IDragged).DraggedDataContext = null;
                         ////}
 
-                        SetDraggedDataContext(this.AssociatedObject, null);
+                        //SetDraggedDataContext(this.AssociatedObject, null);
                     }
 
                 }
@@ -456,6 +465,48 @@ namespace DragAndDropMVVM.Behavior
 
         #endregion
 
+
+        #region DroppingDataContext
+
+        /// <summary>
+        /// The DroppingDataContext attached property's name.
+        /// </summary>
+        public const string DroppingDataContextPropertyName = "DroppingDataContext";
+
+        /// <summary>
+        /// Gets the value of the DroppingDataContext attached property 
+        /// for a given dependency object.
+        /// </summary>
+        /// <param name="obj">The object for which the property value
+        /// is read.</param>
+        /// <returns>The value of the DroppingDataContext property of the specified object.</returns>
+        public static object GetDroppingDataContext(DependencyObject obj)
+        {
+            return (object)obj.GetValue(DroppingDataContextProperty);
+        }
+
+        /// <summary>
+        /// Sets the value of the DroppingDataContext attached property
+        /// for a given dependency object. 
+        /// </summary>
+        /// <param name="obj">The object to which the property value
+        /// is written.</param>
+        /// <param name="value">Sets the DroppingDataContext value of the specified object.</param>
+        public static void SetDroppingDataContext(DependencyObject obj, object value)
+        {
+            obj.SetValue(DroppingDataContextProperty, value);
+        }
+
+        /// <summary>
+        /// Identifies the DroppingDataContext attached property.
+        /// </summary>
+        public static readonly DependencyProperty DroppingDataContextProperty = DependencyProperty.RegisterAttached(
+            DroppingDataContextPropertyName,
+            typeof(object),
+            typeof(DrawLineDropBehavior),
+            new UIPropertyMetadata(null));
+
+        #endregion
 
         #endregion
     }

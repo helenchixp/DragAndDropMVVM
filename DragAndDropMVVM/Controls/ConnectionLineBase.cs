@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Xml.Serialization;
+using DragAndDropMVVM.Assist;
 using DragAndDropMVVM.ViewModel;
 
 namespace DragAndDropMVVM.Controls
@@ -81,10 +82,26 @@ namespace DragAndDropMVVM.Controls
         #endregion
 
         #region Property
+       
 
-        public ConnectionDiagramBase OriginDiagram { get; internal set; }
+        public ConnectionDiagramBase OriginDiagram
+        {
+            get
+            {
+                return FrameworkElementAssist.GetOriginDiagram(this) as ConnectionDiagramBase;
+            }
+            //internal set;
+        }
+       
 
-        public ConnectionDiagramBase TerminalDiagram { get; internal set; }
+        public ConnectionDiagramBase TerminalDiagram
+        {
+            get
+            {
+                return FrameworkElementAssist.GetTerminalDiagram(this) as ConnectionDiagramBase;
+            }
+            //internal set;
+        }
 
 
         #region LineUUID

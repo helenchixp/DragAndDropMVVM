@@ -170,11 +170,15 @@ namespace DragAndDropMVVM.Controls
                         if (terminaldiagram != null)
                         {
                             conline = Activator.CreateInstance(defline.LineUIType);
+
+                            Assist.FrameworkElementAssist.SetOriginDiagram(conline, origindiagram);
+                            Assist.FrameworkElementAssist.SetTerminalDiagram(conline, terminaldiagram);
+
                             if (conline is ConnectionLineBase)
                             {
 
-                                (conline as ConnectionLineBase).OriginDiagram = origindiagram;
-                                (conline as ConnectionLineBase).TerminalDiagram = terminaldiagram;
+                                //(conline as ConnectionLineBase).OriginDiagram = origindiagram;
+                                //(conline as ConnectionLineBase).TerminalDiagram = terminaldiagram;
                                 (conline as ConnectionLineBase).DataContext = defline.DataContext;
                                 (conline as ConnectionLineBase).LineUUID = string.IsNullOrWhiteSpace(defline.LineUUID) ? $"{conline.GetType().Name}_{Guid.NewGuid().ToString()}" : defline.LineUUID;
 
