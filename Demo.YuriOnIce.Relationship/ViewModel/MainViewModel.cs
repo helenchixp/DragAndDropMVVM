@@ -34,11 +34,11 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
     /// </summary>
     public class MainViewModel :
 #if PRISM
-        BindableBase,
+        BindableBase
 #else
-        ViewModelBase,
+        ViewModelBase
 #endif
-        IDragged
+        //, IDragged
     {
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
@@ -80,11 +80,44 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
         }
 
         #region IDragged Objects
+        //public object DraggedDataContext
+        //{
+        //    get;
+
+        //    set;
+        //}
+
+
+        /// <summary>
+        /// The <see cref="DraggedDataContext" /> property's name.
+        /// </summary>
+        public const string DraggedDataContextPropertyName = "DraggedDataContext";
+
+        private object _draggedDataContext = null;
+
+        /// <summary>
+        /// Sets and gets the DraggedDataContext property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// This property's value is broadcasted by the MessengerInstance when it changes.
+        /// </summary>
         public object DraggedDataContext
         {
-            get;
+            get
+            {
+                return _draggedDataContext;
+            }
 
-            set;
+            set
+            {
+                if (_draggedDataContext == value)
+                {
+                    return;
+                }
+
+                var oldValue = _draggedDataContext;
+                _draggedDataContext = value;
+                RaisePropertyChanged(DraggedDataContextPropertyName, oldValue, value, true);
+            }
         }
 
         #endregion

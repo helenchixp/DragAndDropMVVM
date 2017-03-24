@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace DragAndDropMVVM.ViewModel
 {
-    public interface IDragged
-    {
-        object DraggedDataContext { get; set; }
-    }
+    //[Obsolete]
+    //public interface IDragged
+    //{
+    //    [Obsolete]
+    //    object DraggedDataContext { get; set; }
+    //}
 }

@@ -55,10 +55,11 @@ namespace DragAndDropMVVM.Behavior
                 {
                     object parameter = GetDropCommandParameter(element);
 
-                    if (this.AssociatedObject.DataContext is IDragged)
-                    {
-                        (this.AssociatedObject.DataContext as IDragged).DraggedDataContext = (e.Data.GetDataPresent(DataFormats.Serializable) ? e.Data.GetData(DataFormats.Serializable) : null);
-                    }
+                    //if (this.AssociatedObject.DataContext is IDragged)
+                    //{
+                    //    (this.AssociatedObject.DataContext as IDragged).DraggedDataContext = (e.Data.GetDataPresent(DataFormats.Serializable) ? e.Data.GetData(DataFormats.Serializable) : null);
+                    //}
+                    SetDraggedDataContext(this.AssociatedObject, (e.Data.GetDataPresent(DataFormats.Serializable) ? e.Data.GetData(DataFormats.Serializable) : null));
 
                     if (dropcommand.CanExecute(parameter))
                     {
@@ -154,10 +155,12 @@ namespace DragAndDropMVVM.Behavior
                         //  }
                     }
 
-                    if (this.AssociatedObject.DataContext is IDragged)
-                    {
-                        (this.AssociatedObject.DataContext as IDragged).DraggedDataContext = null;
-                    }
+                    SetDraggedDataContext(this.AssociatedObject,  null);
+
+                    //if (this.AssociatedObject.DataContext is IDragged)
+                    //{
+                    //    (this.AssociatedObject.DataContext as IDragged).DraggedDataContext = null;
+                    //}
                 }
 
             }
@@ -522,7 +525,47 @@ namespace DragAndDropMVVM.Behavior
             new UIPropertyMetadata(null));
         #endregion
 
-        #region IsDuplication
+        #region DraggedDataContext
+        /// <summary>
+        /// The DraggedDataContext attached property's name.
+        /// </summary>
+        public const string DraggedDataContextPropertyName = "DraggedDataContext";
+
+        /// <summary>
+        /// Gets the value of the DraggedDataContext attached property 
+        /// for a given dependency object.
+        /// </summary>
+        /// <param name="obj">The object for which the property value
+        /// is read.</param>
+        /// <returns>The value of the DraggedDataContext property of the specified object.</returns>
+        public static object GetDraggedDataContext(DependencyObject obj)
+        {
+            return (object)obj.GetValue(DraggedDataContextProperty);
+        }
+
+        /// <summary>
+        /// Sets the value of the DraggedDataContext attached property
+        /// for a given dependency object. 
+        /// </summary>
+        /// <param name="obj">The object to which the property value
+        /// is written.</param>
+        /// <param name="value">Sets the DraggedDataContext value of the specified object.</param>
+        public static void SetDraggedDataContext(DependencyObject obj, object value)
+        {
+            obj.SetValue(DraggedDataContextProperty, value);
+        }
+
+        /// <summary>
+        /// Identifies the DraggedDataContext attached property.
+        /// </summary>
+        public static readonly DependencyProperty DraggedDataContextProperty = DependencyProperty.RegisterAttached(
+            DraggedDataContextPropertyName,
+            typeof(object),
+            typeof(DiagramElementDropBehavior),
+            new UIPropertyMetadata(null));
+        #endregion
+
+        #region IsDuplication(Obsolete??)
         /// <summary>
         /// The IsDuplication attached property's name.
         /// </summary>

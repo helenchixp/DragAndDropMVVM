@@ -89,6 +89,7 @@
                           FocusManager.IsFocusScope="True"
                           b:DiagramElementDropBehavior.DropCommand="{Binding DropCommand}"
                           b:DiagramElementDropBehavior.DroppedCanvas="{Binding RelativeSource={RelativeSource Self}}"
+                          b:DiagramElementDropBehavior.DraggedDataContext="{Binding Path=DraggedDataContext, Mode=TwoWay}"
                           IsSyncLayoutDataContext ="{Binding IsSyncLayoutRelationshipMap}"
                           LayoutDataContext="{Binding LayoutRelationshipMap}"
                           UndoCommand="{Binding UndoCommand}"

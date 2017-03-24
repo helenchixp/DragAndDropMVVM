@@ -128,46 +128,46 @@ namespace DragAndDropMVVM.Behavior
 
         #region  Dependency Property
 
-        #region StartPoint
+        #region StartPoint(Obsolete)
 
-        /// <summary>
-        /// The StartPoint attached property's name.
-        /// </summary>
-        public const string StartPointPropertyName = "StartPoint";
+        ///// <summary>
+        ///// The StartPoint attached property's name.
+        ///// </summary>
+        //public const string StartPointPropertyName = "StartPoint";
 
-        /// <summary>
-        /// Gets the value of the StartPoint attached property 
-        /// for a given dependency object.
-        /// </summary>
-        /// <param name="obj">The object for which the property value
-        /// is read.</param>
-        /// <returns>The value of the StartPoint property of the specified object.</returns>
-        public static Point? GetStartPoint(DependencyObject obj)
-        {
-            return (Point?)obj.GetValue(StartPointProperty);
-        }
+        ///// <summary>
+        ///// Gets the value of the StartPoint attached property 
+        ///// for a given dependency object.
+        ///// </summary>
+        ///// <param name="obj">The object for which the property value
+        ///// is read.</param>
+        ///// <returns>The value of the StartPoint property of the specified object.</returns>
+        //public static Point? GetStartPoint(DependencyObject obj)
+        //{
+        //    return (Point?)obj.GetValue(StartPointProperty);
+        //}
 
-        /// <summary>
-        /// Sets the value of the StartPoint attached property
-        /// for a given dependency object. 
-        /// </summary>
-        /// <param name="obj">The object to which the property value
-        /// is written.</param>
-        /// <param name="value">Sets the StartPoint value of the specified object.</param>
-        public static void SetStartPoint(DependencyObject obj, Point? value)
-        {
-            obj.SetValue(StartPointProperty, value);
-        }
+        ///// <summary>
+        ///// Sets the value of the StartPoint attached property
+        ///// for a given dependency object. 
+        ///// </summary>
+        ///// <param name="obj">The object to which the property value
+        ///// is written.</param>
+        ///// <param name="value">Sets the StartPoint value of the specified object.</param>
+        //public static void SetStartPoint(DependencyObject obj, Point? value)
+        //{
+        //    obj.SetValue(StartPointProperty, value);
+        //}
 
-        /// <summary>
-        /// Identifies the StartPoint attached property.
-        /// </summary>
-        public static readonly DependencyProperty StartPointProperty = DependencyProperty.RegisterAttached(
-            StartPointPropertyName,
-            typeof(Point?),
-            typeof(DrawLineDragBehavior),
-            new UIPropertyMetadata(null));
-
+        ///// <summary>
+        ///// Identifies the StartPoint attached property.
+        ///// </summary>
+        //public static readonly DependencyProperty StartPointProperty = DependencyProperty.RegisterAttached(
+        //    StartPointPropertyName,
+        //    typeof(Point?),
+        //    typeof(DrawLineDragBehavior),
+        //    new UIPropertyMetadata(null));
+        
         #endregion
 
         #region DraggingLineAdorner

@@ -29,7 +29,7 @@ namespace DragAndDropMVVM.Demo.ViewModel
     /// See http://www.galasoft.ch/mvvm
     /// </para>
     /// </summary>
-    public class MainViewModel : ViewModelBase, IDragged//, IDragable, IDropable
+    public class MainViewModel : ViewModelBase  //, IDragged//, IDragable, IDropable
     {
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
@@ -268,12 +268,45 @@ namespace DragAndDropMVVM.Demo.ViewModel
             return true;
         }
 
+        ////public object DraggedDataContext
+        ////{
+        ////    get;
+
+        ////    set;
+        ////}
+
+        /// <summary>
+        /// The <see cref="DraggedDataContext" /> property's name.
+        /// </summary>
+        public const string DraggedDataContextPropertyName = "DraggedDataContext";
+
+        private object _draggedDataContext = false;
+
+        /// <summary>
+        /// Sets and gets the DraggedDataContext property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// This property's value is broadcasted by the MessengerInstance when it changes.
+        /// </summary>
         public object DraggedDataContext
         {
-            get;
+            get
+            {
+                return _draggedDataContext;
+            }
 
-            set;
+            set
+            {
+                if (_draggedDataContext == value)
+                {
+                    return;
+                }
+
+                var oldValue = _draggedDataContext;
+                _draggedDataContext = value;
+                RaisePropertyChanged(DraggedDataContextPropertyName, oldValue, value, true);
+            }
         }
+
 
         private RelayCommand<object> _deleteLineCommand;
 
