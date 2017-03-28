@@ -113,10 +113,13 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
                 {
                     return;
                 }
-
+#if PRISM
+                this.SetProperty(ref _draggedDataContext, value);
+#else
                 var oldValue = _draggedDataContext;
                 _draggedDataContext = value;
                 RaisePropertyChanged(DraggedDataContextPropertyName, oldValue, value, true);
+#endif
             }
         }
 
@@ -145,10 +148,13 @@ namespace Demo.YuriOnIce.Relationship.ViewModel
                 {
                     return;
                 }
-
+#if PRISM
+                this.SetProperty(ref _droppingDataContext, value);
+#else
                 var oldValue = _droppingDataContext;
                 _droppingDataContext = value;
                 RaisePropertyChanged(DroppingDataContextPropertyName, oldValue, value, true);
+#endif
             }
         }
 

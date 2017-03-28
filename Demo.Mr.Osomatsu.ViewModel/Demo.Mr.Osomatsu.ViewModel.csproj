@@ -39,10 +39,12 @@
     <Compile Include="GroupViewModel.cs" />
     <Compile Include="IClone.cs" />
     <Compile Include="IGroupModel.cs" />
+    <Compile Include="IPosition.cs" />
     <Compile Include="ITreeItemModel.cs" />
     <Compile Include="ListConnectionModel.cs" />
     <Compile Include="ListViewModel.cs" />
     <Compile Include="MainViewModel.cs" />
+    <Compile Include="NodeConnectorModel.cs" />
     <Compile Include="ProfileConnectorModel.cs" />
     <Compile Include="ProfileModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

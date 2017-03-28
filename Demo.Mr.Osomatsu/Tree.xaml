@@ -10,78 +10,113 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
-        <Style TargetType="Image">
-            <Setter Property="Opacity" Value="0.1" />
+
+        <Style TargetType="Line">
+            <Setter Property="Stroke" Value="Black" />
+            <Setter Property="StrokeThickness" Value="2" />
         </Style>
 
-        
-        
+            <Style TargetType="Image">
+                <Setter Property="Opacity" Value="0.1" />
+            </Style>
 
-        <DataTemplate x:Key="PalletTemplate">
-            <Grid b:DiagramElementDragBehavior.DragCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DragCommand}"
+
+
+
+            <DataTemplate x:Key="PalletTemplate">
+                <Grid b:DiagramElementDragBehavior.DragCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DragCommand}"
                   b:DiagramElementDragBehavior.DragCommandParameter="{Binding}">
-                <i:Interaction.Behaviors>
-                    <b:DiagramElementDragBehavior/>
-                </i:Interaction.Behaviors>
-                <Ellipse Width="40" Height="40" Stroke="{DynamicResource AccentDiagramBrush}" StrokeThickness="2"
+                    <i:Interaction.Behaviors>
+                        <b:DiagramElementDragBehavior/>
+                    </i:Interaction.Behaviors>
+                    <Ellipse Width="40" Height="40" Stroke="{DynamicResource AccentDiagramBrush}" StrokeThickness="2"
                          ToolTip="{Binding Name}">
-                    <Ellipse.Fill>
-                        <ImageBrush ImageSource="{Binding ImagePath}" Opacity="0.1"/>
-                    </Ellipse.Fill>
-                </Ellipse>
-            </Grid>
-        </DataTemplate>
+                        <Ellipse.Fill>
+                            <ImageBrush ImageSource="{Binding ImagePath}" Opacity="0.1"/>
+                        </Ellipse.Fill>
+                    </Ellipse>
+                </Grid>
+            </DataTemplate>
 
 
-        <DataTemplate DataType="{x:Type vm:ProfileConnectorModel}" >
-            <WrapPanel b:DiagramElementDragBehavior.DragCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DragCommand}"
-                    b:DiagramElementDragBehavior.DragCommandParameter="{Binding}"
-                    b:DiagramElementDropBehavior.DropCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DropCommand}"
-                    b:DiagramElementDropBehavior.DropCommandParameter="{Binding}">
+            <DataTemplate DataType="{x:Type vm:ProfileConnectorModel}" >
+                <!--<WrapPanel b:DiagramElementDragBehavior.DragCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DragCommand}"
+                       b:DiagramElementDragBehavior.DragCommandParameter="{Binding}"
+                       b:DiagramElementDropBehavior.DropCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DropCommand}"
+                       b:DiagramElementDropBehavior.DropCommandParameter="{Binding}"-->
+                <WrapPanel
+                       b:DrawLineDragBehavior.DragLineCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DragLineCommand}"
+                       b:DrawLineDragBehavior.DragLineCommandParameter="{Binding}"
+                       b:DrawLineDropBehavior.DropLineCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DropLineCommand}"
+                       b:DrawLineDropBehavior.DropLineCommandParameter="{Binding}"
+                       >
 
-                <i:Interaction.Behaviors>
-                    <b:DiagramElementDragBehavior/>
-                    <b:DiagramElementDropBehavior/>
-                </i:Interaction.Behaviors>
-                <Ellipse Width="25" Height="25" Stroke="{DynamicResource AccentDiagramBrush}" StrokeThickness="2"
+                    <i:Interaction.Behaviors>
+                        <!--<b:DiagramElementDragBehavior/>
+                    <b:DiagramElementDropBehavior/>-->
+                        <b:DrawLineDragBehavior />
+                        <b:DrawLineDropBehavior />
+                    </i:Interaction.Behaviors>
+                    <Ellipse Width="25" Height="25" Stroke="{DynamicResource AccentDiagramBrush}" StrokeThickness="2"
                          ToolTip="{Binding Name}">
-                    <Ellipse.Fill>
-                        <ImageBrush ImageSource="{Binding ImagePath}" Opacity="0.1"/>
-                    </Ellipse.Fill>
-                </Ellipse>
-                <TextBlock Text="{Binding Name}" />
-            </WrapPanel>
-        </DataTemplate>
+                        <Ellipse.Fill>
+                            <ImageBrush ImageSource="{Binding ImagePath}" Opacity="0.1"/>
+                        </Ellipse.Fill>
+                    </Ellipse>
+                    <TextBlock Text="{Binding Name}" />
+                </WrapPanel>
+            </DataTemplate>
 
-        <HierarchicalDataTemplate DataType="{x:Type vm:GroupModel}" ItemsSource="{Binding Children}">
-            <WrapPanel b:DiagramElementDragBehavior.DragCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DragCommand}"
-                    b:DiagramElementDragBehavior.DragCommandParameter="{Binding}"
-                    b:DiagramElementDropBehavior.DropCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DropCommand}"
-                    b:DiagramElementDropBehavior.DropCommandParameter="{Binding}">
+            <HierarchicalDataTemplate DataType="{x:Type vm:GroupModel}" ItemsSource="{Binding Children}">
+                <WrapPanel b:DiagramElementDragBehavior.DragCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DragCommand}"
+                       b:DiagramElementDragBehavior.DragCommandParameter="{Binding}"
+                       b:DiagramElementDropBehavior.DropCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DropCommand}"
+                       b:DiagramElementDropBehavior.DropCommandParameter="{Binding}">
 
-                <i:Interaction.Behaviors>
-                    <b:DiagramElementDragBehavior/>
-                    <b:DiagramElementDropBehavior/>
-                </i:Interaction.Behaviors>
+                    <i:Interaction.Behaviors>
+                        <b:DiagramElementDragBehavior/>
+                        <b:DiagramElementDropBehavior/>
+                    </i:Interaction.Behaviors>
 
-                <Ellipse Width="30" Height="30" 
+                    <Ellipse Width="30" Height="30" 
                                x:Name="recBorder"
                                Stroke="{DynamicResource AccentDiagramBrush}" StrokeThickness="2"
                          ToolTip="{Binding Name}">
-                    <Ellipse.Fill>
-                        <ImageBrush ImageSource="{Binding ImagePath}" Opacity="0.1"/>
-                    </Ellipse.Fill>
-                </Ellipse>
-                <TextBlock Text="{Binding Name}" />
-            </WrapPanel>
-            <HierarchicalDataTemplate.Triggers>
-                <DataTrigger Binding="{Binding Path=IsSelected}" Value="True">
-                    <Setter Property="Stroke" Value="{DynamicResource IsSelectedDiagramBrush}" TargetName="recBorder" />
-                </DataTrigger>
-            </HierarchicalDataTemplate.Triggers>
-        </HierarchicalDataTemplate>
+                        <Ellipse.Fill>
+                            <ImageBrush ImageSource="{Binding ImagePath}" Opacity="0.1"/>
+                        </Ellipse.Fill>
+                    </Ellipse>
+                    <TextBlock Text="{Binding Name}" />
+                </WrapPanel>
+                <HierarchicalDataTemplate.Triggers>
+                    <DataTrigger Binding="{Binding Path=IsSelected}" Value="True">
+                        <Setter Property="Stroke" Value="{DynamicResource IsSelectedDiagramBrush}" TargetName="recBorder" />
+                    </DataTrigger>
+                </HierarchicalDataTemplate.Triggers>
+            </HierarchicalDataTemplate>
 
+
+        <DataTemplate x:Key="ConnectionLineTemplate">
+            <Line X1="0" X2="{Binding RelativeSource={RelativeSource AncestorType=Canvas,Mode=FindAncestor}, Path=ActualWidth}"
+                  Y1="{Binding Path=Y1, Mode=TwoWay}" Y2="{Binding Path=Y2, Mode=TwoWay}" 
+                  Stroke="Black"
+                  StrokeThickness="2">     
+                <Line.InputBindings>
+                    <KeyBinding Gesture="Enter" 
+                                Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor},Path=DataContext.DoubleClickCommand}"
+                                CommandParameter="{Binding}"/>
+                    <KeyBinding Gesture="Delete"
+                                Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor},Path=DataContext.DeleteCommand}"
+                                CommandParameter="{Binding}"/>
+                    <MouseBinding Gesture="LeftDoubleClick"
+                                  Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor},Path=DataContext.DoubleClickCommand}"
+                                  CommandParameter="{Binding}"/>
+                </Line.InputBindings>
+            </Line>
+        </DataTemplate>
     </UserControl.Resources>
+
+    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="10*" />
@@ -98,9 +133,9 @@
 
         <ListView ItemsSource="{Binding PalletItems}" Grid.Row="1" ItemTemplate="{StaticResource PalletTemplate}"/>
 
-        <TreeView Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Group01}" 
+        <TreeView Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Path=Group01.Children}" 
                   b:DiagramElementDropBehavior.DropCommand="{Binding Path=DropCommand}"
-                  b:DiagramElementDropBehavior.DropCommandParameter="{Binding Path=ItemsSource, RelativeSource={RelativeSource Self}}">
+                  b:DiagramElementDropBehavior.DropCommandParameter="{Binding Path=Group01}">
             <i:Interaction.Behaviors>
                 <b:DiagramElementDropBehavior/>
             </i:Interaction.Behaviors>
@@ -109,80 +144,15 @@
                 <Style TargetType="{x:Type TreeViewItem}">
                     <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}" />
                     <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay}" />
-                    <!--<Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type TreeViewItem}">
-
-                                <WrapPanel Orientation="Vertical" >
-                                    <ContentPresenter ContentSource="Header" />
-                                    <Border BorderBrush="Black" BorderThickness="2">
-                                   
-
-                                    <ItemsPresenter Margin="25 0 0 0" />
-                                </Border>
-                                </WrapPanel>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>-->
                 </Style>
-
-
-                <!--<DataTemplate DataType="{x:Type vm:ProfileModel}" >
-                    <WrapPanel b:DiagramElementDragBehavior.DragCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DragCommand}"
-                    b:DiagramElementDragBehavior.DragCommandParameter="{Binding}"
-                    b:DiagramElementDropBehavior.DropCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DropCommand}"
-                    b:DiagramElementDropBehavior.DropCommandParameter="{Binding}">
-
-                        <i:Interaction.Behaviors>
-                            <b:DiagramElementDragBehavior/>
-                            <b:DiagramElementDropBehavior/>
-                        </i:Interaction.Behaviors>
-                        <Ellipse Width="25" Height="25" Stroke="{DynamicResource AccentDiagramBrush}" StrokeThickness="2"
-                         ToolTip="{Binding Name}">
-                            <Ellipse.Fill>
-                                <ImageBrush ImageSource="{Binding ImagePath}" Opacity="0.1"/>
-                            </Ellipse.Fill>
-                        </Ellipse>
-                        <TextBlock Text="{Binding Name}" />
-                    </WrapPanel>
-                </DataTemplate>
-
-                <HierarchicalDataTemplate DataType="{x:Type vm:GroupModel}" ItemsSource="{Binding Children}">
-                    <WrapPanel b:DiagramElementDragBehavior.DragCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DragCommand}"
-                    b:DiagramElementDragBehavior.DragCommandParameter="{Binding}"
-                    b:DiagramElementDropBehavior.DropCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DropCommand}"
-                    b:DiagramElementDropBehavior.DropCommandParameter="{Binding}">
-
-                        <i:Interaction.Behaviors>
-                            <b:DiagramElementDragBehavior/>
-                            <b:DiagramElementDropBehavior/>
-                        </i:Interaction.Behaviors>
-
-                        <Ellipse Width="30" Height="30" 
-                               x:Name="recBorder"
-                               Stroke="{DynamicResource AccentDiagramBrush}" StrokeThickness="2"
-                         ToolTip="{Binding Name}">
-                            <Ellipse.Fill>
-                                <ImageBrush ImageSource="{Binding ImagePath}" Opacity="0.1"/>
-                            </Ellipse.Fill>
-                        </Ellipse>
-                        <TextBlock Text="{Binding Name}" />
-                    </WrapPanel>
-                    <HierarchicalDataTemplate.Triggers>
-                        <DataTrigger Binding="{Binding Path=IsSelected}" Value="True">
-                            <Setter Property="Stroke" Value="{DynamicResource IsSelectedDiagramBrush}" TargetName="recBorder" />
-                        </DataTrigger>
-                    </HierarchicalDataTemplate.Triggers>
-                </HierarchicalDataTemplate>-->
-
 
             </TreeView.Resources>
 
         </TreeView>
         <!--<TreeView Grid.Row="1" Grid.Column="2" ItemsSource="{Binding Group02}"></TreeView>-->
-        <TreeView Grid.Row="1" Grid.Column="3" ItemsSource="{Binding Group02}"
+        <TreeView Grid.Row="1" Grid.Column="3" ItemsSource="{Binding Path=Group02.Children}"
                   b:DiagramElementDropBehavior.DropCommand="{Binding Path=DropCommand}"
-                  b:DiagramElementDropBehavior.DropCommandParameter="{Binding Path=ItemsSource, RelativeSource={RelativeSource Self}}">
+                  b:DiagramElementDropBehavior.DropCommandParameter="{Binding Path=Group02}">
             <i:Interaction.Behaviors>
                 <b:DiagramElementDropBehavior/>
             </i:Interaction.Behaviors>
@@ -215,21 +185,7 @@
                                     <Ellipse x:Name="Expanded" Fill="RosyBrown" Width="5" Height="15" Visibility="Hidden">
 
                                     </Ellipse>
-                                    <!--<Path x:Name="Collapsed" HorizontalAlignment="Left" VerticalAlignment="Center"
-                                          Margin="1,1,1,1"
-                                          Data="M 4 0 L 8 4 L 4 8 Z">
-                                        <Path.Fill>
-                                            <SolidColorBrush Color="{DynamicResource DiagramColor1}" />
-                                        </Path.Fill>
-                                    </Path>
-                                    <Path x:Name="Expanded" HorizontalAlignment="Left" VerticalAlignment="Center"
-                                          Margin="1,1,1,1"
-                                          Data="M 0 4 L 8 4 L 4 8 Z"
-                                          Visibility="Hidden">
-                                        <Path.Fill>
-                                            <SolidColorBrush Color="{DynamicResource DiagramColor2}" />
-                                        </Path.Fill>
-                                    </Path>-->
+                         
                                 </Grid>
                             </ControlTemplate>
                         </Setter.Value>
@@ -250,37 +206,6 @@
                         </Setter.Value>
                     </Setter>
                 </Style>
-
-
-
-
-                <!--<HierarchicalDataTemplate DataType="{x:Type vm:GroupModel}" ItemsSource="{Binding Children}">
-                    <WrapPanel b:DiagramElementDragBehavior.DragCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DragCommand}"
-                    b:DiagramElementDragBehavior.DragCommandParameter="{Binding}"
-                    b:DiagramElementDropBehavior.DropCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DropCommand}"
-                    b:DiagramElementDropBehavior.DropCommandParameter="{Binding}">
-
-                        <i:Interaction.Behaviors>
-                            <b:DiagramElementDragBehavior/>
-                            <b:DiagramElementDropBehavior/>
-                        </i:Interaction.Behaviors>
-
-                        <Ellipse Width="30" Height="30" 
-                               x:Name="recBorder"
-                               Stroke="{DynamicResource AccentDiagramBrush}" StrokeThickness="2"
-                         ToolTip="{Binding Name}">
-                            <Ellipse.Fill>
-                                <ImageBrush ImageSource="{Binding ImagePath}" Opacity="0.1"/>
-                            </Ellipse.Fill>
-                        </Ellipse>
-                        <TextBlock Text="{Binding Name}" />
-                    </WrapPanel>
-                    <HierarchicalDataTemplate.Triggers>
-                        <DataTrigger Binding="{Binding Path=IsSelected}" Value="True">
-                            <Setter Property="Stroke" Value="{DynamicResource IsSelectedDiagramBrush}" TargetName="recBorder" />
-                        </DataTrigger>
-                    </HierarchicalDataTemplate.Triggers>
-                </HierarchicalDataTemplate>-->
 
 
                 <Style x:Key="{x:Type TreeViewItem}"
@@ -351,7 +276,7 @@
                                             <ContentPresenter x:Name="PART_Header"
                                                           ContentSource="Header"
                                                           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
-                                        <!--</WrapPanel>-->
+                                       
                                     </Border>
                                     <ItemsPresenter x:Name="ItemsHost"
                                                     Grid.Row="1"
@@ -386,8 +311,31 @@
 
         </TreeView>
 
+        <ItemsControl Grid.Column="2" Grid.Row="1" ItemsSource="{Binding NodeConnectors}" ItemTemplate="{StaticResource ConnectionLineTemplate}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="AntiqueWhite" x:Name="ItemCanvas" Focusable="False" FocusManager.IsFocusScope="True">
+                        <!--<Canvas.InputBindings>
+                            <KeyBinding Gesture="Enter" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor},Path=DataContext.DoubleClickCommand}"/>
+                            <KeyBinding Gesture="Delete" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor},Path=DataContext.DeleteCommand}"/>
+                        </Canvas.InputBindings>-->
+                    </Canvas>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemContainerStyle>
+                <Style>
+                    <Setter Property="Canvas.Top" Value="0" />
+                    <Setter Property="Canvas.Left" Value="0" />
+                    <Setter Property="FocusManager.IsFocusScope"  Value="True" />
+                </Style>
+            </ItemsControl.ItemContainerStyle>
+        </ItemsControl>
+
+        <!--<Canvas x:Name="TreeLines" Background="AliceBlue" Panel.ZIndex="-99" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3"/>-->
+
         <Image Source="/Demo.Mr.Osomatsu;component/ImagesResource/m_brothers_01.png" Grid.Column="1"/>
         <Image Source="/Demo.Mr.Osomatsu;component/ImagesResource/m_brothers_02.png" Grid.Column="2"/>
         <Image Source="/Demo.Mr.Osomatsu;component/ImagesResource/m_brothers_03.png" Grid.Column="3"/>
     </Grid>
+
 </UserControl>

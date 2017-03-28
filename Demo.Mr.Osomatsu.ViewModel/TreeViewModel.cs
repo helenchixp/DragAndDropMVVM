@@ -73,7 +73,7 @@ namespace Demo.Mr.Osomatsu.ViewModel
         }
         #endregion
 
-        #region ObservableCollections
+        #region RaiseProperty
         /// <summary>
         /// The <see cref="PalletItems" /> property's name.
         /// </summary>
@@ -111,18 +111,18 @@ namespace Demo.Mr.Osomatsu.ViewModel
             /// </summary>
         public const string Group01PropertyName = "Group01";
 
-        private ObservableCollection<ITreeItemModel> _group01 = null;
+        private GroupModel _group01 = new GroupModel();
 
         /// <summary>
         /// Sets and gets the Group01 property.
         /// Changes to that property's value raise the PropertyChanged event. 
         /// This property's value is broadcasted by the MessengerInstance when it changes.
         /// </summary>
-        public ObservableCollection<ITreeItemModel> Group01
+        public GroupModel Group01
         {
             get
             {
-                return _group01 ?? (_group01 = new ObservableCollection<ITreeItemModel>());
+                return _group01;
             }
 
             set
@@ -137,25 +137,23 @@ namespace Demo.Mr.Osomatsu.ViewModel
                 RaisePropertyChanged(Group01PropertyName, oldValue, value, true);
             }
         }
-
-
         /// <summary>
             /// The <see cref="Group02" /> property's name.
             /// </summary>
         public const string Group02PropertyName = "Group02";
 
-        private ObservableCollection<ITreeItemModel> _group02 = null;
+        private GroupModel _group02 = new GroupModel();
 
         /// <summary>
         /// Sets and gets the Group02 property.
         /// Changes to that property's value raise the PropertyChanged event. 
         /// This property's value is broadcasted by the MessengerInstance when it changes.
         /// </summary>
-        public ObservableCollection<ITreeItemModel> Group02
+        public GroupModel Group02
         {
             get
             {
-                return _group02 ?? (_group02 = new ObservableCollection<ITreeItemModel>());
+                return _group02;
             }
 
             set
@@ -171,6 +169,138 @@ namespace Demo.Mr.Osomatsu.ViewModel
             }
         }
 
+        ///// <summary>
+        //    /// The <see cref="Group01" /> property's name.
+        //    /// </summary>
+        //public const string Group01PropertyName = "Group01";
+
+        //private ObservableCollection<ITreeItemModel> _group01 = null;
+
+        ///// <summary>
+        ///// Sets and gets the Group01 property.
+        ///// Changes to that property's value raise the PropertyChanged event. 
+        ///// This property's value is broadcasted by the MessengerInstance when it changes.
+        ///// </summary>
+        //public ObservableCollection<ITreeItemModel> Group01
+        //{
+        //    get
+        //    {
+        //        return _group01 ?? (_group01 = new ObservableCollection<ITreeItemModel>());
+        //    }
+
+        //    set
+        //    {
+        //        if (_group01 == value)
+        //        {
+        //            return;
+        //        }
+
+        //        var oldValue = _group01;
+        //        _group01 = value;
+        //        RaisePropertyChanged(Group01PropertyName, oldValue, value, true);
+        //    }
+        //}
+
+
+        ///// <summary>
+        //    /// The <see cref="Group02" /> property's name.
+        //    /// </summary>
+        //public const string Group02PropertyName = "Group02";
+
+        //private ObservableCollection<ITreeItemModel> _group02 = null;
+
+        ///// <summary>
+        ///// Sets and gets the Group02 property.
+        ///// Changes to that property's value raise the PropertyChanged event. 
+        ///// This property's value is broadcasted by the MessengerInstance when it changes.
+        ///// </summary>
+        //public ObservableCollection<ITreeItemModel> Group02
+        //{
+        //    get
+        //    {
+        //        return _group02 ?? (_group02 = new ObservableCollection<ITreeItemModel>());
+        //    }
+
+        //    set
+        //    {
+        //        if (_group02 == value)
+        //        {
+        //            return;
+        //        }
+
+        //        var oldValue = _group02;
+        //        _group02 = value;
+        //        RaisePropertyChanged(Group02PropertyName, oldValue, value, true);
+        //    }
+        //}
+
+
+        /// <summary>
+        /// The <see cref="NodeConnectors" /> property's name.
+        /// </summary>
+        public const string NodeConnectorsPropertyName = "NodeConnectors";
+
+        private ObservableCollection<NodeConnectorModel> _nodeConnectors = new ObservableCollection<NodeConnectorModel>();
+
+        /// <summary>
+        /// Sets and gets the NodeConnectors property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// This property's value is broadcasted by the MessengerInstance when it changes.
+        /// </summary>
+        public ObservableCollection<NodeConnectorModel> NodeConnectors
+        {
+            get
+            {
+                return _nodeConnectors;
+            }
+
+            set
+            {
+                if (_nodeConnectors == value)
+                {
+                    return;
+                }
+
+                var oldValue = _nodeConnectors;
+                _nodeConnectors = value;
+                RaisePropertyChanged(NodeConnectorsPropertyName, oldValue, value, true);
+            }
+        }
+
+        #endregion
+
+        #region Dragged Object
+        /// <summary>
+        /// The <see cref="DraggedDepatureModel" /> property's name.
+        /// </summary>
+        public const string DraggedDepatureModelPropertyName = "DraggedDepatureModel";
+
+        private object _draggedDepatureModel = null;
+
+        /// <summary>
+        /// Sets and gets the DraggedDepatureModel property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// This property's value is broadcasted by the MessengerInstance when it changes.
+        /// </summary>
+        public object DraggedDepatureModel
+        {
+            get
+            {
+                return _draggedDepatureModel;
+            }
+
+            set
+            {
+                if (_draggedDepatureModel == value)
+                {
+                    return;
+                }
+
+                var oldValue = _draggedDepatureModel;
+                _draggedDepatureModel = value;
+                RaisePropertyChanged(DraggedDepatureModelPropertyName, oldValue, value, true);
+            }
+        }
         #endregion
 
         #region Command
@@ -218,44 +348,70 @@ namespace Demo.Mr.Osomatsu.ViewModel
         private void ExecuteDropCommand(object parameter)
         {
             var dragitem = (_dragItem as IClone<ITreeItemModel>).Clone();
-            dragitem.GroupNo = (parameter as ITreeItemModel)?.No ?? -1;
-            dragitem.Parent = (parameter as IGroupModel);
 
-            if (parameter is ProfileConnectorModel &&
-                _dragItem is ProfileConnectorModel)
+            if (parameter is GroupModel)
             {
+                dragitem.Parent = (parameter as IGroupModel);
 
-            }
-            else if ((parameter is GroupModel) &&
-              (parameter as GroupModel).No > 100 &&
-              (_dragItem.No < 100 && _dragItem.No > 10))
-            {
+                double ypos = dragitem.Parent.Y;
+                if ((parameter as GroupModel).Children.Any())
+                {
+                    ypos += (parameter as GroupModel).Children[(parameter as GroupModel).Children.Count - 1].Y +
+                        (parameter as GroupModel).Children[(parameter as GroupModel).Children.Count - 1].Interval/2 + 
+                        dragitem.Interval /2;
+                }
+                dragitem.Y = ypos;
                 (parameter as GroupModel).Children.Add(dragitem);
             }
-            else if ((parameter is GroupModel) &&
-                (parameter as GroupModel).No < 100)
-            {
-                if (_dragItem.No < 10)
-                {
-                    (parameter as GroupModel).Children.Add(dragitem);
-                }
-                else if (_dragItem.No < 100)
-                {
-                    int idx = (parameter as GroupModel).Parent.Children.IndexOf(parameter as GroupModel);
-                    dragitem.Parent = (parameter as GroupModel).Parent;
-                    dragitem.GroupNo = ((parameter as GroupModel).Parent as ITreeItemModel).No;
-                    (parameter as GroupModel).Parent.Children.Insert(idx, dragitem);
-                }
-            }
-            else if (parameter is ObservableCollection<ITreeItemModel>)
-            {
-                (parameter as ObservableCollection<ITreeItemModel>).Add(dragitem);
-            }
 
-            if (_dragItem.Parent != null && _dragItem.Parent.Children != null)
-            {
-                _dragItem.Parent.Children.Remove(_dragItem);
-            }
+            ////var dragitem = (_dragItem as IClone<ITreeItemModel>).Clone();
+            ////dragitem.GroupNo = (parameter as ITreeItemModel)?.No ?? -1;
+            ////dragitem.Parent = (parameter as IGroupModel);
+
+            ////if (parameter is ProfileConnectorModel &&
+            ////    _dragItem is ProfileConnectorModel)
+            ////{
+
+            ////}
+            ////else if ((parameter is GroupModel) &&
+            ////  (parameter as GroupModel).No > 100 &&
+            ////  (_dragItem.No < 100 && _dragItem.No > 10))
+            ////{
+            ////    double posY = ((parameter as GroupModel).Parent as IPosition).Y;
+
+            ////    posY += ((parameter as GroupModel).Children?.Count ?? 0) * 30;
+            ////    dragitem.Y = posY;
+            ////    (parameter as GroupModel).Children.Add(dragitem);
+            ////}
+            ////else if ((parameter is GroupModel) &&
+            ////    (parameter as GroupModel).No < 100)
+            ////{
+            ////    if (_dragItem.No < 10)
+            ////    {
+            ////        (parameter as GroupModel).Children.Add(dragitem);
+            ////    }
+            ////    else if (_dragItem.No < 100)
+            ////    {
+            ////        int idx = (parameter as GroupModel).Parent.Children.IndexOf(parameter as GroupModel);
+            ////        dragitem.Parent = (parameter as GroupModel).Parent;
+            ////        dragitem.GroupNo = ((parameter as GroupModel).Parent as ITreeItemModel).No;
+            ////        (parameter as GroupModel).Parent.Children.Insert(idx, dragitem);
+            ////    }
+            ////}
+            ////else if (parameter is ObservableCollection<ITreeItemModel>)
+            ////{
+            ////    if (dragitem is IPosition)
+            ////    {
+            ////        (dragitem as IPosition).Y = (parameter as ObservableCollection<ITreeItemModel>).Count * 30;
+            ////    }
+
+            ////    (parameter as ObservableCollection<ITreeItemModel>).Add(dragitem);
+            ////}
+
+            ////if (_dragItem.Parent != null && _dragItem.Parent.Children != null)
+            ////{
+            ////    _dragItem.Parent.Children.Remove(_dragItem);
+            ////}
 
             _dragItem = null;
         }
@@ -264,53 +420,121 @@ namespace Demo.Mr.Osomatsu.ViewModel
         {
             var result = false;
 
-            if (parameter is ProfileConnectorModel && 
-                _dragItem is ProfileConnectorModel)
-            {
-                result = true;
-            }
-            else if ((parameter is GroupModel) && 
-                (parameter as GroupModel).No > 100 &&
-                (_dragItem.No < 100 && _dragItem.No > 10))
+            if (parameter is GroupModel)
             {
                 result = !(parameter as GroupModel).Children.Any(child => child.No.Equals(_dragItem.No));
             }
-            else if ((parameter is GroupModel) &&
-                (parameter as GroupModel).No < 100)
-            {
-                if (_dragItem.No < 10)
-                {
-                    result = !(parameter as GroupModel).Children.Any(child => child.No.Equals(_dragItem.No));
-                }
-                else if (_dragItem.No < 100)
-                {
-                    result = !((parameter as GroupModel).Parent.Children.Any(child => child.No.Equals(_dragItem.No)));
-                }
-            }
-            else if (parameter is ObservableCollection<ITreeItemModel>)
-            {
-                if (_dragItem is GroupModel && _dragItem.No >= 100)
-                {
-                    result = !(parameter as ObservableCollection<ITreeItemModel>).Any(item => item.No.Equals(_dragItem.No));
-                }
-                else
-                {
-                    foreach (var root in (parameter as ObservableCollection<ITreeItemModel>))
-                    {
-                        if (!((root as GroupModel)?.Children?.Any(child => child.No.Equals(_dragItem.No)) ?? false))
-                        {
-                            result = false;
-                            break;
-                        }
-                    }
-                }
+
+            ////////if (parameter is ProfileConnectorModel &&
+            ////////    _dragItem is ProfileConnectorModel)
+            ////////{
+            ////////    result = true;
+            ////////}
+            ////////else if ((parameter is GroupModel) &&
+            ////////    (parameter as GroupModel).No > 100 &&
+            ////////    (_dragItem.No < 100 && _dragItem.No > 10))
+            ////////{
+            ////////    result = !(parameter as GroupModel).Children.Any(child => child.No.Equals(_dragItem.No));
+            ////////}
+            ////////else if ((parameter is GroupModel) &&
+            ////////    (parameter as GroupModel).No < 100)
+            ////////{
+            ////////    if (_dragItem.No < 10)
+            ////////    {
+            ////////        result = !(parameter as GroupModel).Children.Any(child => child.No.Equals(_dragItem.No));
+            ////////    }
+            ////////    else if (_dragItem.No < 100)
+            ////////    {
+            ////////        result = !((parameter as GroupModel).Parent.Children.Any(child => child.No.Equals(_dragItem.No)));
+            ////////    }
+            ////////}
+            ////////else if (parameter is ObservableCollection<ITreeItemModel>)
+            ////////{
+            ////////    if (_dragItem is GroupModel && _dragItem.No >= 100)
+            ////////    {
+            ////////        result = !(parameter as ObservableCollection<ITreeItemModel>).Any(item => item.No.Equals(_dragItem.No));
+            ////////    }
+            ////////    else
+            ////////    {
+            ////////        foreach (var root in (parameter as ObservableCollection<ITreeItemModel>))
+            ////////        {
+            ////////            if (!((root as GroupModel)?.Children?.Any(child => child.No.Equals(_dragItem.No)) ?? false))
+            ////////            {
+            ////////                result = false;
+            ////////                break;
+            ////////            }
+            ////////        }
+            ////////    }
 
 
-            }
+            ////////}
 
             return result;
         }
 
+
+        private RelayCommand<ProfileConnectorModel> _dragLineCommand;
+
+        /// <summary>
+        /// Gets the DragLineCommand.
+        /// </summary>
+        public RelayCommand<ProfileConnectorModel> DragLineCommand
+        {
+            get
+            {
+                return _dragLineCommand ?? (_dragLineCommand = new RelayCommand<ProfileConnectorModel>(
+                    ExecuteDragLineCommand,
+                    CanExecuteDragLineCommand));
+            }
+        }
+
+        private void ExecuteDragLineCommand(ProfileConnectorModel parameter)
+        {
+            _dragItem = parameter;
+        }
+
+        private bool CanExecuteDragLineCommand(ProfileConnectorModel parameter)
+        {
+            return true;
+        }
+
+
+        private RelayCommand<ProfileConnectorModel> _dropLineCommand;
+
+        /// <summary>
+        /// Gets the DropLineCommand.
+        /// </summary>
+        public RelayCommand<ProfileConnectorModel> DropLineCommand
+        {
+            get
+            {
+                return _dropLineCommand ?? (_dropLineCommand = new RelayCommand<ProfileConnectorModel>(
+                    ExecuteDropLineCommand,
+                    CanExecuteDropLineCommand));
+            }
+        }
+
+        private void ExecuteDropLineCommand(ProfileConnectorModel parameter)
+        {
+            NodeConnectors.Add(new NodeConnectorModel()
+            {
+                DepartureNode= _dragItem as ProfileConnectorModel,
+                ArrivalNode = parameter,
+            });
+        }
+
+        private bool CanExecuteDropLineCommand(ProfileConnectorModel parameter)
+        {
+
+            if (_dragItem is ProfileConnectorModel)
+            {
+                return (_dragItem as ProfileConnectorModel).GetRoot() != parameter.GetRoot();
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         #endregion
 
