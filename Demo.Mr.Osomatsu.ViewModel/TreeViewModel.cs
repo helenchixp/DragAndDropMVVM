@@ -353,14 +353,14 @@ namespace Demo.Mr.Osomatsu.ViewModel
             {
                 dragitem.Parent = (parameter as IGroupModel);
 
-                double ypos = dragitem.Parent.Y;
-                if ((parameter as GroupModel).Children.Any())
-                {
-                    ypos += (parameter as GroupModel).Children[(parameter as GroupModel).Children.Count - 1].Y +
-                        (parameter as GroupModel).Children[(parameter as GroupModel).Children.Count - 1].Interval/2 + 
-                        dragitem.Interval /2;
-                }
-                dragitem.Y = ypos;
+                //////double ypos = dragitem.Parent.Y;
+                //////if ((parameter as GroupModel).Children.Any())
+                //////{
+                //////    ypos += (parameter as GroupModel).Children[(parameter as GroupModel).Children.Count - 1].Y +
+                //////        (parameter as GroupModel).Children[(parameter as GroupModel).Children.Count - 1].Interval/2 + 
+                //////        dragitem.Interval /2;
+                //////}
+                //////dragitem.Y = ypos;
                 (parameter as GroupModel).Children.Add(dragitem);
             }
 
@@ -491,6 +491,8 @@ namespace Demo.Mr.Osomatsu.ViewModel
         private void ExecuteDragLineCommand(ProfileConnectorModel parameter)
         {
             _dragItem = parameter;
+
+            System.Diagnostics.Debug.WriteLine($"   _dragItem.Y - {_dragItem.Y} ");
         }
 
         private bool CanExecuteDragLineCommand(ProfileConnectorModel parameter)
@@ -516,6 +518,9 @@ namespace Demo.Mr.Osomatsu.ViewModel
 
         private void ExecuteDropLineCommand(ProfileConnectorModel parameter)
         {
+            parameter.Departures.Add(_dragItem as ProfileConnectorModel);
+            (_dragItem as ProfileConnectorModel).Arrivals.Add(parameter);
+
             NodeConnectors.Add(new NodeConnectorModel()
             {
                 DepartureNode= _dragItem as ProfileConnectorModel,

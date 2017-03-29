@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Demo.Mr.Osomatsu.ViewModel
 {
-    public class ProfileConnectorModel : ProfileModel, ITreeItemModel, IPosition, IClone<ITreeItemModel>
+    public class ProfileConnectorModel : ProfileModel, ITreeItemModel, IClone<ITreeItemModel>
     {
         public IGroupModel Parent { get; set; }
 
@@ -16,9 +16,74 @@ namespace Demo.Mr.Osomatsu.ViewModel
             return (ProfileConnectorModel)base.Clone();
         }
 
-        public ObservableCollection<ProfileConnectorModel> Departures { get; set; }
+        /// <summary>
+        /// The <see cref="Departures" /> property's name.
+        /// </summary>
+        public const string DeparturesPropertyName = "Departures";
 
-        public ObservableCollection<ProfileConnectorModel> Arrivals { get; set; }
+        private ObservableCollection<ProfileConnectorModel> _departures = null;
+
+        /// <summary>
+        /// Sets and gets the Departures property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// This property's value is broadcasted by the MessengerInstance when it changes.
+        /// </summary>
+        public ObservableCollection<ProfileConnectorModel>  Departures
+        {
+            get
+            {
+                return (_departures ?? (_departures = new ObservableCollection<ProfileConnectorModel>()));
+            }
+
+            set
+            {
+                if (_departures == value)
+                {
+                    return;
+                }
+
+                var oldValue = _departures;
+                _departures = value;
+                RaisePropertyChanged(DeparturesPropertyName, oldValue, value, true);
+            }
+        }
+
+
+        /// <summary>
+        /// The <see cref="Arrivals" /> property's name.
+        /// </summary>
+        public const string ArrivalsPropertyName = "Arrivals";
+
+        private ObservableCollection<ProfileConnectorModel> _arrivals = null;
+
+        /// <summary>
+        /// Sets and gets the Arrivals property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// This property's value is broadcasted by the MessengerInstance when it changes.
+        /// </summary>
+        public ObservableCollection<ProfileConnectorModel>  Arrivals
+        {
+            get
+            {
+                return (_arrivals ?? (_arrivals = new ObservableCollection<ProfileConnectorModel>()));
+            }
+
+            set
+            {
+                if (_arrivals == value)
+                {
+                    return;
+                }
+
+                var oldValue = _arrivals;
+                _arrivals = value;
+                RaisePropertyChanged(ArrivalsPropertyName, oldValue, value, true);
+            }
+        }
+
+        //public ObservableCollection<ProfileConnectorModel> Departures { get; set; }
+
+        //public ObservableCollection<ProfileConnectorModel> Arrivals { get; set; }
 
         /// <summary>
             /// The <see cref="X" /> property's name.
@@ -68,7 +133,9 @@ namespace Demo.Mr.Osomatsu.ViewModel
         {
             get
             {
-                return _y == 0.0 ? (_y += Parent.Y + _interval/ 2) : _y ;
+                //return _y == 0.0 ? (_y = GetYPosition(this)) : _y;
+                return (_y = GetYPosition(this));
+                //                return _y == 0.0 ? (_y += Parent.Y + _interval/ 2) : _y ;
             }
 
             set
@@ -121,6 +188,53 @@ namespace Demo.Mr.Osomatsu.ViewModel
         public IGroupModel GetRoot()
         {
             return Parent?.GetRoot();
+        }
+
+
+        private double GetYPosition(ITreeItemModel current)
+        {
+            //var parentBottom = (current.Parent?.Y ?? 0.0) + (current.Parent?.Interval / 2 ?? 0.0);
+
+            var parentBottom = 0.0;
+
+            if ((current.Parent?.Y ?? 0.0) > 0.0)
+            {
+                parentBottom = current.Parent.Y + current.Parent.Interval / 2;
+            }
+
+
+            var brotherY = parentBottom;
+
+            if (current.Parent?.IsExpanded ?? false)
+            {
+                foreach (var brother in current.Parent.Children)
+                {
+
+                    if (brother == current)
+                    {
+                        return brotherY + current.Interval / 2;
+                    }
+                    else
+                    {
+                        brotherY += brother.Interval;
+                        if ((brother is GroupModel) && (brother as GroupModel).IsExpanded)
+                        {
+                            foreach (var cousin in (brother as GroupModel).Children)
+                            {
+                                brotherY = GetYPosition(cousin) + cousin.Interval / 2;
+                            }
+                        }
+                    }
+                }
+            }
+            return parentBottom;
+        }
+
+
+        public void RefreshByExtended()
+        {
+            _y = GetYPosition(this);
+            RaisePropertyChanged(YPropertyName);
         }
     }
 }

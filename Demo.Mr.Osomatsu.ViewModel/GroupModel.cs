@@ -8,7 +8,7 @@ using GalaSoft.MvvmLight;
 
 namespace Demo.Mr.Osomatsu.ViewModel
 {
-    public class GroupModel : ViewModelBase, ITreeItemModel, IGroupModel, IClone<ITreeItemModel>
+    public class GroupModel : ViewModelBase, IGroupModel, IClone<ITreeItemModel>
     {
 
         /// <summary>
@@ -134,7 +134,11 @@ namespace Demo.Mr.Osomatsu.ViewModel
 
                 var oldValue = _isExpanded;
                 _isExpanded = value;
-                ResetPosition();
+
+                // Y = GetYPosition(this);
+
+                RefreshByExtended();
+
                 RaisePropertyChanged(IsExpandedPropertyName, oldValue, value, true);
             }
         }
@@ -238,9 +242,8 @@ namespace Demo.Mr.Osomatsu.ViewModel
         {
             get
             {
-                return _y == 0.0 ?
-                    (_y = ((Parent?.Y ?? 0.0) + (Parent?.Interval ??0.0) /2) + _interval/2) 
-                    : _y;
+                return (_y = GetYPosition(this));
+
             }
 
             set
@@ -250,8 +253,13 @@ namespace Demo.Mr.Osomatsu.ViewModel
                     return;
                 }
 
+               
+
                 var oldValue = _y;
                 _y = value;
+
+
+
                 RaisePropertyChanged(YPropertyName, oldValue, value, true);
             }
         }
@@ -289,18 +297,45 @@ namespace Demo.Mr.Osomatsu.ViewModel
             }
         }
 
-        private void ResetPosition()
+
+        private double GetYPosition(ITreeItemModel current)
         {
-            if(_isExpanded)
-            {
+            var parentBottom = 0.0;
 
-            }
-            else
+            if((current.Parent?.Y ?? 0.0) >0.0)
             {
-
+                parentBottom = current.Parent.Y + current.Parent.Interval / 2;
             }
+           //// var parentBottom = (current.Parent?.Y ?? 0.0) + (current.Parent?.Interval / 2  ?? 0.0);
+
+           ////if (parentBottom > 0.0)
+           ////     parentBottom += current.Parent.Interval;
+
+            var brotherY = parentBottom;
+
+            if (current.Parent?.IsExpanded ?? false)
+            {
+                foreach (var brother in current.Parent.Children)
+                {
+                    if (brother == current)
+                    {
+                        return brotherY + current.Interval / 2;
+                    }
+                    else
+                    {
+                        brotherY += brother.Interval;
+                        if ((brother is GroupModel) && (brother as GroupModel).IsExpanded)
+                        {
+                            foreach (var cousin in (brother as GroupModel).Children)
+                            {
+                                brotherY = GetYPosition(cousin) + cousin.Interval / 2;
+                            }
+                        }
+                    }
+                }
+            }
+            return parentBottom;
         }
-
 
         public IGroupModel GetRoot()
         {
@@ -315,6 +350,15 @@ namespace Demo.Mr.Osomatsu.ViewModel
             }
 
             
+        }
+
+
+        public void RefreshByExtended()
+        {
+            foreach(var child in Children)
+            {
+                child.RefreshByExtended();
+            }
         }
     }
 }

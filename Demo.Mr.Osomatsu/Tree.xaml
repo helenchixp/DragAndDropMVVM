@@ -57,7 +57,7 @@
                         <b:DrawLineDragBehavior />
                         <b:DrawLineDropBehavior />
                     </i:Interaction.Behaviors>
-                    <Ellipse Width="25" Height="25" Stroke="{DynamicResource AccentDiagramBrush}" StrokeThickness="2"
+                <Ellipse Width="{Binding Interval}" Height="{Binding Interval}" Stroke="{DynamicResource AccentDiagramBrush}" StrokeThickness="2"
                          ToolTip="{Binding Name}">
                         <Ellipse.Fill>
                             <ImageBrush ImageSource="{Binding ImagePath}" Opacity="0.1"/>
@@ -78,7 +78,7 @@
                         <b:DiagramElementDropBehavior/>
                     </i:Interaction.Behaviors>
 
-                    <Ellipse Width="30" Height="30" 
+                <Ellipse Width="{Binding Interval}" Height="{Binding Interval}" 
                                x:Name="recBorder"
                                Stroke="{DynamicResource AccentDiagramBrush}" StrokeThickness="2"
                          ToolTip="{Binding Name}">

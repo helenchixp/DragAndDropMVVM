@@ -13,6 +13,8 @@ namespace Demo.Mr.Osomatsu.ViewModel
         IGroupModel Parent { get; set; }
 
         IGroupModel GetRoot();
+
+        void RefreshByExtended();
     }
 
 
