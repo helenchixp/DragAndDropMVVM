@@ -54,7 +54,9 @@ namespace DragAndDropMVVM.Behavior
 
                     if (dropcommand != null)
                     {
+
                         object parameter = GetDropLineCommandParameter(element);
+
 
 
                         Point point = e.GetPosition(element);
@@ -63,141 +65,128 @@ namespace DragAndDropMVVM.Behavior
                         Point adnPoint = adn.Position;
 
                         Canvas droppedcanvas = GetDroppedLineCanvas(element);
+
                         var originelement = (e.Data.GetData(typeof(UIElement)) as FrameworkElement);
 
                         //the object for ConnectionDiagram
                         ConnectionDiagramBase origindiagram = originelement as ConnectionDiagramBase;
                         ConnectionDiagramBase terminaldiagram = element as ConnectionDiagramBase;
 
-                        //if (droppedcanvas?.DataContext is IDragged)
-                        //{
-                        //    (droppedcanvas.DataContext as IDragged).DraggedDataContext =
-                        //        new Tuple<object, object>((originelement as ConnectionDiagramBase)?.DataContext, (element as ConnectionDiagramBase)?.DataContext);
-                        //}
-
                         SetDraggedDataContext(this.AssociatedObject, e.Data.GetData(DataFormats.Serializable));
 
-                        //SetDraggedDataContext(this.AssociatedObject, new Tuple<object, object>((originelement as ConnectionDiagramBase)?.DataContext, (element as ConnectionDiagramBase)?.DataContext));
-
-
-                        double x1, y1, x2, y2 = 0.0;
-
-                        if (ConnectorPositionType.Custom.Equals(origindiagram?.ConnectorPositionType))
+                        if (droppedcanvas != null)
                         {
-                            //the Ghost line position
-                            x1 = adn.GetLineStartEndPosition().Item1;
-                            y1 = adn.GetLineStartEndPosition().Item2;
-                        }
-                        else
-                        {
-                            x1 = WPFUtility.GetCenterPosition(originelement, droppedcanvas).X;
-                            y1 = WPFUtility.GetCenterPosition(originelement, droppedcanvas).Y;
-                        }
+                            double x1, y1, x2, y2 = 0.0;
 
-                        if (ConnectorPositionType.Custom.Equals(terminaldiagram?.ConnectorPositionType))
-                        {
-                            //the Ghost line position
-                            x2 = adn.GetLineStartEndPosition().Item3;
-                            y2 = adn.GetLineStartEndPosition().Item4;
-                        }
-                        else
-                        {
-                            x2 = WPFUtility.GetCenterPosition(element, droppedcanvas).X;
-                            y2 = WPFUtility.GetCenterPosition(element, droppedcanvas).Y;
-                        }
-
-                        //the line type of custom
-                        Type linetype = GetDropLineControlType(element);
-
-                        if (!WPFUtility.IsCorrectType(linetype, typeof(ConnectionLineBase)))
-                        {
-                            throw new ArgumentException($"DropLineControlType is base on {nameof(ConnectionLineBase)}.");
-                        }
-
-                        dynamic conline;
-
-
-                        if (!typeof(DrawLineThump).Equals(linetype))
-                        {
-                            conline = Activator.CreateInstance(linetype);
-
-                            if (conline is ConnectionLineBase)
+                            if (ConnectorPositionType.Custom.Equals(origindiagram?.ConnectorPositionType))
                             {
+                                //the Ghost line position
+                                x1 = adn.GetLineStartEndPosition().Item1;
+                                y1 = adn.GetLineStartEndPosition().Item2;
+                            }
+                            else
+                            {
+                                x1 = WPFUtility.GetCenterPosition(originelement, droppedcanvas).X;
+                                y1 = WPFUtility.GetCenterPosition(originelement, droppedcanvas).Y;
+                            }
 
-                                //(conline as ConnectionLineBase).OriginDiagram = origindiagram;
-                                //(conline as ConnectionLineBase).TerminalDiagram = terminaldiagram;
+                            if (ConnectorPositionType.Custom.Equals(terminaldiagram?.ConnectorPositionType))
+                            {
+                                //the Ghost line position
+                                x2 = adn.GetLineStartEndPosition().Item3;
+                                y2 = adn.GetLineStartEndPosition().Item4;
+                            }
+                            else
+                            {
+                                x2 = WPFUtility.GetCenterPosition(element, droppedcanvas).X;
+                                y2 = WPFUtility.GetCenterPosition(element, droppedcanvas).Y;
+                            }
 
-                                //if inherit from ILinePosition
-                                if (conline is ILinePosition)
+                            //the line type of custom
+                            Type linetype = GetDropLineControlType(element);
+
+                            if (!WPFUtility.IsCorrectType(linetype, typeof(ConnectionLineBase)))
+                            {
+                                throw new ArgumentException($"DropLineControlType is base on {nameof(ConnectionLineBase)}.");
+                            }
+
+                            dynamic conline;
+
+                            if (!typeof(DrawLineThump).Equals(linetype))
+                            {
+                                conline = Activator.CreateInstance(linetype);
+
+                                if (conline is ConnectionLineBase)
                                 {
-                                    (conline as ILinePosition).X1 = x1;
-                                    (conline as ILinePosition).Y1 = y1;
-                                    (conline as ILinePosition).X2 = x2;
-                                    (conline as ILinePosition).Y2 = y2;
+                                    //if inherit from ILinePosition
+                                    if (conline is ILinePosition)
+                                    {
+                                        (conline as ILinePosition).X1 = x1;
+                                        (conline as ILinePosition).Y1 = y1;
+                                        (conline as ILinePosition).X2 = x2;
+                                        (conline as ILinePosition).Y2 = y2;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                conline = new Line()
+                                {
+                                    X1 = x1,
+                                    Y1 = y1,
+                                    X2 = x2,
+                                    Y2 = y2,
+                                };
+
+                            }
+
+                            FrameworkElementAssist.SetOriginDiagram(conline, originelement);
+                            FrameworkElementAssist.SetTerminalDiagram(conline, element);
+
+
+                            //set the parameter
+                            //var dropparam = parameter ?? conline.DataContext;
+                            string lineuuid = $"{conline.GetType().Name}_{Guid.NewGuid().ToString()}";
+
+                            if (dropcommand.CanExecute(parameter))
+                            {
+                                Canvas.SetTop(conline, 0);
+                                Canvas.SetLeft(conline, 0);
+
+                                //add the relation of the diagram
+                                if (origindiagram != null)
+                                {
+                                    origindiagram.DepartureLines.Add(conline);
+                                }
+                                if (terminaldiagram != null)
+                                {
+                                    terminaldiagram.ArrivalLines.Add(conline);
+                                }
+
+                                //TODO:FrameworkElement????
+                                if (droppedcanvas != null)
+                                    droppedcanvas.Children.Add(conline);
+
+
+                                //Set the Dropping Line DataContext
+                                SetDroppingDataContext(this.AssociatedObject, conline.DataContext);
+
+                                dropcommand.Execute(parameter);
+
+                                if (conline is ConnectionLineBase)
+                                {
+                                    (conline as ConnectionLineBase).LineUUID = lineuuid;
+                                }
+                                else if (conline is Line)
+                                {
+                                    FrameworkElementAssist.SetLineUUID(conline, lineuuid);
                                 }
                             }
                         }
                         else
                         {
-                            conline = new Line()
-                            {
-                                X1 = x1,
-                                Y1 = y1,
-                                X2 = x2,
-                                Y2 = y2,
-                            };
-
-                        }
-
-                        FrameworkElementAssist.SetOriginDiagram(conline, originelement);
-                        FrameworkElementAssist.SetTerminalDiagram(conline, element);
-
-
-                        //set the parameter
-                        //var dropparam = parameter ?? conline.DataContext;
-                        string lineuuid = $"{conline.GetType().Name}_{Guid.NewGuid().ToString()}";
-
-                        if (dropcommand.CanExecute(parameter))
-                        {
-                            Canvas.SetTop(conline, 0);
-                            Canvas.SetLeft(conline, 0);
-
-                            //add the relation of the diagram
-                            if (origindiagram != null)
-                            {
-                                origindiagram.DepartureLines.Add(conline);
-                            }
-                            if (terminaldiagram != null)
-                            {
-                                terminaldiagram.ArrivalLines.Add(conline);
-                            }
-
-                            //TODO:FrameworkElement????
-                            if (droppedcanvas != null)
-                                droppedcanvas.Children.Add(conline);
-
-
-                            //Set the Dropping Line DataContext
-                            SetDroppingDataContext(this.AssociatedObject, conline.DataContext);
-
                             dropcommand.Execute(parameter);
-
-                            if (conline is ConnectionLineBase)
-                            {
-                                (conline as ConnectionLineBase).LineUUID = lineuuid;
-                            }
-                            else if (conline is Line)
-                            {
-                                FrameworkElementAssist.SetLineUUID(conline, lineuuid);
-                            }
                         }
-
-                        ////if (droppedcanvas?.DataContext is IDragged)
-                        ////{
-                        ////    (droppedcanvas.DataContext as IDragged).DraggedDataContext = null;
-                        ////}
-
-                        //SetDraggedDataContext(this.AssociatedObject, null);
                     }
 
                 }
