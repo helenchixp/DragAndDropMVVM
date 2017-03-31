@@ -11,10 +11,7 @@ namespace Demo.Mr.Osomatsu.ViewModel
         int No { get; set; }
         int GroupNo { get; set; }
         IGroupModel Parent { get; set; }
-
         IGroupModel GetRoot();
-
-        void RefreshByExtended();
     }
 
 

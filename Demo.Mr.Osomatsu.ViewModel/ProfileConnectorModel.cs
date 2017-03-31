@@ -13,7 +13,16 @@ namespace Demo.Mr.Osomatsu.ViewModel
 
         public new ITreeItemModel Clone()
         {
-            return (ProfileConnectorModel)base.Clone();
+            //return (ProfileConnectorModel)base.Clone();
+
+            return new ProfileConnectorModel()
+            {
+                Comment = base.Comment,
+                ImagePath = base.ImagePath,
+                GroupNo = base.GroupNo,
+                Name = base.Name,
+                No = base.No,
+            };
         }
 
         /// <summary>
@@ -21,7 +30,7 @@ namespace Demo.Mr.Osomatsu.ViewModel
         /// </summary>
         public const string DeparturesPropertyName = "Departures";
 
-        private ObservableCollection<ProfileConnectorModel> _departures = null;
+        private ObservableCollection<ProfileConnectorModel> _departures = new ObservableCollection<ProfileConnectorModel>();
 
         /// <summary>
         /// Sets and gets the Departures property.
@@ -32,7 +41,7 @@ namespace Demo.Mr.Osomatsu.ViewModel
         {
             get
             {
-                return (_departures ?? (_departures = new ObservableCollection<ProfileConnectorModel>()));
+                return _departures;
             }
 
             set
@@ -54,7 +63,7 @@ namespace Demo.Mr.Osomatsu.ViewModel
         /// </summary>
         public const string ArrivalsPropertyName = "Arrivals";
 
-        private ObservableCollection<ProfileConnectorModel> _arrivals = null;
+        private ObservableCollection<ProfileConnectorModel> _arrivals = new ObservableCollection<ProfileConnectorModel>();
 
         /// <summary>
         /// Sets and gets the Arrivals property.
@@ -65,7 +74,7 @@ namespace Demo.Mr.Osomatsu.ViewModel
         {
             get
             {
-                return (_arrivals ?? (_arrivals = new ObservableCollection<ProfileConnectorModel>()));
+                return _arrivals;
             }
 
             set
@@ -81,13 +90,9 @@ namespace Demo.Mr.Osomatsu.ViewModel
             }
         }
 
-        //public ObservableCollection<ProfileConnectorModel> Departures { get; set; }
-
-        //public ObservableCollection<ProfileConnectorModel> Arrivals { get; set; }
-
         /// <summary>
-            /// The <see cref="X" /> property's name.
-            /// </summary>
+        /// The <see cref="X" /> property's name.
+        /// </summary>
         public const string XPropertyName = "X";
 
         private double _x = 0.0;
@@ -118,8 +123,8 @@ namespace Demo.Mr.Osomatsu.ViewModel
         }
 
         /// <summary>
-            /// The <see cref="Y" /> property's name.
-            /// </summary>
+        /// The <see cref="Y" /> property's name.
+        /// </summary>
         public const string YPropertyName = "Y";
 
         private double _y = 0.0;
@@ -133,9 +138,7 @@ namespace Demo.Mr.Osomatsu.ViewModel
         {
             get
             {
-                //return _y == 0.0 ? (_y = GetYPosition(this)) : _y;
-                return (_y = GetYPosition(this));
-                //                return _y == 0.0 ? (_y += Parent.Y + _interval/ 2) : _y ;
+                return _y;
             }
 
             set
@@ -184,57 +187,11 @@ namespace Demo.Mr.Osomatsu.ViewModel
             }
         }
 
-
         public IGroupModel GetRoot()
         {
             return Parent?.GetRoot();
         }
 
 
-        private double GetYPosition(ITreeItemModel current)
-        {
-            //var parentBottom = (current.Parent?.Y ?? 0.0) + (current.Parent?.Interval / 2 ?? 0.0);
-
-            var parentBottom = 0.0;
-
-            if ((current.Parent?.Y ?? 0.0) > 0.0)
-            {
-                parentBottom = current.Parent.Y + current.Parent.Interval / 2;
-            }
-
-
-            var brotherY = parentBottom;
-
-            if (current.Parent?.IsExpanded ?? false)
-            {
-                foreach (var brother in current.Parent.Children)
-                {
-
-                    if (brother == current)
-                    {
-                        return brotherY + current.Interval / 2;
-                    }
-                    else
-                    {
-                        brotherY += brother.Interval;
-                        if ((brother is GroupModel) && (brother as GroupModel).IsExpanded)
-                        {
-                            foreach (var cousin in (brother as GroupModel).Children)
-                            {
-                                brotherY = GetYPosition(cousin) + cousin.Interval / 2;
-                            }
-                        }
-                    }
-                }
-            }
-            return parentBottom;
-        }
-
-
-        public void RefreshByExtended()
-        {
-            _y = GetYPosition(this);
-            RaisePropertyChanged(YPropertyName);
-        }
     }
 }

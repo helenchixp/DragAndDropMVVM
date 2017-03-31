@@ -11,9 +11,11 @@ namespace Demo.Mr.Osomatsu.ViewModel
     public class GroupModel : ViewModelBase, IGroupModel, IClone<ITreeItemModel>
     {
 
+
+
         /// <summary>
-            /// The <see cref="GroupNo" /> property's name.
-            /// </summary>
+        /// The <see cref="GroupNo" /> property's name.
+        /// </summary>
         public const string GroupNoPropertyName = "GroupNo";
 
         private int _groupNo = -1;
@@ -106,9 +108,10 @@ namespace Demo.Mr.Osomatsu.ViewModel
                 RaisePropertyChanged(ChildrenPropertyName, oldValue, value, true);
             }
         }
+
         /// <summary>
-            /// The <see cref="IsExpanded" /> property's name.
-            /// </summary>
+        /// The <see cref="IsExpanded" /> property's name.
+        /// </summary>
         public const string IsExpandedPropertyName = "IsExpanded";
 
         private bool _isExpanded = true;
@@ -135,7 +138,6 @@ namespace Demo.Mr.Osomatsu.ViewModel
                 var oldValue = _isExpanded;
                 _isExpanded = value;
 
-                // Y = GetYPosition(this);
 
                 RefreshByExtended();
 
@@ -179,18 +181,17 @@ namespace Demo.Mr.Osomatsu.ViewModel
         public string ImagePath { get; set; }
         public string Comment { get; set; }
         public IGroupModel Parent { get; set; }
+
         public ITreeItemModel Clone()
         {
-            return (GroupModel)MemberwiseClone();
-            //return new GroupModel()
-            //{
-            //    Name = Name,
-            //    ImagePath = ImagePath,
-            //    Comment = Comment,
-            //    Children = _children,
-            //    GroupNo = _groupNo,
-            //    No = _no,
-            //};
+
+            return new GroupModel()
+            {
+                Comment = Comment,
+                Name = Name,
+                ImagePath = ImagePath,
+                No = No,
+            };
         }
 
 
@@ -242,8 +243,8 @@ namespace Demo.Mr.Osomatsu.ViewModel
         {
             get
             {
-                return (_y = GetYPosition(this));
-
+                // return _y == 0.0 ? (_y = GetYPosition(this)) : _y;
+                return _y;
             }
 
             set
@@ -251,14 +252,10 @@ namespace Demo.Mr.Osomatsu.ViewModel
                 if (_y == value)
                 {
                     return;
-                }
-
-               
+                }               
 
                 var oldValue = _y;
                 _y = value;
-
-
 
                 RaisePropertyChanged(YPropertyName, oldValue, value, true);
             }
@@ -298,45 +295,8 @@ namespace Demo.Mr.Osomatsu.ViewModel
         }
 
 
-        private double GetYPosition(ITreeItemModel current)
-        {
-            var parentBottom = 0.0;
 
-            if((current.Parent?.Y ?? 0.0) >0.0)
-            {
-                parentBottom = current.Parent.Y + current.Parent.Interval / 2;
-            }
-           //// var parentBottom = (current.Parent?.Y ?? 0.0) + (current.Parent?.Interval / 2  ?? 0.0);
-
-           ////if (parentBottom > 0.0)
-           ////     parentBottom += current.Parent.Interval;
-
-            var brotherY = parentBottom;
-
-            if (current.Parent?.IsExpanded ?? false)
-            {
-                foreach (var brother in current.Parent.Children)
-                {
-                    if (brother == current)
-                    {
-                        return brotherY + current.Interval / 2;
-                    }
-                    else
-                    {
-                        brotherY += brother.Interval;
-                        if ((brother is GroupModel) && (brother as GroupModel).IsExpanded)
-                        {
-                            foreach (var cousin in (brother as GroupModel).Children)
-                            {
-                                brotherY = GetYPosition(cousin) + cousin.Interval / 2;
-                            }
-                        }
-                    }
-                }
-            }
-            return parentBottom;
-        }
-
+   
         public IGroupModel GetRoot()
         {
 
@@ -353,12 +313,64 @@ namespace Demo.Mr.Osomatsu.ViewModel
         }
 
 
-        public void RefreshByExtended()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="lastbottom"></param>
+        /// <param name="grandExpanded"></param>
+        private void SetYPosition(ITreeItemModel node, ref double lastbottom , bool grandExpanded = true)
         {
-            foreach(var child in Children)
+            node.Y = lastbottom + (grandExpanded ? node.Interval / 2 : 0.0);
+
+           // var newstartY = node.Y + node.Interval / 2;
+
+            if (node is GroupModel)
             {
-                child.RefreshByExtended();
+                var newstartY = node.Y + node.Interval / 2;
+                if ((node as GroupModel).IsExpanded && grandExpanded)
+                {
+                    foreach (var child in (node as GroupModel).Children)
+                    {
+                        SetYPosition(child, ref newstartY);
+
+                    }
+
+                }
+                else
+                {
+                    foreach (var child in (node as GroupModel).Children)
+                    {
+                        SetYPosition(child, ref newstartY, false);
+                    }
+                }
+
+                lastbottom = newstartY;
+            }
+            else
+            {
+                //if lastbottom is equal the node's Y, this node is hidden in it's parent
+                if(lastbottom != node.Y)
+                {
+                    lastbottom = node.Y + node.Interval / 2;
+                }
             }
         }
+
+
+        public void RefreshByExtended()
+        {
+
+            var root = GetRoot() as GroupModel;
+
+            double lastbottom = 0.0;
+
+            foreach(var child in root.Children)
+            {
+                SetYPosition(child, ref lastbottom);
+            }
+        }
+
+
     }
 }

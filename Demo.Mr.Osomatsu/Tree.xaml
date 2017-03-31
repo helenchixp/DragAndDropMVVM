@@ -16,91 +16,125 @@
             <Setter Property="StrokeThickness" Value="2" />
         </Style>
 
-            <Style TargetType="Image">
-                <Setter Property="Opacity" Value="0.1" />
-            </Style>
+        <Style TargetType="Image">
+            <Setter Property="Opacity" Value="0.1" />
+        </Style>
 
-
-
-
-            <DataTemplate x:Key="PalletTemplate">
-                <Grid b:DiagramElementDragBehavior.DragCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DragCommand}"
+        <DataTemplate x:Key="PalletTemplate">
+            <Grid b:DiagramElementDragBehavior.DragCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DragCommand}"
                   b:DiagramElementDragBehavior.DragCommandParameter="{Binding}">
-                    <i:Interaction.Behaviors>
-                        <b:DiagramElementDragBehavior/>
-                    </i:Interaction.Behaviors>
-                    <Ellipse Width="40" Height="40" Stroke="{DynamicResource AccentDiagramBrush}" StrokeThickness="2"
+                <i:Interaction.Behaviors>
+                    <b:DiagramElementDragBehavior/>
+                </i:Interaction.Behaviors>
+                <Ellipse Width="40" Height="40" Stroke="{DynamicResource AccentDiagramBrush}" StrokeThickness="2"
                          ToolTip="{Binding Name}">
-                        <Ellipse.Fill>
-                            <ImageBrush ImageSource="{Binding ImagePath}" Opacity="0.1"/>
-                        </Ellipse.Fill>
-                    </Ellipse>
-                </Grid>
-            </DataTemplate>
+                    <Ellipse.Fill>
+                        <ImageBrush ImageSource="{Binding ImagePath}" Opacity="0.1"/>
+                    </Ellipse.Fill>
+                </Ellipse>
+            </Grid>
+        </DataTemplate>
 
 
-            <DataTemplate DataType="{x:Type vm:ProfileConnectorModel}" >
-                <!--<WrapPanel b:DiagramElementDragBehavior.DragCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DragCommand}"
+        <DataTemplate DataType="{x:Type vm:ProfileConnectorModel}" >
+            <!--<WrapPanel b:DiagramElementDragBehavior.DragCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DragCommand}"
                        b:DiagramElementDragBehavior.DragCommandParameter="{Binding}"
                        b:DiagramElementDropBehavior.DropCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DropCommand}"
                        b:DiagramElementDropBehavior.DropCommandParameter="{Binding}"-->
-                <WrapPanel
+            <WrapPanel Tag="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor},Path=DataContext}"
                        b:DrawLineDragBehavior.DragLineCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DragLineCommand}"
                        b:DrawLineDragBehavior.DragLineCommandParameter="{Binding}"
                        b:DrawLineDropBehavior.DropLineCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DropLineCommand}"
                        b:DrawLineDropBehavior.DropLineCommandParameter="{Binding}"
                        >
 
-                    <i:Interaction.Behaviors>
-                        <!--<b:DiagramElementDragBehavior/>
+                <WrapPanel.ContextMenu>
+                    <ContextMenu >
+                        <MenuItem Header="_Delete" Command="{Binding Path=PlacementTarget.Tag.DeleteCommand,RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                  CommandParameter="{Binding}"/>
+                    </ContextMenu>
+                </WrapPanel.ContextMenu>
+                
+                <i:Interaction.Behaviors>
+                    <!--<b:DiagramElementDragBehavior/>
                     <b:DiagramElementDropBehavior/>-->
-                        <b:DrawLineDragBehavior />
-                        <b:DrawLineDropBehavior />
-                    </i:Interaction.Behaviors>
+                    <b:DrawLineDragBehavior />
+                    <b:DrawLineDropBehavior />
+                </i:Interaction.Behaviors>
                 <Ellipse Width="{Binding Interval}" Height="{Binding Interval}" Stroke="{DynamicResource AccentDiagramBrush}" StrokeThickness="2"
                          ToolTip="{Binding Name}">
-                        <Ellipse.Fill>
-                            <ImageBrush ImageSource="{Binding ImagePath}" Opacity="0.1"/>
-                        </Ellipse.Fill>
-                    </Ellipse>
-                    <TextBlock Text="{Binding Name}" />
-                </WrapPanel>
-            </DataTemplate>
+                    <Ellipse.Fill>
+                        <ImageBrush ImageSource="{Binding ImagePath}" Opacity="0.1"/>
+                    </Ellipse.Fill>
+                </Ellipse>
+                <TextBlock Text="{Binding Name}" />
+                <TextBlock Text="{Binding Departures.Count}" x:Name="departureLine" />
+                <TextBlock Text="{Binding Arrivals.Count}" x:Name="arrivalLine"/>
 
-            <HierarchicalDataTemplate DataType="{x:Type vm:GroupModel}" ItemsSource="{Binding Children}">
-                <WrapPanel b:DiagramElementDragBehavior.DragCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DragCommand}"
-                       b:DiagramElementDragBehavior.DragCommandParameter="{Binding}"
+            </WrapPanel>
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding Departures.Count}" Value="0">
+                    <Setter Property="Visibility" Value="Collapsed" TargetName="departureLine" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Arrivals.Count}" Value="0">
+                    <Setter Property="Visibility" Value="Collapsed" TargetName="arrivalLine" />
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+
+        <HierarchicalDataTemplate DataType="{x:Type vm:GroupModel}" ItemsSource="{Binding Children}">
+   
+
+            <WrapPanel Tag="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor},Path=DataContext}"
                        b:DiagramElementDropBehavior.DropCommand="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}, Path=DataContext.DropCommand}"
                        b:DiagramElementDropBehavior.DropCommandParameter="{Binding}">
-
-                    <i:Interaction.Behaviors>
-                        <b:DiagramElementDragBehavior/>
-                        <b:DiagramElementDropBehavior/>
-                    </i:Interaction.Behaviors>
+                <WrapPanel.ContextMenu>
+                    <ContextMenu >
+                        <MenuItem Header="_Delete" Command="{Binding Path=PlacementTarget.Tag.DeleteCommand,RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                  CommandParameter="{Binding}"/>
+                    </ContextMenu>
+                </WrapPanel.ContextMenu>
+                <i:Interaction.Behaviors>
+                    <b:DiagramElementDragBehavior/>
+                    <b:DiagramElementDropBehavior/>
+                </i:Interaction.Behaviors>
 
                 <Ellipse Width="{Binding Interval}" Height="{Binding Interval}" 
                                x:Name="recBorder"
                                Stroke="{DynamicResource AccentDiagramBrush}" StrokeThickness="2"
                          ToolTip="{Binding Name}">
-                        <Ellipse.Fill>
-                            <ImageBrush ImageSource="{Binding ImagePath}" Opacity="0.1"/>
-                        </Ellipse.Fill>
-                    </Ellipse>
-                    <TextBlock Text="{Binding Name}" />
-                </WrapPanel>
-                <HierarchicalDataTemplate.Triggers>
-                    <DataTrigger Binding="{Binding Path=IsSelected}" Value="True">
-                        <Setter Property="Stroke" Value="{DynamicResource IsSelectedDiagramBrush}" TargetName="recBorder" />
-                    </DataTrigger>
-                </HierarchicalDataTemplate.Triggers>
-            </HierarchicalDataTemplate>
+                    <Ellipse.Fill>
+                        <ImageBrush ImageSource="{Binding ImagePath}" Opacity="0.1"/>
+                    </Ellipse.Fill>
+                </Ellipse>
+                <TextBlock Text="{Binding Name}" />
+            </WrapPanel>
+            <HierarchicalDataTemplate.Triggers>
+                <DataTrigger Binding="{Binding Path=IsSelected}" Value="True">
+                    <Setter Property="Stroke" Value="{DynamicResource IsSelectedDiagramBrush}" TargetName="recBorder" />
+                </DataTrigger>
+            </HierarchicalDataTemplate.Triggers>
+        </HierarchicalDataTemplate>
 
 
         <DataTemplate x:Key="ConnectionLineTemplate">
             <Line X1="0" X2="{Binding RelativeSource={RelativeSource AncestorType=Canvas,Mode=FindAncestor}, Path=ActualWidth}"
-                  Y1="{Binding Path=Y1, Mode=TwoWay}" Y2="{Binding Path=Y2, Mode=TwoWay}" 
+                  Y1="{Binding Path=DepartureNode.Y, Mode=TwoWay}" Y2="{Binding Path=ArrivalNode.Y, Mode=TwoWay}" 
+                  Tag="{Binding  RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor},Path=DataContext}"
                   Stroke="Black"
-                  StrokeThickness="2">     
+                  StrokeThickness="2">
+                <Line.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="_Detail"
+                                  Command="{Binding Path=PlacementTarget.Tag.DoubleClickCommand,RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                  CommandParameter="{Binding}"
+                                   />
+                        <MenuItem Header="_Delete"
+                                  Command="{Binding Path=PlacementTarget.Tag.DeleteCommand,RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                  CommandParameter="{Binding}"
+                                  />
+                    </ContextMenu>
+                </Line.ContextMenu>
                 <Line.InputBindings>
                     <KeyBinding Gesture="Enter" 
                                 Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor},Path=DataContext.DoubleClickCommand}"
@@ -116,7 +150,7 @@
         </DataTemplate>
     </UserControl.Resources>
 
-    
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="10*" />
@@ -140,7 +174,7 @@
                 <b:DiagramElementDropBehavior/>
             </i:Interaction.Behaviors>
             <TreeView.Resources>
-                
+
                 <Style TargetType="{x:Type TreeViewItem}">
                     <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}" />
                     <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay}" />
@@ -149,7 +183,7 @@
             </TreeView.Resources>
 
         </TreeView>
-        <!--<TreeView Grid.Row="1" Grid.Column="2" ItemsSource="{Binding Group02}"></TreeView>-->
+
         <TreeView Grid.Row="1" Grid.Column="3" ItemsSource="{Binding Path=Group02.Children}"
                   b:DiagramElementDropBehavior.DropCommand="{Binding Path=DropCommand}"
                   b:DiagramElementDropBehavior.DropCommandParameter="{Binding Path=Group02}">
@@ -162,7 +196,7 @@
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="ToggleButton">
-                                <Grid Width="15" Height="13" Background="Transparent">
+                                <Grid Width="25" Height="25" Background="Transparent">
                                     <VisualStateManager.VisualStateGroups>
                                         <VisualStateGroup x:Name="CheckStates">
                                             <VisualState x:Name="Checked">
@@ -179,13 +213,10 @@
                                             <VisualState x:Name="Indeterminate" />
                                         </VisualStateGroup>
                                     </VisualStateManager.VisualStateGroups>
-                                    <Ellipse x:Name="Collapsed" Fill="AliceBlue" Width="15" Height="5">
-                                        
-                                    </Ellipse>
-                                    <Ellipse x:Name="Expanded" Fill="RosyBrown" Width="5" Height="15" Visibility="Hidden">
 
-                                    </Ellipse>
-                         
+                                    <Path x:Name="Collapsed" Data="M19,19V5H5V19H19M19,3A2,2 0 0,1 21,5V19A2,2 0 0,1 19,21H5A2,2 0 0,1 3,19V5C3,3.89 3.9,3 5,3H19M11,7H13V11H17V13H13V17H11V13H7V11H11V7Z"  Fill="Black" />
+                                    <Path x:Name="Expanded"  Data="M19,19V5H5V19H19M19,3A2,2 0 0,1 21,5V19A2,2 0 0,1 19,21H5A2,2 0 0,1 3,19V5C3,3.89 3.9,3 5,3H19M17,11V13H7V11H17Z" Fill="Black" Visibility="Hidden"/>
+
                                 </Grid>
                             </ControlTemplate>
                         </Setter.Value>
@@ -210,7 +241,7 @@
 
                 <Style x:Key="{x:Type TreeViewItem}"
                        TargetType="{x:Type TreeViewItem}">
-                    <Setter Property="IsExpanded" Value="{Binding IsExpanded}" />
+                    <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}" />
                     <Setter Property="Background"
                             Value="Transparent" />
                     <Setter Property="HorizontalContentAlignment"
@@ -220,9 +251,7 @@
                     <Setter Property="Padding" Value="1,0,0,0" />
                     <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
                     <Setter Property="FocusVisualStyle" Value="{StaticResource TreeViewItemFocusVisual}" />
-                    <!--<Setter Property="Header" Value="{Binding Name}" />-->
                     <Setter Property="ItemsSource" Value="{Binding Children}" />
-                    <!--<Setter Property="ItemTemplate" Value="{StaticResource GroupTemplete}" />-->
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type TreeViewItem}">
@@ -272,11 +301,11 @@
                                             BorderThickness="{TemplateBinding BorderThickness}"
                                             Padding="{TemplateBinding Padding}">
 
-                                         
-                                            <ContentPresenter x:Name="PART_Header"
+
+                                        <ContentPresenter x:Name="PART_Header"
                                                           ContentSource="Header"
                                                           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
-                                       
+
                                     </Border>
                                     <ItemsPresenter x:Name="ItemsHost"
                                                     Grid.Row="1"
@@ -315,10 +344,7 @@
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="AntiqueWhite" x:Name="ItemCanvas" Focusable="False" FocusManager.IsFocusScope="True">
-                        <!--<Canvas.InputBindings>
-                            <KeyBinding Gesture="Enter" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor},Path=DataContext.DoubleClickCommand}"/>
-                            <KeyBinding Gesture="Delete" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor},Path=DataContext.DeleteCommand}"/>
-                        </Canvas.InputBindings>-->
+                      
                     </Canvas>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>

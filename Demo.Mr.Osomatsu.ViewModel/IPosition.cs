@@ -11,5 +11,6 @@ namespace Demo.Mr.Osomatsu.ViewModel
         double X { get; set; }
         double Y { get; set; }
         double Interval { get; set; }
+
     }
 }
