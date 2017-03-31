@@ -91,7 +91,7 @@
                           b:DiagramElementDropBehavior.DroppedCanvas="{Binding RelativeSource={RelativeSource Self}}"
                           b:DiagramElementDropBehavior.DraggedDataContext="{Binding Path=DraggedDataContext, Mode=TwoWay}"
                           IsSyncLayoutDataContext ="{Binding IsSyncLayoutRelationshipMap}"
-                          LayoutDataContext="{Binding LayoutRelationshipMap}"
+                          LayoutDataContext="{Binding LayoutRelationshipMap, Mode=TwoWay}"
                           UndoCommand="{Binding UndoCommand}"
                           RedoCommand="{Binding RedoCommand}" 
                           SaveAsImageFileName="{Binding ImageFileName, Mode=OneWay}"
